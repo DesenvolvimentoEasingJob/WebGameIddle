@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Map Tools — Atlas Editor</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="toolbar">
+        <div class="toolbar-group">
+          <label>
+            Imagem
+            <input id="image-path" type="text" value="front/public/assets/ui-sheet.png" spellcheck="false" />
+          </label>
+          <label>
+            Atlas JSON
+            <input id="atlas-path" type="text" value="front/src/ui/atlas.json" spellcheck="false" />
+          </label>
+          <button id="btn-load" type="button">Carregar</button>
+          <button id="btn-save" type="button" class="primary" disabled>Salvar JSON</button>
+        </div>
+        <div class="toolbar-group toolbar-hints">
+          <span>Cantos azuis = resize · Laterais ciano = ajuste de lado · Centro = mover</span>
+          <span>Ctrl+scroll zoom · Scroll ou espaço+arraste para mover a vista</span>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <h2>Frames</h2>
+            <span id="frame-count" class="badge">0</span>
+          </div>
+          <input id="frame-search" type="search" placeholder="Buscar frame..." />
+          <button id="btn-add" type="button" class="ghost" disabled>+ Novo frame</button>
+          <ul id="frame-list"></ul>
+        </aside>
+
+        <section class="canvas-wrap">
+          <canvas id="editor-canvas"></canvas>
+          <div id="canvas-empty" class="canvas-empty">
+            Carregue uma imagem e um atlas JSON para começar.
+          </div>
+        </section>
+
+        <aside class="inspector">
+          <h2>Propriedades</h2>
+          <div id="inspector-empty" class="inspector-empty">Selecione um frame</div>
+          <form id="inspector-form" class="inspector-form hidden">
+            <p id="handle-mode" class="handle-mode"></p>
+            <label>
+              Nome
+              <input id="prop-name" type="text" required />
+            </label>
+            <div class="coord-grid">
+              <label>
+                X
+                <input id="prop-x" type="number" min="0" step="1" />
+              </label>
+              <label>
+                Y
+                <input id="prop-y" type="number" min="0" step="1" />
+              </label>
+              <label>
+                W
+                <input id="prop-w" type="number" min="1" step="1" />
+              </label>
+              <label>
+                H
+                <input id="prop-h" type="number" min="1" step="1" />
+              </label>
+            </div>
+            <div class="inspector-actions">
+              <button id="btn-duplicate" type="button">Duplicar</button>
+              <button id="btn-delete" type="button" class="danger">Excluir</button>
+            </div>
+            <div class="preview-wrap">
+              <p>Preview</p>
+              <canvas id="preview-canvas"></canvas>
+            </div>
+          </form>
+        </aside>
+      </main>
+
+      <footer id="status" class="status">Pronto</footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

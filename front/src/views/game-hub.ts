@@ -14,6 +14,7 @@ import { resolveRaceProfile } from "../ui/game-assets";
 import {
   bindInventoryPanel,
   computeDisplayStats,
+  computeVitalBarPercents,
   renderInventoryPanel,
   type GameTab,
 } from "../ui/inventory-panel";
@@ -65,12 +66,73 @@ export function renderGameHub(root: HTMLElement): void {
         </section>
 
         <section class="game-stats" aria-label="Status do personagem">
+          <div class="game-vitals" aria-label="Vida, mana e experiência">
+            <div
+              class="game-vital-bar game-vital-bar--hp"
+              role="progressbar"
+              id="bar-hp"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              aria-label="HP"
+            >
+              <div class="game-vital-bar__slot">
+                <div class="game-vital-bar__fill" style="width: 0%"></div>
+              </div>
+              <span class="game-vital-bar__label" id="bar-hp-text">— / —</span>
+            </div>
+            <div
+              class="game-vital-bar game-vital-bar--mp"
+              role="progressbar"
+              id="bar-mp"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              aria-label="MP"
+            >
+              <div class="game-vital-bar__slot">
+                <div class="game-vital-bar__fill" style="width: 0%"></div>
+              </div>
+              <span class="game-vital-bar__label" id="bar-mp-text">— / —</span>
+            </div>
+            <div
+              class="game-vital-bar game-vital-bar--xp"
+              role="progressbar"
+              id="bar-xp"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              aria-label="XP"
+            >
+              <div class="game-vital-bar__slot">
+                <div class="game-vital-bar__fill" style="width: 0%"></div>
+              </div>
+              <span class="game-vital-bar__label" id="bar-xp-text">— / —</span>
+            </div>
+          </div>
+
           <dl class="game-stats__list">
-            <div><dt>XP</dt><dd id="stat-xp">—</dd></div>
-            <div><dt>Ataque</dt><dd id="stat-atk">—</dd></div>
-            <div><dt>Defesa</dt><dd id="stat-def">—</dd></div>
-            <div><dt>HP</dt><dd id="stat-hp">—</dd></div>
-            <div><dt>Ouro</dt><dd id="stat-gold">—</dd></div>
+            <div class="game-stats__row game-stats__row--attack">
+              <dt class="game-stats__label">
+                <span class="game-stats__icon" aria-hidden="true"></span>
+                Ataque
+              </dt>
+              <dd id="stat-atk">—</dd>
+            </div>
+            <div class="game-stats__row game-stats__row--defense">
+              <dt class="game-stats__label">
+                <span class="game-stats__icon" aria-hidden="true"></span>
+                Defesa
+              </dt>
+              <dd id="stat-def">—</dd>
+            </div>
+            <div class="game-stats__row game-stats__row--gold">
+              <dt class="game-stats__label">
+                <span class="game-stats__icon" aria-hidden="true"></span>
+                Ouro
+              </dt>
+              <dd id="stat-gold">—</dd>
+            </div>
           </dl>
         </section>
 
@@ -175,6 +237,8 @@ async function loadGame(
 function updateSidebar(root: HTMLElement, state: GameStateResponse): void {
   const char = state.characterJson;
   const stats = computeDisplayStats(state);
+  const vitals = computeVitalBarPercents(state);
+  const xpToNext = Math.max(1, char.progression.level * 100);
 
   const classLabel = CLASS_LABELS[char.classId] ?? capitalize(char.classId);
   const raceLabel = RACE_LABELS[char.raceId] ?? capitalize(char.raceId);
@@ -183,6 +247,31 @@ function updateSidebar(root: HTMLElement, state: GameStateResponse): void {
   root.querySelector("#game-level")!.textContent = `Nv. ${char.progression.level}`;
 
   applyProfileAvatar(root, char.raceId);
+
+  updateVitalBar(
+    root,
+    "#bar-hp",
+    vitals.hp,
+    stats.hp,
+    stats.hp,
+    "#bar-hp-text",
+  );
+  updateVitalBar(
+    root,
+    "#bar-mp",
+    vitals.mp,
+    stats.mp,
+    stats.mp,
+    "#bar-mp-text",
+  );
+  updateVitalBar(
+    root,
+    "#bar-xp",
+    vitals.xp,
+    char.progression.xp,
+    xpToNext,
+    "#bar-xp-text",
+  );
 
   const tower = char.tower;
   const mobCount = state.currentFloor?.mobCount ?? 10;
@@ -195,11 +284,28 @@ function updateSidebar(root: HTMLElement, state: GameStateResponse): void {
   root.querySelector<HTMLElement>("#tower-progress-bar")!.style.width = `${pct}%`;
   root.querySelector("#tower-progress-text")!.textContent = `${progress} / ${mobCount}`;
 
-  root.querySelector("#stat-xp")!.textContent = formatNumber(char.progression.xp);
   root.querySelector("#stat-atk")!.textContent = formatNumber(stats.attack);
   root.querySelector("#stat-def")!.textContent = formatNumber(stats.defense);
-  root.querySelector("#stat-hp")!.textContent = formatNumber(stats.hp);
   root.querySelector("#stat-gold")!.textContent = formatNumber(char.progression.gold);
+}
+
+function updateVitalBar(
+  root: HTMLElement,
+  selector: string,
+  percent: number,
+  current: number,
+  max: number,
+  labelSelector: string,
+): void {
+  const bar = root.querySelector<HTMLElement>(selector)!;
+  const fill = bar.querySelector<HTMLElement>(".game-vital-bar__fill")!;
+  const label = root.querySelector<HTMLElement>(labelSelector)!;
+  const valueText = `${formatNumber(current)} / ${formatNumber(max)}`;
+
+  fill.style.width = `${percent}%`;
+  label.textContent = valueText;
+  bar.setAttribute("aria-valuenow", String(percent));
+  bar.setAttribute("aria-valuetext", valueText);
 }
 
 function renderActivePanel(panelEl: HTMLElement): void {

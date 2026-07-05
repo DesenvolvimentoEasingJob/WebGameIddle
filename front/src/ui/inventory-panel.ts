@@ -253,6 +253,7 @@ export function computeDisplayStats(state: GameStateResponse): {
   attack: number;
   defense: number;
   hp: number;
+  mp: number;
 } {
   const attrs = (state.effectiveCategories as CategoryTree)?.attributes ?? {};
   const str = attrs.strength?.base ?? 0;
@@ -264,6 +265,24 @@ export function computeDisplayStats(state: GameStateResponse): {
     attack: Math.round(str * 12 + agi * 4 + int * 2 + level * 10),
     defense: Math.round(str * 3 + agi * 6 + int * 2 + level * 8),
     hp: Math.round(str * 8 + agi * 4 + int * 3 + level * 50),
+    mp: Math.round(int * 12 + level * 30),
+  };
+}
+
+/** Percentuais 0–100 para as barras do painel (HP/MP cheios até existir combate no backend). */
+export function computeVitalBarPercents(state: GameStateResponse): {
+  hp: number;
+  mp: number;
+  xp: number;
+} {
+  const level = state.characterJson.progression?.level ?? 1;
+  const xp = state.characterJson.progression?.xp ?? 0;
+  const xpToNext = Math.max(1, level * 100);
+
+  return {
+    hp: 100,
+    mp: 100,
+    xp: Math.min(100, Math.round((xp / xpToNext) * 100)),
   };
 }
 
