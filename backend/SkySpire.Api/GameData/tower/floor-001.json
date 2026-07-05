@@ -1,0 +1,39 @@
+{
+  "floor": 1,
+  "name": "Primeiro Degrau",
+  "ownerId": null,
+  "ownerName": null,
+  "mobCount": 10,
+  "mobPool": [
+    {
+      "id": "f1-slime",
+      "name": "Slime Fraco",
+      "level": 1,
+      "hp": 80,
+      "attack": 12,
+      "defense": 4,
+      "xp": 15,
+      "gold": 5
+    },
+    {
+      "id": "f1-bat",
+      "name": "Morcego das Sombras",
+      "level": 1,
+      "hp": 60,
+      "attack": 15,
+      "defense": 2,
+      "xp": 18,
+      "gold": 6
+    }
+  ],
+  "boss": {
+    "id": "f1-guardian",
+    "name": "Guardião do Andar 1",
+    "level": 1,
+    "hp": 600,
+    "attack": 35,
+    "defense": 12,
+    "xp": 200,
+    "gold": 50
+  }
+}

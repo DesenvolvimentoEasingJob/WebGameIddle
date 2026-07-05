@@ -1,0 +1,19 @@
+{
+  "id": "wooden-staff",
+  "name": "Cajado de Madeira",
+  "description": "Canaliza energia arcana básica.",
+  "type": "weapon",
+  "slot": "weapon",
+  "rarity": "common",
+  "level": 1,
+  "classes": ["mage"],
+  "categories": {
+    "attributes": {
+      "intelligence": { "base": 6 }
+    },
+    "damage": {
+      "magical": { "bonusPercent": 10 }
+    }
+  },
+  "assets": { "icon": "items/staffs/wooden-staff.png" }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "rogue",
+  "name": "Ladino",
+  "description": "Rápido e letal, especialista em agilidade.",
+  "assets": {
+    "spriteSuffix": "archer"
+  },
+  "categories": {
+    "attributes": {
+      "strength": { "base": 4 },
+      "agility": { "base": 10 },
+      "intelligence": { "base": 4 }
+    },
+    "damage": {
+      "physical": { "bonusPercent": 8 },
+      "magical": { "bonusPercent": 2 }
+    }
+  }
+}

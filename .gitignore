@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+bin/
+obj/
+
+# Secrets and local env
+.env
+.env.local
+.env.*.local
+
+# IDE / editor
+.vs/
+.cursor/
+*.user
+*.suo
+
+# Runtime data
+backend/data/
+
+# Generated tool output
+front/tools/crops/
+
+# Local MCP index
+.mcp-context-finder/

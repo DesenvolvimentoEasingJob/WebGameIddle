@@ -1,0 +1,20 @@
+{
+  "id": "elf",
+  "name": "Elfo",
+  "description": "Ágil e sintonizado com magia arcana.",
+  "equipmentSlots": ["weapon", "offhand", "armor", "helmet", "boots", "ring", "amulet"],
+  "assets": {
+    "sprite": "races/elf.png"
+  },
+  "categories": {
+    "attributes": {
+      "strength": { "base": 6 },
+      "agility": { "base": 14 },
+      "intelligence": { "base": 12 }
+    },
+    "damage": {
+      "physical": { "bonusPercent": 0 },
+      "magical": { "bonusPercent": 8 }
+    }
+  }
+}

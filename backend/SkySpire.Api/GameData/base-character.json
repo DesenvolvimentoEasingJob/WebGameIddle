@@ -1,0 +1,13 @@
+{
+  "categories": {
+    "attributes": {
+      "strength": { "base": 0 },
+      "agility": { "base": 0 },
+      "intelligence": { "base": 0 }
+    },
+    "damage": {
+      "physical": { "bonusPercent": 0 },
+      "magical": { "bonusPercent": 0 }
+    }
+  }
+}
