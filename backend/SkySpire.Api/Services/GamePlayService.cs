@@ -156,6 +156,113 @@ public class GamePlayService(
         return (BuildGameStateResponse(document), null);
     }
 
+    public async Task<(StartTowerCombatResponse? Result, string? Error)> StartTowerCombatAsync(
+        Guid userId,
+        int slotIndex,
+        CancellationToken ct)
+    {
+        var (character, document, error) = await LoadCompleteCharacterAsync(userId, slotIndex, ct);
+        if (error is not null)
+            return (null, error);
+
+        var tower = document!["tower"]?.AsObject()
+            ?? throw new InvalidOperationException("Dados da torre inválidos.");
+
+        var currentFloor = tower["currentFloor"].GetInt32Value(1);
+        var floorDef = gameData.GetTowerFloor(currentFloor);
+        if (floorDef is null)
+            return (null, "Andar não encontrado.");
+
+        var (enemy, isBoss, encounterError) = ResolveCurrentEncounter(tower, floorDef);
+        if (encounterError is not null)
+            return (null, encounterError);
+
+        var effectiveCategories = ComputeEffectiveCategories(document);
+        var playerStats = CombatStatsCalculator.FromCharacter(document, effectiveCategories);
+        var combat = TowerCombatSimulator.Simulate(playerStats, enemy!, isBoss);
+
+        if (combat.Outcome == "player_win" && combat.Rewards is { } rewards)
+        {
+            ApplyCombatVictory(document, tower, floorDef, isBoss, rewards);
+            document["updatedAt"] = DateTime.UtcNow.ToString("O");
+            await storage.SaveAsync(userId, character!.Id, document, ct);
+        }
+
+        var gameState = BuildGameStateResponse(document);
+        return (new StartTowerCombatResponse(combat, gameState), null);
+    }
+
+    private static (TowerMobDefinition? Enemy, bool IsBoss, string? Error) ResolveCurrentEncounter(
+        JsonObject tower,
+        TowerFloorDefinition floorDef)
+    {
+        var mobCount = floorDef.MobCount;
+        var killed = tower["mobsKilledThisFloor"].GetInt32Value();
+        var bossDefeated = tower["bossDefeated"]?.GetValue<bool>() ?? false;
+
+        if (bossDefeated)
+            return (null, false, "Este andar já foi concluído.");
+
+        if (killed >= mobCount)
+            return (floorDef.Boss, true, null);
+
+        if (floorDef.MobPool.Count == 0)
+            return (null, false, "Nenhum inimigo disponível neste andar.");
+
+        var index = killed % floorDef.MobPool.Count;
+        return (floorDef.MobPool[index], false, null);
+    }
+
+    private static void ApplyCombatVictory(
+        JsonObject document,
+        JsonObject tower,
+        TowerFloorDefinition floorDef,
+        bool isBoss,
+        TowerCombatRewardsDto rewards)
+    {
+        var progression = document["progression"]?.AsObject()
+            ?? throw new InvalidOperationException("Progressão inválida.");
+
+        var gold = progression["gold"].GetInt32Value();
+        var xp = progression["xp"].GetInt32Value();
+        var level = progression["level"].GetInt32Value(1);
+
+        progression["gold"] = gold + rewards.Gold;
+        xp += rewards.Xp;
+
+        while (xp >= level * 100)
+        {
+            xp -= level * 100;
+            level++;
+        }
+
+        progression["xp"] = xp;
+        progression["level"] = level;
+
+        if (isBoss)
+        {
+            tower["bossDefeated"] = true;
+            var autoAscend = tower["autoAscend"]?.GetValue<bool>() ?? false;
+            var currentFloor = tower["currentFloor"].GetInt32Value(1);
+            var unlockedFloor = tower["unlockedFloor"].GetInt32Value(1);
+
+            unlockedFloor = Math.Max(unlockedFloor, currentFloor + 1);
+            tower["unlockedFloor"] = unlockedFloor;
+
+            if (autoAscend)
+            {
+                tower["currentFloor"] = currentFloor + 1;
+                tower["mobsKilledThisFloor"] = 0;
+                tower["bossDefeated"] = false;
+            }
+        }
+        else
+        {
+            var killed = tower["mobsKilledThisFloor"].GetInt32Value();
+            tower["mobsKilledThisFloor"] = killed + 1;
+        }
+    }
+
     private async Task<(Character? Character, JsonObject? Document, string? Error)> LoadCompleteCharacterAsync(
         Guid userId,
         int slotIndex,

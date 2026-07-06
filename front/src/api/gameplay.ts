@@ -60,19 +60,62 @@ export interface CharacterGameJson {
   equipmentSlots: string[];
 }
 
-export interface TowerFloorSummary {
+export interface TowerMobSummary {
+  id: string;
+  name: string;
+  level: number;
+  hp: number;
+  attack: number;
+  defense: number;
+  xp: number;
+  gold: number;
+  assets?: { sprite?: string; icon?: string };
+}
+
+export interface TowerFloorDetail {
   floor: number;
   name: string;
   ownerId?: string | null;
   ownerName?: string | null;
   mobCount: number;
+  mobPool: TowerMobSummary[];
+  boss: TowerMobSummary;
 }
 
 export interface GameStateResponse {
   characterJson: CharacterGameJson;
   itemCatalog: Record<string, ItemSummary>;
-  currentFloor: TowerFloorSummary | null;
+  currentFloor: TowerFloorDetail | null;
   effectiveCategories: Record<string, unknown>;
+}
+
+export interface TowerCombatTurn {
+  actor: "player" | "enemy";
+  kind: "attack" | "critical";
+  damage: number;
+  playerHpRemaining: number;
+  enemyHpRemaining: number;
+}
+
+export interface TowerCombatRewards {
+  xp: number;
+  gold: number;
+}
+
+export interface TowerCombatResult {
+  outcome: "player_win" | "player_defeat";
+  enemyId: string;
+  enemyName: string;
+  isBoss: boolean;
+  playerMaxHp: number;
+  enemyMaxHp: number;
+  turns: TowerCombatTurn[];
+  rewards: TowerCombatRewards | null;
+}
+
+export interface StartTowerCombatResponse {
+  combat: TowerCombatResult;
+  gameState: GameStateResponse;
 }
 
 function authHeaders(): HeadersInit {
@@ -145,6 +188,61 @@ export async function updateTowerSettings(
   }
 
   return (await response.json()) as GameStateResponse;
+}
+
+export async function startTowerCombat(
+  slotIndex: number,
+): Promise<StartTowerCombatResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower/combat`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao iniciar combate.");
+  }
+
+  const raw = (await response.json()) as {
+    combat: {
+      outcome: string;
+      enemyId: string;
+      enemyName: string;
+      isBoss: boolean;
+      playerMaxHp: number;
+      enemyMaxHp: number;
+      turns: Array<{
+        actor: string;
+        kind: string;
+        damage: number;
+        playerHpRemaining: number;
+        enemyHpRemaining: number;
+      }>;
+      rewards: { xp: number; gold: number } | null;
+    };
+    gameState: GameStateResponse;
+  };
+
+  return {
+    combat: {
+      outcome: raw.combat.outcome as TowerCombatResult["outcome"],
+      enemyId: raw.combat.enemyId,
+      enemyName: raw.combat.enemyName,
+      isBoss: raw.combat.isBoss,
+      playerMaxHp: raw.combat.playerMaxHp,
+      enemyMaxHp: raw.combat.enemyMaxHp,
+      turns: raw.combat.turns.map((t) => ({
+        actor: t.actor as TowerCombatTurn["actor"],
+        kind: t.kind as TowerCombatTurn["kind"],
+        damage: t.damage,
+        playerHpRemaining: t.playerHpRemaining,
+        enemyHpRemaining: t.enemyHpRemaining,
+      })),
+      rewards: raw.combat.rewards
+        ? { xp: raw.combat.rewards.xp, gold: raw.combat.rewards.gold }
+        : null,
+    },
+    gameState: raw.gameState,
+  };
 }
 
 export const RARITY_LABELS: Record<string, string> = {

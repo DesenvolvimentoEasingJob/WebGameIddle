@@ -5,9 +5,10 @@ import {
   equipItem,
   fetchGameState,
   RACE_LABELS,
-  type GameStateResponse,
+  startTowerCombat,
   unequipItem,
   updateTowerSettings,
+  type GameStateResponse,
 } from "../api/gameplay";
 import { getActiveCharacterMeta, getActiveSlot, getStoredUser, navigate, setActiveCharacterMeta } from "../router";
 import { resolveRaceProfile } from "../ui/game-assets";
@@ -18,6 +19,9 @@ import {
   renderInventoryPanel,
   type GameTab,
 } from "../ui/inventory-panel";
+import { renderTowerPanel } from "../ui/tower-panel";
+import { bindTowerSprites, destroyTowerSprites, getTowerAnimators } from "../ui/tower-sprites";
+import { playTowerCombatReplay } from "../ui/tower-combat";
 
 let cachedState: GameStateResponse | null = null;
 let activeTab: GameTab = "inventory";
@@ -156,6 +160,7 @@ export function renderGameHub(root: HTMLElement): void {
   const errorEl = root.querySelector<HTMLParagraphElement>("#game-error")!;
 
   root.querySelector<HTMLButtonElement>("#game-exit")!.addEventListener("click", () => {
+    destroyTowerSprites();
     document.getElementById("game-title")?.removeAttribute("hidden");
     document.querySelector(".app-main")?.classList.remove("app-main--game");
     document.querySelector(".col-12")?.classList.remove("col-game-full");
@@ -311,6 +316,10 @@ function updateVitalBar(
 function renderActivePanel(panelEl: HTMLElement): void {
   if (!cachedState) return;
 
+  if (activeTab !== "tower") {
+    destroyTowerSprites();
+  }
+
   if (activeTab === "inventory") {
     panelEl.innerHTML = renderInventoryPanel({
       state: cachedState,
@@ -339,9 +348,19 @@ function renderActivePanel(panelEl: HTMLElement): void {
     return;
   }
 
-  const labels: Record<Exclude<GameTab, "inventory">, string> = {
+  if (activeTab === "tower") {
+    destroyTowerSprites();
+    panelEl.innerHTML = renderTowerPanel({
+      state: cachedState,
+      username: getStoredUser()?.username ?? "Aventureiro",
+    });
+    bindTowerSprites(panelEl, cachedState);
+    bindTowerCombat(panelEl);
+    return;
+  }
+
+  const labels: Record<Exclude<GameTab, "inventory" | "tower">, string> = {
     market: "Mercado",
-    tower: "Torre Infinita",
   };
 
   panelEl.innerHTML = `
@@ -383,6 +402,57 @@ async function handleUnequip(equipSlot: string, panelEl: HTMLElement): Promise<v
     busy = false;
     renderActivePanel(panelEl);
   }
+}
+
+async function handleStartCombat(panelEl: HTMLElement): Promise<void> {
+  if (busy || !cachedState) return;
+
+  const arena = panelEl.querySelector<HTMLElement>(".tower-arena");
+  const statusEl = panelEl.querySelector<HTMLElement>("#tower-combat-status");
+  const btn = panelEl.querySelector<HTMLButtonElement>("#tower-start-combat");
+  if (!arena || !btn) return;
+
+  busy = true;
+  btn.disabled = true;
+  if (statusEl) statusEl.textContent = "Calculando combate no servidor…";
+
+  try {
+    const { combat, gameState } = await startTowerCombat(getActiveSlot());
+    if (statusEl) statusEl.textContent = "Reproduzindo combate…";
+
+    await playTowerCombatReplay(arena, combat, getTowerAnimators());
+
+    cachedState = gameState;
+    const root = document.querySelector(".game-hub");
+    if (root) updateSidebar(root as HTMLElement, cachedState);
+
+    if (statusEl) {
+      if (combat.outcome === "player_win") {
+        const reward = combat.rewards;
+        statusEl.textContent = reward
+          ? `Vitória! +${reward.xp} XP · +${reward.gold} ouro`
+          : "Vitória!";
+      } else {
+        statusEl.textContent = "Derrota — tente novamente após se equipar melhor.";
+      }
+    }
+
+    const errorEl = document.querySelector<HTMLParagraphElement>("#game-error");
+    if (errorEl) errorEl.hidden = true;
+    renderActivePanel(panelEl);
+  } catch (err) {
+    showGameError(formatApiError(err, "Falha no combate."));
+    btn.disabled = cachedState?.characterJson.tower.bossDefeated ?? false;
+    if (statusEl) statusEl.textContent = "O servidor calcula o combate; o front apenas anima o resultado.";
+  } finally {
+    busy = false;
+  }
+}
+
+function bindTowerCombat(panelEl: HTMLElement): void {
+  panelEl.querySelector<HTMLButtonElement>("#tower-start-combat")?.addEventListener("click", () => {
+    void handleStartCombat(panelEl);
+  });
 }
 
 async function handleAutoAscendChange(checked: boolean, errorEl: HTMLParagraphElement): Promise<void> {

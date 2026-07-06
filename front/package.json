@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "atlas": "node tools/build-atlas.mjs",
+    "anim-map": "node tools/build-anim-map.mjs",
     "placeholders": "node tools/generate-placeholders.mjs"
   },
   "dependencies": {

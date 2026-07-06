@@ -172,6 +172,16 @@ export class AtlasEditor {
       this.resizeCanvas();
       this.draw();
     });
+
+    const wrap = this.canvas.parentElement;
+    if (wrap) {
+      const ro = new ResizeObserver(() => {
+        this.resizeCanvas();
+        this.draw();
+      });
+      ro.observe(wrap);
+    }
+
     this.resizeCanvas();
   }
 

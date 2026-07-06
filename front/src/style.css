@@ -1292,4 +1292,534 @@ body {
   .inventory-layout {
     grid-template-columns: 1fr;
   }
+
+  .tower-arena {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .tower-fighter--player {
+    align-items: center;
+    padding-left: 0;
+  }
+
+  .tower-fighter--enemy {
+    align-items: center;
+    padding-right: 0;
+  }
+
+  .tower-track__list {
+    grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  }
+
+  .mob-icon-frame {
+    max-width: 52px;
+  }
+
+  .mob-icon-frame--boss {
+    max-width: 56px;
+  }
+
+  .tower-boss-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
 }
+
+/* ---------- Torre Infinita ---------- */
+
+.tower-layout {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.tower-layout__empty {
+  margin: 0;
+  color: rgba(232, 220, 192, 0.7);
+}
+
+.tower-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.tower-header__owner,
+.tower-header__progress {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  color: rgba(232, 220, 192, 0.72);
+}
+
+.tower-header__owner strong {
+  color: var(--gold-light);
+}
+
+.tower-arena {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 0;
+  min-height: clamp(200px, 32vh, 280px);
+  border-style: solid;
+  border-width: 20px;
+  /* Sem `fill` — o centro fica transparente e mostra o background do andar */
+  border-image: var(--ui-panel-square) 48 / 7px stretch;
+  background-color: #0a0812;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+.tower-fighter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+  margin: 0;
+  min-width: 0;
+  height: 100%;
+  z-index: 1;
+}
+
+.tower-fighter--player {
+  align-items: flex-start;
+  padding-left: 0.35rem;
+}
+
+.tower-fighter--enemy {
+  align-items: flex-end;
+  padding-right: 0.35rem;
+}
+
+.tower-fighter__stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: 1;
+  width: 100%;
+  min-height: clamp(130px, 24vh, 200px);
+  overflow: visible;
+}
+
+.tower-combat-hp {
+  position: relative;
+  width: min(100%, 148px);
+  height: 14px;
+  margin-bottom: 0.2rem;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(201, 150, 47, 0.35);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+.tower-combat-hp__fill {
+  height: 100%;
+  min-width: 0;
+  background: linear-gradient(90deg, #6b1a1a, #e04545);
+  transition: width 0.25s ease;
+}
+
+.tower-combat-hp--player .tower-combat-hp__fill {
+  background: linear-gradient(90deg, #1a4a6b, #45a0e0);
+}
+
+.tower-combat-hp--enemy .tower-combat-hp__fill {
+  background: linear-gradient(90deg, #4a1a6b, #b045e0);
+}
+
+.tower-combat-hp__text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.52rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+  pointer-events: none;
+}
+
+.tower-damage {
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffb347;
+  text-shadow:
+    0 0 6px rgba(0, 0, 0, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.85);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  white-space: nowrap;
+}
+
+.tower-damage--critical {
+  font-size: 1.35rem;
+  color: #ff5c5c;
+}
+
+.tower-damage--show {
+  animation: tower-damage-float 0.9s ease-out forwards;
+}
+
+@keyframes tower-damage-float {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -42px);
+  }
+}
+
+.tower-arena--combat .tower-fighter__caption {
+  opacity: 0.75;
+}
+
+.tower-fighter__stage .sprite-sheet-stage {
+  transform: scale(0.55);
+  transform-origin: bottom center;
+}
+
+.tower-fighter__fallback {
+  display: block;
+  max-width: min(42vw, 140px);
+  max-height: clamp(130px, 24vh, 200px);
+  object-fit: contain;
+  object-position: bottom center;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
+}
+
+.tower-fighter__caption {
+  display: grid;
+  gap: 0.08rem;
+  text-align: center;
+  font-size: 0.65rem;
+  color: rgba(232, 220, 192, 0.88);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  padding-bottom: 0.15rem;
+}
+
+.tower-fighter--player .tower-fighter__caption {
+  text-align: left;
+}
+
+.tower-fighter--enemy .tower-fighter__caption {
+  text-align: right;
+}
+
+.tower-fighter__caption strong {
+  font-size: 0.74rem;
+  color: var(--gold-light);
+}
+
+.tower-track__title,
+.tower-boss-card__name {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.tower-track__list {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: end;
+}
+
+.tower-track__entry {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.tower-track__entry--pending .mob-icon-frame {
+  opacity: 0.6;
+}
+
+.tower-track__entry--done .mob-icon-frame {
+  opacity: 0.42;
+  filter: grayscale(0.88) brightness(0.72);
+}
+
+.tower-track__entry--current .mob-icon-frame {
+  opacity: 1;
+  filter: drop-shadow(0 0 10px rgba(201, 150, 47, 0.55));
+}
+
+/* Frame do atlas: mob-frame-icon (265×292) */
+.mob-icon-frame {
+  position: relative;
+  width: 100%;
+  max-width: 58px;
+  aspect-ratio: 265 / 292;
+  background-image: var(--ui-mob-frame-icon);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.45));
+}
+
+.mob-icon-frame__portrait {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: 64%;
+  height: 64%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+.mob-icon-frame__badge {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.56rem;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(232, 220, 192, 0.9);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+}
+
+/* Chefe: portrait-frame-gardiam (182×194) */
+.mob-icon-frame--boss {
+  max-width: 64px;
+  aspect-ratio: 182 / 194;
+  background-image: var(--ui-portrait-frame-gardiam);
+}
+
+.mob-icon-frame--boss .mob-icon-frame__portrait {
+  top: 48%;
+  width: 68%;
+  height: 68%;
+}
+
+.guardian-portrait {
+  position: relative;
+  flex-shrink: 0;
+  width: 118px;
+  aspect-ratio: 182 / 194;
+  background-image: var(--ui-portrait-frame-gardiam);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.guardian-portrait__icon {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+  object-position: center;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
+.tower-boss-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem;
+  border-style: solid;
+  border-width: 16px;
+  border-image: var(--ui-panel-square) 48 fill / 16px stretch;
+  background: rgba(0, 0, 0, 0.32);
+  image-rendering: pixelated;
+}
+
+.tower-boss-card__stats,
+.tower-boss-card__reward {
+  margin: 0.15rem 0 0;
+  font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.75);
+}
+
+.tower-boss-card__reward {
+  color: #b8e0b8;
+}
+
+.tower-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding-top: 0.15rem;
+}
+
+.tower-actions__hint {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+  font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.65);
+}
+
+/* ---------- Sprite sheets (CSS background-position) ---------- */
+
+.sprite-sheet {
+  display: block;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.sprite-sheet--flip-x {
+  transform: scaleX(-1);
+}
+
+.sprite-sheet-stage {
+  transform: scale(0.42);
+  transform-origin: bottom center;
+}
+
+.sprite-sheet-stage--player {
+  transform: scale(0.55);
+}
+
+.sprite-sheet-stage--enemy {
+  transform: scale(0.55);
+}
+
+/* ---------- Página de teste de sprites ---------- */
+
+.sprite-test-page {
+  min-height: 100vh;
+  padding: 1.5rem;
+  background: #0a0812;
+  color: #e8dcc0;
+  font-family: system-ui, sans-serif;
+}
+
+.sprite-test-page h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  color: #f0c060;
+}
+
+.sprite-test-page p {
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.sprite-test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.sprite-test-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1rem;
+  border: 2px solid rgba(201, 150, 47, 0.35);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.sprite-test-card h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #f0c060;
+}
+
+.sprite-test-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  min-height: 160px;
+  padding: 0.5rem;
+  background: linear-gradient(rgba(8, 6, 18, 0.6), rgba(8, 6, 18, 0.6)),
+    var(--tower-arena-bg, #111) center / cover no-repeat;
+}
+
+.sprite-test-stage .sprite-sheet-stage {
+  transform: scale(0.45);
+}
+
+.sprite-test-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.sprite-test-controls button {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(201, 150, 47, 0.5);
+  background: rgba(201, 150, 47, 0.15);
+  color: #e8dcc0;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.sprite-test-controls button:hover {
+  background: rgba(201, 150, 47, 0.3);
+}
+
+.sprite-test-global {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sprite-test-global button {
+  padding: 0.45rem 1rem;
+  border: 1px solid rgba(120, 180, 255, 0.5);
+  background: rgba(80, 120, 200, 0.2);
+  color: #e8dcc0;
+  cursor: pointer;
+}
+
+.sprite-test-log {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  font-size: 0.75rem;
+  font-family: monospace;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 2rem;
+  white-space: pre-wrap;
+}
+

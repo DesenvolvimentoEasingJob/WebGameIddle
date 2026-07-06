@@ -82,6 +82,22 @@ public class GamePlayController(GamePlayService gamePlayService) : ControllerBas
         return Ok(result);
     }
 
+    [HttpPost("tower/combat")]
+    public async Task<IActionResult> StartTowerCombat(int slotIndex, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.StartTowerCombatAsync(
+            userId.Value, slotIndex, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
     private Guid? GetUserId()
     {
         var sub = User.FindFirstValue(ClaimTypes.NameIdentifier)

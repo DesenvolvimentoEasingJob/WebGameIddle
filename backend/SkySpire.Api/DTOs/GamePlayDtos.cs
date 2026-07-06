@@ -34,3 +34,26 @@ public record UpdateTowerSettingsRequest
 {
     public bool AutoAscend { get; init; }
 }
+
+public record TowerCombatTurnDto(
+    string Actor,
+    string Kind,
+    int Damage,
+    int PlayerHpRemaining,
+    int EnemyHpRemaining);
+
+public record TowerCombatRewardsDto(int Xp, int Gold);
+
+public record TowerCombatResultDto(
+    string Outcome,
+    string EnemyId,
+    string EnemyName,
+    bool IsBoss,
+    int PlayerMaxHp,
+    int EnemyMaxHp,
+    IReadOnlyList<TowerCombatTurnDto> Turns,
+    TowerCombatRewardsDto? Rewards);
+
+public record StartTowerCombatResponse(
+    TowerCombatResultDto Combat,
+    GameStateResponse GameState);

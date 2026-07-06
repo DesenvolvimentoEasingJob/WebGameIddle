@@ -21,7 +21,7 @@ function sendJson(res: import("http").ServerResponse, status: number, body: unkn
 
 function fileApiPlugin(): Plugin {
   return {
-    name: "image-map-file-api",
+    name: "dev-tools-file-api",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
         const url = new URL(req.url ?? "/", "http://localhost");
@@ -101,6 +101,11 @@ function fileApiPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [fileApiPlugin()],
+  resolve: {
+    alias: {
+      "@front": path.resolve(PROJECT_ROOT, "front/src"),
+    },
+  },
   server: {
     port: 5199,
     open: true,

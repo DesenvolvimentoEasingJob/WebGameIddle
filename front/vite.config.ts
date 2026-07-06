@@ -16,5 +16,13 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    build: {
+      rollupOptions: {
+        input: {
+          main: "index.html",
+          spriteTest: "sprite-test.html",
+        },
+      },
+    },
   };
 });

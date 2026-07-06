@@ -1,5 +1,7 @@
 /** Caminhos relativos a `front/assets/` vindos do JSON do backend. */
 
+export const UNKNOWN_ASSET_URL = "/assets/unknown.png";
+
 const raceAssets = import.meta.glob<string>("../../assets/races/*.png", {
   eager: true,
   query: "?url",
@@ -24,11 +26,43 @@ const itemAssets = import.meta.glob<string>("../../assets/items/**/*.png", {
   import: "default",
 });
 
+const mobAssets = import.meta.glob<string>("../../assets/mobs/**/*.png", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
+const mobIconAssets = import.meta.glob<string>("../../assets/mobs/*-icon.png", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
+const floorBackgroundAssets = import.meta.glob<string>("../../assets/backgrounds/flor-*.png", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
 const gameAssetModules: Record<string, string> = {
   ...raceAssets,
   ...classAssets,
   ...itemAssets,
+  ...mobAssets,
+  ...mobIconAssets,
 };
+
+/** Background do andar na arena (ex.: backgrounds/flor-1.png). */
+export function resolveFloorBackground(floor: number): string {
+  const target = `flor-${floor}.png`;
+  for (const [path, url] of Object.entries(floorBackgroundAssets)) {
+    if (path.replace(/\\/g, "/").endsWith(`/${target}`)) {
+      return url;
+    }
+  }
+  const first = Object.values(floorBackgroundAssets)[0];
+  return first ?? UNKNOWN_ASSET_URL;
+}
 
 export function resolveGameAsset(relativePath: string): string | null {
   const normalized = relativePath.replace(/\\/g, "/");
@@ -38,6 +72,12 @@ export function resolveGameAsset(relativePath: string): string | null {
     }
   }
   return null;
+}
+
+/** Retorna o asset resolvido ou `unknown.png` quando o arquivo ainda não existe. */
+export function resolveGameAssetOrUnknown(relativePath?: string | null): string {
+  if (!relativePath) return UNKNOWN_ASSET_URL;
+  return resolveGameAsset(relativePath) ?? UNKNOWN_ASSET_URL;
 }
 
 export function resolveRaceSprite(assets?: Record<string, string>): string | null {
@@ -67,6 +107,27 @@ export function resolveClassSprite(
 export function resolveItemIcon(assets?: { icon?: string }): string | null {
   const path = assets?.icon;
   return path ? resolveGameAsset(path) : null;
+}
+
+export function resolveCharacterSprite(assets?: { sprite?: string }): string {
+  return resolveGameAssetOrUnknown(assets?.sprite);
+}
+
+export function resolveMobSprite(
+  mobId: string,
+  assets?: { sprite?: string },
+): string {
+  const path = assets?.sprite ?? `mobs/${mobId}.png`;
+  return resolveGameAssetOrUnknown(path);
+}
+
+/** Profile card / ícone estático do mob (não usar sprite sheet de animação). */
+export function resolveMobIcon(
+  mobId: string,
+  assets?: { icon?: string },
+): string {
+  const path = assets?.icon ?? `mobs/${mobId}-icon.png`;
+  return resolveGameAssetOrUnknown(path);
 }
 
 export interface CategoryTree {

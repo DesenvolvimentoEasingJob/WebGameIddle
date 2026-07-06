@@ -28,6 +28,7 @@ public class TowerMobDefinition
     public int Defense { get; init; }
     public int Xp { get; init; }
     public int Gold { get; init; }
+    public JsonObject? Assets { get; init; }
 }
 
 public class TowerFloorDefinition

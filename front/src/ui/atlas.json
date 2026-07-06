@@ -9,7 +9,7 @@
     "btn-hover": { "x": 13, "y": 462, "w": 242, "h": 61 },
     "btn-active": { "x": 19, "y": 534, "w": 232, "h": 53 },
     "btn-disabled": { "x": 19, "y": 597, "w": 232, "h": 58 },
-    "btn-close": { "x": 1159, "y": 511, "w": 55, "h": 55 },
+    "btn-close": { "x": 1156, "y": 513, "w": 54, "h": 55 },
     "slot-common": { "x": 697, "y": 802, "w": 74, "h": 76 },
     "slot-uncommon": { "x": 782, "y": 803, "w": 69, "h": 73 },
     "slot-rare": { "x": 860, "y": 801, "w": 73, "h": 74 },
@@ -31,6 +31,8 @@
     "xp-indicator": { "x": 15, "y": 892, "w": 251, "h": 45 },
     "atack-indicator": { "x": 22, "y": 1006, "w": 66, "h": 72 },
     "defense-indicator": { "x": 106, "y": 1013, "w": 50, "h": 66 },
-    "gold-indicator": { "x": 476, "y": 1019, "w": 51, "h": 54 }
+    "gold-indicator": { "x": 476, "y": 1019, "w": 51, "h": 54 },
+    "portrait-frame-gardiam": { "x": 507, "y": 782, "w": 182, "h": 194 },
+    "mob-frame-icon": { "x": 562, "y": 43, "w": 265, "h": 292 }
   }
 }

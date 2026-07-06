@@ -189,5 +189,6 @@ public class GameDataLoader(IWebHostEnvironment environment)
             Defense = node["defense"]?.GetValue<int>() ?? 5,
             Xp = node["xp"]?.GetValue<int>() ?? 10,
             Gold = node["gold"]?.GetValue<int>() ?? 5,
+            Assets = node["assets"]?.AsObject(),
         };
 }
