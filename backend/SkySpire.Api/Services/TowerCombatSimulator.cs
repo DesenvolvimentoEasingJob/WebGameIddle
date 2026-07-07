@@ -7,7 +7,7 @@ public static class TowerCombatSimulator
 {
     public static TowerCombatResultDto Simulate(
         CombatStats player,
-        TowerMobDefinition enemy,
+        MobDefinition enemy,
         bool isBoss)
     {
         var turns = new List<TowerCombatTurnDto>();

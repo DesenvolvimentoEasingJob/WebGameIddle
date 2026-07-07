@@ -4,39 +4,6 @@
   "ownerId": null,
   "ownerName": null,
   "mobCount": 10,
-  "mobPool": [
-    {
-      "id": "f1-slime",
-      "name": "Slime Fraco",
-      "level": 1,
-      "hp": 380,
-      "attack": 12,
-      "defense": 4,
-      "xp": 15,
-      "gold": 5,
-      "assets": { "sprite": "mobs/f1-slime.png", "icon": "mobs/f1-slime-icon.png" }
-    },
-    {
-      "id": "f1-bat",
-      "name": "Morcego das Sombras",
-      "level": 1,
-      "hp": 360,
-      "attack": 15,
-      "defense": 2,
-      "xp": 18,
-      "gold": 6,
-      "assets": { "sprite": "mobs/f1-bat.png", "icon": "mobs/f1-bat-icon.png" }
-    }
-  ],
-  "boss": {
-    "id": "f1-guardian",
-    "name": "Guardião do Andar 1",
-    "level": 1,
-    "hp": 6000,
-    "attack": 35,
-    "defense": 12,
-    "xp": 200,
-    "gold": 50,
-    "assets": { "sprite": "mobs/f1-guardian.png", "icon": "mobs/f1-guardian-icon.png" }
-  }
+  "mobPool": ["f1-slime", "f1-bat"],
+  "boss": "f1-guardian"
 }

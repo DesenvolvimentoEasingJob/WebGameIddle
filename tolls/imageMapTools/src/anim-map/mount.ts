@@ -3,9 +3,8 @@ import "./styles.css";
 import type { AnimFrameRect, AnimMapSource, ResolvedAnimMap } from "@front/animation/anim-map-types";
 import { getFrameLayout, validateAnimMap } from "@front/animation/anim-map";
 import { createSpriteAnimator, type SpriteAnimator } from "@front/animation/SpriteAnimator";
-import { projectFileUrl, readProjectFile, writeProjectFile } from "../api";
+import { projectFileUrl, readProjectFile, writeProjectFile, listAnimMapIds } from "../api";
 
-const ANIM_MAP_IDS = ["f1-slime", "f1-bat", "f1-guardian", "elf-mage"];
 const ANIM_MAP_DIR = "front/src/animation/maps";
 
 type EditorMap = ResolvedAnimMap;
@@ -30,7 +29,8 @@ async function resolveAnimMap(id: string): Promise<EditorMap | null> {
 }
 
 async function listAnimMaps(): Promise<EditorMap[]> {
-  const maps = await Promise.all(ANIM_MAP_IDS.map((id) => resolveAnimMap(id)));
+  const ids = await listAnimMapIds();
+  const maps = await Promise.all(ids.map((id) => resolveAnimMap(id)));
   return maps.filter((map): map is EditorMap => map !== null);
 }
 const DEFAULT_ZOOM = 0.35;

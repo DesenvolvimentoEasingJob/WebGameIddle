@@ -5,16 +5,19 @@ import f1SlimeMap from "./maps/f1-slime.anim.json";
 import f1BatMap from "./maps/f1-bat.anim.json";
 import f1GuardianMap from "./maps/f1-guardian.anim.json";
 import elfMageMap from "./maps/elf-mage.anim.json";
+import f1WolfMap from "./maps/f1-wolf.anim.json";
 
 import slimeUrl from "../../assets/mobs/f1-slime.png";
 import batUrl from "../../assets/mobs/f1-bat.png";
 import guardianUrl from "../../assets/mobs/f1-guardian.png";
 import elfMageUrl from "../../assets/players/elf-mage.png";
+import f1WolfUrl from "../../assets/mobs/f1-wolf.png";
 
 const MOB_ANIM_MAPS: Record<string, ResolvedAnimMap> = {
   "f1-slime": bindAnimMap(f1SlimeMap as AnimMapSource, slimeUrl),
   "f1-bat": bindAnimMap(f1BatMap as AnimMapSource, batUrl),
   "f1-guardian": bindAnimMap(f1GuardianMap as AnimMapSource, guardianUrl),
+  "f1-wolf": bindAnimMap(f1WolfMap as AnimMapSource, f1WolfUrl),
 };
 
 const PLAYER_ANIM_MAPS: Record<string, ResolvedAnimMap> = {

@@ -1,10 +1,12 @@
 import "./shell.css";
+import { mountAiSpriteTool } from "./ai-sprite/mount";
 import { mountAnimMapTool } from "./anim-map/mount";
 import { mountUiAtlasTool } from "./ui-atlas/mount";
 
 const TOOLS = [
   { id: "ui-atlas", label: "UI Atlas", icon: "🎨", mount: mountUiAtlasTool },
   { id: "anim-map", label: "Animações", icon: "🎬", mount: mountAnimMapTool },
+  { id: "ai-sprite", label: "Gerador IA", icon: "✨", mount: mountAiSpriteTool },
 ] as const;
 
 type ToolId = (typeof TOOLS)[number]["id"];

@@ -1,0 +1,11 @@
+{
+  "id": "f1-slime",
+  "name": "Slime Fraco",
+  "level": 1,
+  "hp": 380,
+  "attack": 12,
+  "defense": 4,
+  "xp": 15,
+  "gold": 5,
+  "assets": { "sprite": "mobs/f1-slime.png", "icon": "mobs/f1-slime-icon.png" }
+}

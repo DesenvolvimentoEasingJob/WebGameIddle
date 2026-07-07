@@ -342,6 +342,7 @@ export function mountUiAtlasTool(container: HTMLElement): () => void {
 
   return () => {
     window.removeEventListener("beforeunload", onBeforeUnload);
+    editor.destroy();
     container.innerHTML = "";
   };
 }

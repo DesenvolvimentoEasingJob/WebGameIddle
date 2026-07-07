@@ -20,6 +20,11 @@ export class AtlasEditor {
   private panY = 0;
   private drag: DragState | null = null;
   private spaceHeld = false;
+  private resizeObserver: ResizeObserver | null = null;
+  private onWindowResize = () => {
+    this.resizeCanvas();
+    this.draw();
+  };
   private onChange: () => void;
   private onSelect: (name: string | null) => void;
   private onHandleSelect: (handle: Handle | null) => void;
@@ -168,21 +173,42 @@ export class AtlasEditor {
     this.canvas.addEventListener("wheel", this.onWheel, { passive: false });
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("keyup", this.onKeyUp);
-    window.addEventListener("resize", () => {
-      this.resizeCanvas();
-      this.draw();
-    });
+    window.addEventListener("resize", this.onWindowResize);
 
     const wrap = this.canvas.parentElement;
     if (wrap) {
-      const ro = new ResizeObserver(() => {
-        this.resizeCanvas();
-        this.draw();
-      });
-      ro.observe(wrap);
+      this.resizeObserver = new ResizeObserver(this.onWindowResize);
+      this.resizeObserver.observe(wrap);
     }
 
     this.resizeCanvas();
+  }
+
+  /** Remove listeners globais — chamar ao desmontar a ferramenta. */
+  destroy(): void {
+    this.canvas.removeEventListener("mousedown", this.onMouseDown);
+    window.removeEventListener("mousemove", this.onMouseMove);
+    window.removeEventListener("mouseup", this.onMouseUp);
+    this.canvas.removeEventListener("wheel", this.onWheel);
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("resize", this.onWindowResize);
+    this.resizeObserver?.disconnect();
+    this.resizeObserver = null;
+    this.spaceHeld = false;
+    this.drag = null;
+  }
+
+  private isTypingTarget(): boolean {
+    const el = document.activeElement;
+    if (!el) return false;
+    const tag = el.tagName;
+    return (
+      tag === "INPUT" ||
+      tag === "TEXTAREA" ||
+      tag === "SELECT" ||
+      (el as HTMLElement).isContentEditable
+    );
   }
 
   private resizeCanvas() {
@@ -406,10 +432,11 @@ export class AtlasEditor {
 
   private onKeyDown = (e: KeyboardEvent) => {
     if (e.code === "Space") {
+      if (this.isTypingTarget()) return;
       this.spaceHeld = true;
       e.preventDefault();
     }
-    if (e.key === "Delete" && this.selected) {
+    if (e.key === "Delete" && this.selected && !this.isTypingTarget()) {
       this.deleteFrame(this.selected);
     }
   };

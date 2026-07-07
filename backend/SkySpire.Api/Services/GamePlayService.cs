@@ -192,7 +192,7 @@ public class GamePlayService(
         return (new StartTowerCombatResponse(combat, gameState), null);
     }
 
-    private static (TowerMobDefinition? Enemy, bool IsBoss, string? Error) ResolveCurrentEncounter(
+    private static (MobDefinition? Enemy, bool IsBoss, string? Error) ResolveCurrentEncounter(
         JsonObject tower,
         TowerFloorDefinition floorDef)
     {

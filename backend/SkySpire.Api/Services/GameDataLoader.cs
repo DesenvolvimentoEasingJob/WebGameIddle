@@ -16,6 +16,7 @@ public class GameDataLoader(IWebHostEnvironment environment)
     private IReadOnlyDictionary<string, ArchetypeDefinition>? _races;
     private IReadOnlyDictionary<string, ArchetypeDefinition>? _classes;
     private IReadOnlyDictionary<string, ItemDefinition>? _items;
+    private IReadOnlyDictionary<string, MobDefinition>? _mobs;
     private IReadOnlyDictionary<int, TowerFloorDefinition>? _towerFloors;
     private JsonObject? _baseCategories;
 
@@ -27,6 +28,9 @@ public class GameDataLoader(IWebHostEnvironment environment)
 
     public IReadOnlyDictionary<string, ItemDefinition> Items =>
         _items ??= LoadItems(Path.Combine(_gameDataRoot, "items"));
+
+    public IReadOnlyDictionary<string, MobDefinition> Mobs =>
+        _mobs ??= LoadMobs(Path.Combine(_gameDataRoot, "mobs"));
 
     public IReadOnlyDictionary<int, TowerFloorDefinition> TowerFloors =>
         _towerFloors ??= LoadTowerFloors(Path.Combine(_gameDataRoot, "tower"));
@@ -42,6 +46,9 @@ public class GameDataLoader(IWebHostEnvironment environment)
 
     public ItemDefinition? GetItem(string itemId) =>
         Items.GetValueOrDefault(itemId);
+
+    public MobDefinition? GetMob(string mobId) =>
+        Mobs.GetValueOrDefault(mobId);
 
     public TowerFloorDefinition? GetTowerFloor(int floor) =>
         TowerFloors.GetValueOrDefault(floor);
@@ -140,6 +147,26 @@ public class GameDataLoader(IWebHostEnvironment environment)
         return result;
     }
 
+    private IReadOnlyDictionary<string, MobDefinition> LoadMobs(string folder)
+    {
+        if (!Directory.Exists(folder))
+            return new Dictionary<string, MobDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        var result = new Dictionary<string, MobDefinition>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var file in Directory.GetFiles(folder, "*.json"))
+        {
+            var json = File.ReadAllText(file);
+            var node = JsonNode.Parse(json)?.AsObject()
+                ?? throw new InvalidDataException($"Invalid JSON in {file}");
+
+            var mob = ParseMob(node, file);
+            result[mob.Id] = mob;
+        }
+
+        return result;
+    }
+
     private IReadOnlyDictionary<int, TowerFloorDefinition> LoadTowerFloors(string folder)
     {
         if (!Directory.Exists(folder))
@@ -157,11 +184,13 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 ?? throw new InvalidDataException($"Missing floor in {file}");
 
             var mobPool = node["mobPool"]?.AsArray()
-                ?.Select(item => ParseMob(item!.AsObject()))
+                ?.Select(item => ResolveMobReference(item, file))
                 .ToList() ?? [];
 
-            var bossNode = node["boss"]?.AsObject()
+            var bossId = node["boss"]?.GetValue<string>()
                 ?? throw new InvalidDataException($"Missing boss in {file}");
+
+            var boss = ResolveMob(bossId, file);
 
             result[floor] = new TowerFloorDefinition
             {
@@ -171,17 +200,35 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 OwnerName = node["ownerName"]?.GetValue<string>(),
                 MobCount = node["mobCount"]?.GetValue<int>() ?? 10,
                 MobPool = mobPool,
-                Boss = ParseMob(bossNode),
+                Boss = boss,
             };
         }
 
         return result;
     }
 
-    private static TowerMobDefinition ParseMob(JsonObject node) =>
+    private MobDefinition ResolveMobReference(JsonNode? node, string sourceFile)
+    {
+        if (node is null)
+            throw new InvalidDataException($"Invalid mob reference in {sourceFile}");
+
+        var mobId = node.GetValue<string>();
+        return ResolveMob(mobId, sourceFile);
+    }
+
+    private MobDefinition ResolveMob(string mobId, string sourceFile)
+    {
+        if (Mobs.TryGetValue(mobId, out var mob))
+            return mob;
+
+        throw new InvalidDataException($"Mob '{mobId}' not found (referenced in {sourceFile})");
+    }
+
+    private static MobDefinition ParseMob(JsonObject node, string? sourceFile = null) =>
         new()
         {
-            Id = node["id"]?.GetValue<string>() ?? "unknown",
+            Id = node["id"]?.GetValue<string>()
+                ?? throw new InvalidDataException($"Missing id in {sourceFile ?? "mob"}"),
             Name = node["name"]?.GetValue<string>() ?? "Mob",
             Level = node["level"]?.GetValue<int>() ?? 1,
             Hp = node["hp"]?.GetValue<int>() ?? 100,

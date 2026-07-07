@@ -1,0 +1,11 @@
+{
+  "id": "f1-bat",
+  "name": "Morcego das Sombras",
+  "level": 1,
+  "hp": 360,
+  "attack": 15,
+  "defense": 2,
+  "xp": 18,
+  "gold": 6,
+  "assets": { "sprite": "mobs/f1-bat.png", "icon": "mobs/f1-bat-icon.png" }
+}

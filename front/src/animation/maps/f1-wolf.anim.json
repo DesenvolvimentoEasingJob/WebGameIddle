@@ -1,6 +1,6 @@
 {
-  "id": "f1-guardian",
-  "sheet": "mobs/f1-guardian.png",
+  "id": "f1-wolf",
+  "sheet": "mobs/f1-wolf.png",
   "viewportWidth": 296,
   "viewportHeight": 296,
   "frames": {
@@ -17,25 +17,25 @@
       "h": 296
     },
     "idle-2": {
-      "x": 583,
+      "x": 592,
       "y": 0,
       "w": 296,
       "h": 296
     },
     "idle-3": {
-      "x": 868,
+      "x": 888,
       "y": 0,
       "w": 296,
       "h": 296
     },
     "idle-4": {
-      "x": 1158,
+      "x": 1184,
       "y": 0,
       "w": 296,
       "h": 296
     },
     "idle-5": {
-      "x": 1454,
+      "x": 1480,
       "y": 0,
       "w": 296,
       "h": 296
