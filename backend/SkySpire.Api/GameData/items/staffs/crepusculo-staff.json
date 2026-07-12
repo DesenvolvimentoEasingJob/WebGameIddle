@@ -1,0 +1,20 @@
+{
+  "id": "crepusculo-staff",
+  "name": "Cajado do Crepúsculo",
+  "description": "Item gerado nas sombras da torre.",
+  "type": "weapon",
+  "itemKind": "staff",
+  "slot": "weapon",
+  "rarity": "common",
+  "level": 1,
+  "classes": ["mage"],
+  "categories": {
+    "attributes": {
+      "intelligence": { "base": 5 }
+    },
+    "damage": {
+      "magical": { "bonusPercent": 8 }
+    }
+  },
+  "assets": { "icon": "items/staffs/crepusculo-staff.png" }
+}

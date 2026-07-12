@@ -14,28 +14,35 @@ public static class TowerCombatSimulator
         var playerHp = player.Hp;
         var enemyHp = enemy.Hp;
         var playerTurn = true;
-        var playerAttackCount = 0;
-        var enemyAttackCount = 0;
+        var rng = Random.Shared;
 
         while (playerHp > 0 && enemyHp > 0)
         {
             if (playerTurn)
             {
-                var critical = playerAttackCount > 0 && playerAttackCount % 4 == 0;
+                var critical = rng.Next(100) < Math.Clamp(player.CritChancePercent, 0, 100);
                 var kind = critical ? "critical" : "attack";
                 var damage = CalcDamage(player.Attack, enemy.Defense, critical);
                 enemyHp = Math.Max(0, enemyHp - damage);
+
+                var heal = 0;
+                if (player.LifeStealPercent > 0 && damage > 0)
+                {
+                    heal = Math.Max(1, damage * player.LifeStealPercent / 100);
+                    playerHp = Math.Min(player.Hp, playerHp + heal);
+                }
+
                 turns.Add(new TowerCombatTurnDto(
                     "player",
                     kind,
                     damage,
                     playerHp,
-                    enemyHp));
-                playerAttackCount++;
+                    enemyHp,
+                    heal));
             }
             else
             {
-                var critical = enemyAttackCount > 0 && enemyAttackCount % 5 == 0;
+                var critical = rng.Next(100) < 5;
                 var kind = critical ? "critical" : "attack";
                 var damage = CalcDamage(enemy.Attack, player.Defense, critical);
                 playerHp = Math.Max(0, playerHp - damage);
@@ -44,8 +51,8 @@ public static class TowerCombatSimulator
                     kind,
                     damage,
                     playerHp,
-                    enemyHp));
-                enemyAttackCount++;
+                    enemyHp,
+                    0));
             }
 
             if (playerHp <= 0 || enemyHp <= 0)
@@ -58,7 +65,7 @@ public static class TowerCombatSimulator
         TowerCombatRewardsDto? rewards = null;
         if (playerWon)
         {
-            rewards = new TowerCombatRewardsDto(enemy.Xp, enemy.Gold);
+            rewards = new TowerCombatRewardsDto(enemy.Xp, enemy.Gold, [], []);
         }
 
         return new TowerCombatResultDto(

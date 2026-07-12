@@ -8,6 +8,11 @@
     "damage": {
       "physical": { "bonusPercent": 0 },
       "magical": { "bonusPercent": 0 }
+    },
+    "combat": {
+      "lifeStealPercent": 0,
+      "critChancePercent": 0,
+      "hpBonus": 0
     }
   }
 }

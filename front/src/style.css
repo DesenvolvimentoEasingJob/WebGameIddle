@@ -57,6 +57,7 @@ body {
 .ui-panel,
 .ui-btn,
 .ui-btn-close,
+.ui-atlas-btn,
 .ui-divider,
 .game-sidebar,
 .game-panel,
@@ -73,6 +74,7 @@ body {
 .atlas-ready .ui-panel,
 .atlas-ready .ui-btn,
 .atlas-ready .ui-btn-close,
+.atlas-ready .ui-atlas-btn,
 .atlas-ready .ui-divider,
 .atlas-ready .game-sidebar,
 .atlas-ready .game-panel,
@@ -203,6 +205,82 @@ body {
 .ui-btn-close:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Botões ícone do atlas (andar, play, etc.) — escala alinhada ao ui-btn--sm */
+.ui-atlas-btn {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: transform 0.08s ease-out, filter 0.15s ease-out;
+}
+
+.ui-atlas-btn--back {
+  background-image: var(--ui-btn-back);
+}
+
+.ui-atlas-btn--next {
+  background-image: var(--ui-btn-next);
+}
+
+.ui-atlas-btn--up {
+  background-image: var(--ui-btn-up);
+}
+
+.ui-atlas-btn--down {
+  background-image: var(--ui-btn-down);
+}
+
+.ui-atlas-btn--play {
+  width: 48px;
+  height: 46px;
+  background-image: var(--ui-btn-play);
+}
+
+.ui-atlas-btn--hounting {
+  background-image: var(--ui-btn-hounting);
+}
+
+.ui-atlas-btn__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.ui-atlas-btn:hover,
+.ui-atlas-btn:focus-visible {
+  filter: brightness(1.12);
+  outline: none;
+}
+
+.ui-atlas-btn:active {
+  transform: translateY(1px);
+  filter: brightness(0.92);
+}
+
+.ui-atlas-btn:disabled {
+  opacity: 0.4;
+  filter: grayscale(0.35) brightness(0.85);
+  cursor: not-allowed;
+  transform: none;
 }
 
 .ui-btn:hover,
@@ -1074,6 +1152,7 @@ body {
 .item-slot--frame-rare { background-image: var(--ui-slot-rare); }
 .item-slot--frame-epic { background-image: var(--ui-slot-epic); }
 .item-slot--frame-legendary { background-image: var(--ui-slot-legendary); }
+.item-slot--rarity-frame { background-image: var(--item-rarity-frame); }
 
 .item-slot--empty {
   background-image: var(--ui-slot-common);
@@ -1256,6 +1335,19 @@ body {
   color: #c9a0ff;
 }
 
+.inventory-detail__affixes-title {
+  margin: 0.45rem 0 0.15rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #7ec8ff;
+  letter-spacing: 0.04em;
+}
+
+.inventory-detail__stats--affixes li {
+  color: #9fd4ff;
+}
+
 .inventory-detail__type,
 .inventory-detail__desc,
 .inventory-detail__hint {
@@ -1282,6 +1374,14 @@ body {
 
 .inventory-detail__actions {
   margin-top: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ui-btn--discard {
+  filter: brightness(0.88) sepia(0.35) hue-rotate(-25deg) saturate(1.2);
+  opacity: 0.9;
 }
 
 @media (max-width: 991.98px) {
@@ -1336,6 +1436,45 @@ body {
 .tower-layout__empty {
   margin: 0;
   color: rgba(232, 220, 192, 0.7);
+}
+
+.tower-floor-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  margin: 0.15rem 0 0.25rem;
+}
+
+.tower-floor-nav__current {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+  min-width: 5rem;
+  justify-content: center;
+  font-size: 0.74rem;
+  color: rgba(232, 220, 192, 0.82);
+  text-align: center;
+}
+
+.tower-floor-nav__label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  color: rgba(232, 220, 192, 0.58);
+}
+
+.tower-floor-nav__value {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+
+.tower-floor-nav__unlocked {
+  font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.5);
 }
 
 .tower-header {
@@ -1406,6 +1545,7 @@ body {
   width: 100%;
   min-height: clamp(130px, 24vh, 200px);
   overflow: visible;
+  isolation: isolate;
 }
 
 .tower-combat-hp {
@@ -1447,48 +1587,99 @@ body {
   pointer-events: none;
 }
 
+.tower-arena--combat {
+  overflow: visible;
+}
+
+.tower-arena--combat .tower-fighter__caption {
+  opacity: 0.75;
+}
+
+.tower-fighter__stage--hit {
+  animation: tower-hit-shake 0.24s ease-out;
+}
+
+@keyframes tower-hit-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-5px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
 .tower-damage {
   position: absolute;
-  top: 18%;
-  left: 50%;
-  transform: translate(-50%, 0);
-  font-size: 1.05rem;
+  bottom: 48%;
+  left: calc(50% + var(--tower-damage-jitter, 0px));
+  transform: translate3d(-50%, 0, 0);
+  font-family: inherit;
+  font-size: 1.1rem;
   font-weight: 800;
-  color: #ffb347;
+  letter-spacing: 0.02em;
+  line-height: 1;
   text-shadow:
-    0 0 6px rgba(0, 0, 0, 0.95),
-    0 2px 4px rgba(0, 0, 0, 0.85);
+    0 0 8px rgba(0, 0, 0, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.9),
+    0 0 14px currentColor;
   opacity: 0;
   pointer-events: none;
-  z-index: 4;
+  z-index: 12;
   white-space: nowrap;
+  will-change: transform, opacity;
+}
+
+.tower-damage--enemy {
+  color: #ffd36a;
+}
+
+.tower-damage--player {
+  color: #ff6b6b;
 }
 
 .tower-damage--critical {
-  font-size: 1.35rem;
-  color: #ff5c5c;
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+}
+
+.tower-damage--enemy.tower-damage--critical {
+  color: #ff8a3d;
+}
+
+.tower-damage--player.tower-damage--critical {
+  color: #ff3d5c;
 }
 
 .tower-damage--show {
-  animation: tower-damage-float 0.9s ease-out forwards;
+  animation: tower-damage-float 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
 @keyframes tower-damage-float {
   0% {
     opacity: 0;
-    transform: translate(-50%, 12px);
+    transform: translate(-50%, 10px) scale(0.7);
   }
-  15% {
+  12% {
     opacity: 1;
+    transform: translate(-50%, 0) scale(1.12);
+  }
+  28% {
+    transform: translate(-50%, -8px) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -42px);
+    transform: translate(-50%, -58px) scale(0.92);
   }
-}
-
-.tower-arena--combat .tower-fighter__caption {
-  opacity: 0.75;
 }
 
 .tower-fighter__stage .sprite-sheet-stage {
@@ -1675,19 +1866,36 @@ body {
 
 .tower-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem;
+  gap: 0.55rem;
   padding-top: 0.15rem;
 }
 
-.tower-actions__hint {
-  flex: 1;
-  min-width: 200px;
+.tower-actions__continuous {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
   margin: 0;
   font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.82);
+  cursor: pointer;
+}
+
+.tower-actions__hint {
+  width: 100%;
+  margin: 0;
+  font-size: 0.68rem;
+  text-align: center;
   color: rgba(232, 220, 192, 0.65);
+}
+
+.tower-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
 }
 
 /* ---------- Sprite sheets (CSS background-position) ---------- */

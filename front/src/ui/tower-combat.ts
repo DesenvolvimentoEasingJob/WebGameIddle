@@ -1,10 +1,24 @@
 import type { SpriteAnimator } from "../animation/SpriteAnimator";
 import type { TowerCombatResult } from "../api/gameplay";
+import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
 
+function resolveCombatStages(arena: HTMLElement): {
+  playerStage: HTMLElement | null;
+  enemyStage: HTMLElement | null;
+  playerHpBar: HTMLElement | null;
+  enemyHpBar: HTMLElement | null;
+} {
+  return {
+    playerStage: arena.querySelector<HTMLElement>(".tower-fighter--player .tower-fighter__stage"),
+    enemyStage: arena.querySelector<HTMLElement>(".tower-fighter--enemy .tower-fighter__stage"),
+    playerHpBar: arena.querySelector<HTMLElement>('[data-combat-hp="player"]'),
+    enemyHpBar: arena.querySelector<HTMLElement>('[data-combat-hp="enemy"]'),
+  };
+}
 function playAnimation(
   animator: SpriteAnimator,
   kind: "attack" | "critical",
@@ -34,45 +48,58 @@ function updateCombatHpBar(
 function showDamageFloater(
   stage: HTMLElement,
   damage: number,
-  critical: boolean,
+  options: { critical: boolean; target: "player" | "enemy" },
 ): void {
+  const jitter = Math.round((Math.random() - 0.5) * 28);
   const floater = document.createElement("span");
-  floater.className = `tower-damage${critical ? " tower-damage--critical" : ""}`;
+  floater.className = [
+    "tower-damage",
+    `tower-damage--${options.target}`,
+    options.critical ? "tower-damage--critical" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
   floater.textContent = `-${damage.toLocaleString("pt-BR")}`;
+  floater.style.setProperty("--tower-damage-jitter", `${jitter}px`);
   stage.appendChild(floater);
 
+  stage.classList.remove("tower-fighter__stage--hit");
+  void stage.offsetWidth;
+  stage.classList.add("tower-fighter__stage--hit");
+  window.setTimeout(() => stage.classList.remove("tower-fighter__stage--hit"), 240);
+
+  // Dois frames garantem que o browser aplica opacity:0 antes da animação.
   requestAnimationFrame(() => {
-    floater.classList.add("tower-damage--show");
+    requestAnimationFrame(() => {
+      floater.classList.add("tower-damage--show");
+    });
   });
 
-  window.setTimeout(() => floater.remove(), 950);
+  window.setTimeout(() => floater.remove(), 1100);
 }
-
 /** Reproduz animações e números de dano com base no log assinado pelo backend. */
 export async function playTowerCombatReplay(
   arena: HTMLElement,
   combat: TowerCombatResult,
-  animators: { player: SpriteAnimator | null; enemy: SpriteAnimator | null },
+  animators?: { player: SpriteAnimator | null; enemy: SpriteAnimator | null },
 ): Promise<void> {
-  const playerStage = arena.querySelector<HTMLElement>(
-    ".tower-fighter--player .tower-fighter__stage",
-  );
-  const enemyStage = arena.querySelector<HTMLElement>(
-    ".tower-fighter--enemy .tower-fighter__stage",
-  );
-  const playerHpBar = arena.querySelector<HTMLElement>('[data-combat-hp="player"]');
-  const enemyHpBar = arena.querySelector<HTMLElement>('[data-combat-hp="enemy"]');
+  if (!arena.isConnected) return;
 
+  await waitForTowerAnimatorsReady();
+  const resolvedAnimators = animators ?? getTowerAnimators();
+
+  const { playerStage, enemyStage, playerHpBar, enemyHpBar } = resolveCombatStages(arena);
   updateCombatHpBar(playerHpBar, combat.playerMaxHp, combat.playerMaxHp);
   updateCombatHpBar(enemyHpBar, combat.enemyMaxHp, combat.enemyMaxHp);
 
   arena.classList.add("tower-arena--combat");
 
   for (const turn of combat.turns) {
+    if (!arena.isConnected) break;
+
     const isPlayer = turn.actor === "player";
-    const animator = isPlayer ? animators.player : animators.enemy;
-    const targetStage = isPlayer ? enemyStage : playerStage;
-    const kind = turn.kind === "critical" ? "critical" : "attack";
+    const animator = isPlayer ? resolvedAnimators.player : resolvedAnimators.enemy;
+    const targetStage = isPlayer ? enemyStage : playerStage;    const kind = turn.kind === "critical" ? "critical" : "attack";
 
     if (animator) {
       await playAnimation(animator, kind);
@@ -81,7 +108,10 @@ export async function playTowerCombatReplay(
     }
 
     if (targetStage) {
-      showDamageFloater(targetStage, turn.damage, turn.kind === "critical");
+      showDamageFloater(targetStage, turn.damage, {
+        critical: turn.kind === "critical",
+        target: isPlayer ? "enemy" : "player",
+      });
     }
 
     updateCombatHpBar(playerHpBar, turn.playerHpRemaining, combat.playerMaxHp);
@@ -90,9 +120,8 @@ export async function playTowerCombatReplay(
     await delay(320);
   }
 
-  animators.player?.play("idle");
-  animators.enemy?.play("idle");
-
+  resolvedAnimators.player?.play("idle");
+  resolvedAnimators.enemy?.play("idle");
   arena.classList.remove("tower-arena--combat");
 }
 

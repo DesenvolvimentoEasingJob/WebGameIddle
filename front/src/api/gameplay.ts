@@ -1,5 +1,6 @@
 import { readApiError } from "./errors";
 import { getToken } from "../router";
+import type { GamePatchResponse } from "../state/game-cache";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "/api";
 
@@ -18,15 +19,29 @@ export interface ItemSummary {
   assets?: { icon?: string };
 }
 
+export interface RolledAffix {
+  affixId: string;
+  label: string;
+  value: number;
+  suffix?: string | null;
+  categoryPath?: string;
+}
+
 export interface InventoryEntry {
   instanceId: string;
   itemId: string;
   quantity: number;
+  rarity?: string;
+  rolledCategories?: Record<string, unknown>;
+  rolledAffixes?: RolledAffix[];
 }
 
 export interface EquippedEntry {
   instanceId: string;
   itemId: string;
+  rarity?: string;
+  rolledCategories?: Record<string, unknown>;
+  rolledAffixes?: RolledAffix[];
 }
 
 export interface CharacterProgression {
@@ -39,6 +54,7 @@ export interface TowerState {
   currentFloor: number;
   unlockedFloor: number;
   autoAscend: boolean;
+  continuousAttack: boolean;
   mobsKilledThisFloor: number;
   bossDefeated: boolean;
 }
@@ -82,11 +98,33 @@ export interface TowerFloorDetail {
   boss: TowerMobSummary;
 }
 
+export interface RaritySummary {
+  id: string;
+  label: string;
+  order: number;
+  baseStatMultiplier: number;
+  affixRollMin: number;
+  affixRollMax: number;
+  slotFrame?: string | null;
+}
+
+export interface AffixSummary {
+  id: string;
+  label: string;
+  suffix?: string | null;
+}
+
+export interface GameLootConfig {
+  rarities: Record<string, RaritySummary>;
+  affixes: Record<string, AffixSummary>;
+}
+
 export interface GameStateResponse {
   characterJson: CharacterGameJson;
   itemCatalog: Record<string, ItemSummary>;
   currentFloor: TowerFloorDetail | null;
   effectiveCategories: Record<string, unknown>;
+  lootConfig: GameLootConfig;
 }
 
 export interface TowerCombatTurn {
@@ -95,11 +133,24 @@ export interface TowerCombatTurn {
   damage: number;
   playerHpRemaining: number;
   enemyHpRemaining: number;
+  heal?: number;
+}
+
+export interface DroppedItem {
+  instanceId: string;
+  itemId: string;
+  name: string;
+  rarity: string;
+  quantity: number;
+  rolledCategories?: Record<string, unknown>;
+  assets?: { icon?: string };
 }
 
 export interface TowerCombatRewards {
   xp: number;
   gold: number;
+  items: DroppedItem[];
+  lostItems: DroppedItem[];
 }
 
 export interface TowerCombatResult {
@@ -115,7 +166,7 @@ export interface TowerCombatResult {
 
 export interface StartTowerCombatResponse {
   combat: TowerCombatResult;
-  gameState: GameStateResponse;
+  patch: GamePatchResponse;
 }
 
 function authHeaders(): HeadersInit {
@@ -136,13 +187,66 @@ export async function fetchGameState(slotIndex: number): Promise<GameStateRespon
     throw await readApiError(response, "Falha ao carregar o jogo.");
   }
 
-  return (await response.json()) as GameStateResponse;
+  return normalizeGameState((await response.json()) as GameStateResponse);
+}
+
+export async function fetchLootConfig(): Promise<GameLootConfig> {
+  const response = await fetch(`${API_BASE}/game/loot-config`);
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao carregar configuração de loot.");
+  }
+
+  return normalizeLootConfig((await response.json()) as GameLootConfig);
+}
+
+function normalizeGameState(state: GameStateResponse): GameStateResponse {
+  return {
+    ...state,
+    lootConfig: normalizeLootConfig(state.lootConfig),
+  };
+}
+
+function normalizeGamePatch(patch: GamePatchResponse): GamePatchResponse {
+  return {
+    ...patch,
+    newCatalogEntries: patch.newCatalogEntries ?? undefined,
+    currentFloor: patch.currentFloor ?? undefined,
+    effectiveCategories: patch.effectiveCategories ?? undefined,
+  };
+}
+
+function normalizeLootConfig(config?: GameLootConfig | null): GameLootConfig {
+  if (!config?.rarities) {
+    return { rarities: fallbackRarityMap(), affixes: config?.affixes ?? {} };
+  }
+
+  return {
+    rarities: config.rarities,
+    affixes: config.affixes ?? {},
+  };
+}
+
+function fallbackRarityMap(): Record<string, RaritySummary> {
+  return Object.fromEntries(
+    Object.entries(RARITY_LABELS).map(([id, label]) => [
+      id,
+      {
+        id,
+        label,
+        order: 0,
+        baseStatMultiplier: 1,
+        affixRollMin: 0,
+        affixRollMax: 0,
+        slotFrame: id === "common" ? "slot-common" : `slot-${id}`,
+      },
+    ]),
+  );
 }
 
 export async function equipItem(
   slotIndex: number,
   instanceId: string,
-): Promise<GameStateResponse> {
+): Promise<GamePatchResponse> {
   const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/equip`, {
     method: "POST",
     headers: authHeaders(),
@@ -153,13 +257,13 @@ export async function equipItem(
     throw await readApiError(response, "Falha ao equipar item.");
   }
 
-  return (await response.json()) as GameStateResponse;
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
 }
 
 export async function unequipItem(
   slotIndex: number,
   equipSlot: string,
-): Promise<GameStateResponse> {
+): Promise<GamePatchResponse> {
   const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/unequip`, {
     method: "POST",
     headers: authHeaders(),
@@ -170,24 +274,78 @@ export async function unequipItem(
     throw await readApiError(response, "Falha ao desequipar item.");
   }
 
-  return (await response.json()) as GameStateResponse;
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
+}
+
+export async function discardItem(
+  slotIndex: number,
+  instanceId: string,
+): Promise<GamePatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/discard`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ instanceId }),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao descartar item.");
+  }
+
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
 }
 
 export async function updateTowerSettings(
   slotIndex: number,
-  autoAscend: boolean,
-): Promise<GameStateResponse> {
+  settings: { autoAscend: boolean; continuousAttack: boolean },
+): Promise<GamePatchResponse> {
   const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower`, {
     method: "PATCH",
     headers: authHeaders(),
-    body: JSON.stringify({ autoAscend }),
+    body: JSON.stringify(settings),
   });
 
   if (!response.ok) {
     throw await readApiError(response, "Falha ao atualizar configurações da torre.");
   }
 
-  return (await response.json()) as GameStateResponse;
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
+}
+
+export async function repeatTowerFloor(slotIndex: number): Promise<GamePatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower/repeat`, {
+    method: "POST",
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao repetir o andar.");
+  }
+
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
+}
+
+export async function advanceTowerFloor(slotIndex: number): Promise<GamePatchResponse> {
+  return navigateTowerFloor(slotIndex, "up");
+}
+
+export async function navigateTowerFloor(
+  slotIndex: number,
+  direction: "up" | "down",
+): Promise<GamePatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower/navigate`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ direction }),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(
+      response,
+      direction === "up" ? "Falha ao subir de andar." : "Falha ao descer de andar.",
+    );
+  }
+
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
 }
 
 export async function startTowerCombat(
@@ -216,10 +374,32 @@ export async function startTowerCombat(
         damage: number;
         playerHpRemaining: number;
         enemyHpRemaining: number;
+        heal?: number;
       }>;
-      rewards: { xp: number; gold: number } | null;
+      rewards: {
+        xp: number;
+        gold: number;
+        items?: Array<{
+          instanceId: string;
+          itemId: string;
+          name: string;
+          rarity: string;
+          quantity: number;
+          rolledCategories?: Record<string, unknown>;
+          assets?: { icon?: string };
+        }>;
+        lostItems?: Array<{
+          instanceId: string;
+          itemId: string;
+          name: string;
+          rarity: string;
+          quantity: number;
+          rolledCategories?: Record<string, unknown>;
+          assets?: { icon?: string };
+        }>;
+      } | null;
     };
-    gameState: GameStateResponse;
+    patch: GamePatchResponse;
   };
 
   return {
@@ -236,12 +416,34 @@ export async function startTowerCombat(
         damage: t.damage,
         playerHpRemaining: t.playerHpRemaining,
         enemyHpRemaining: t.enemyHpRemaining,
+        heal: t.heal ?? 0,
       })),
       rewards: raw.combat.rewards
-        ? { xp: raw.combat.rewards.xp, gold: raw.combat.rewards.gold }
+        ? {
+            xp: raw.combat.rewards.xp,
+            gold: raw.combat.rewards.gold,
+            items: (raw.combat.rewards.items ?? []).map((item) => ({
+              instanceId: item.instanceId,
+              itemId: item.itemId,
+              name: item.name,
+              rarity: item.rarity,
+              quantity: item.quantity,
+              rolledCategories: item.rolledCategories,
+              assets: item.assets,
+            })),
+            lostItems: (raw.combat.rewards.lostItems ?? []).map((item) => ({
+              instanceId: item.instanceId,
+              itemId: item.itemId,
+              name: item.name,
+              rarity: item.rarity,
+              quantity: item.quantity,
+              rolledCategories: item.rolledCategories,
+              assets: item.assets,
+            })),
+          }
         : null,
     },
-    gameState: raw.gameState,
+    patch: normalizeGamePatch(raw.patch),
   };
 }
 

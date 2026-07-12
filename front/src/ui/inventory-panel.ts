@@ -1,12 +1,13 @@
 import {
   DEFAULT_EQUIPMENT_SLOTS,
   EQUIP_SLOT_LABELS,
-  RARITY_LABELS,
   type GameStateResponse,
+  type EquippedEntry,
   type InventoryEntry,
   type ItemSummary,
 } from "../api/gameplay";
-import { formatCategorySummary, resolveItemIcon, type CategoryTree } from "./game-assets";
+import { formatItemStatSections, resolveItemIcon, type CategoryTree } from "./game-assets";
+import { raritySlotFrameClass, raritySlotFrameStyle, resolveRarityLabel } from "./loot-config";
 
 export type GameTab = "inventory" | "market" | "tower";
 
@@ -16,6 +17,7 @@ export interface InventoryPanelOptions {
   onSelect: (instanceId: string | null) => void;
   onEquip: (instanceId: string) => void;
   onUnequip: (equipSlot: string) => void;
+  onDiscard: (instanceId: string) => void;
   busy: boolean;
 }
 
@@ -28,6 +30,7 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
     : [...DEFAULT_EQUIPMENT_SLOTS];
 
   const selected = findSelectedItem(char.inventory.items, char.equipment, selectedInstanceId, catalog);
+  const lootConfig = state.lootConfig;
 
   return `
     <div class="inventory-layout">
@@ -43,6 +46,7 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
                 catalog,
                 selectedInstanceId,
                 busy,
+                lootConfig,
               ),
             )
             .join("")}
@@ -57,7 +61,7 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
         <div class="inventory-bag__frame">
           <div class="inventory-bag__scroll">
             <div class="item-grid item-grid--bag">
-              ${renderBagSlots(char.inventory, catalog, selectedInstanceId, busy)}
+              ${renderBagSlots(char.inventory, catalog, selectedInstanceId, busy, lootConfig)}
             </div>
           </div>
         </div>
@@ -73,26 +77,41 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
 function renderEquipSlot(
   slot: string,
   label: string,
-  equipped: { instanceId: string; itemId: string } | null | undefined,
+  equipped: EquippedEntry | null | undefined,
   catalog: Record<string, ItemSummary>,
   selectedInstanceId: string | null,
   busy: boolean,
+  lootConfig: GameStateResponse["lootConfig"],
 ): string {
   const item = equipped ? catalog[equipped.itemId] : null;
   const selected = equipped?.instanceId === selectedInstanceId;
   const emptyClass = item ? "" : " item-slot--empty";
+  const rarity = equipped ? (equipped.rarity ?? item?.rarity ?? "common") : "common";
+  const rarityFrame = raritySlotFrameClass(rarity, lootConfig);
+  const rarityStyle = raritySlotFrameStyle(rarity, lootConfig);
+  const entry = equipped
+    ? {
+        instanceId: equipped.instanceId,
+        itemId: equipped.itemId,
+        quantity: 1,
+        rarity: equipped.rarity,
+        rolledCategories: equipped.rolledCategories,
+        rolledAffixes: equipped.rolledAffixes,
+      }
+    : null;
 
   return `
     <button
       type="button"
-      class="item-slot item-slot--equip${emptyClass}${selected ? " item-slot--selected" : ""}"
+      class="item-slot item-slot--equip${rarityFrame}${rarityStyle ? " item-slot--rarity-frame" : ""}${emptyClass}${selected ? " item-slot--selected" : ""}"
+      style="${rarityStyle ?? ""}"
       data-equip-slot="${slot}"
       data-instance-id="${equipped?.instanceId ?? ""}"
       aria-label="${label}${item ? `: ${item.name}` : " (vazio)"}"
       ${busy ? "disabled" : ""}
     >
       <span class="item-slot__label">${label}</span>
-      ${renderItemSlotContent(item)}
+      ${renderItemSlotContent(item, entry)}
     </button>
   `;
 }
@@ -102,6 +121,7 @@ function renderBagSlots(
   catalog: Record<string, ItemSummary>,
   selectedInstanceId: string | null,
   busy: boolean,
+  lootConfig: GameStateResponse["lootConfig"],
 ): string {
   const slots: string[] = [];
 
@@ -112,16 +132,21 @@ function renderBagSlots(
       const selected = entry.instanceId === selectedInstanceId;
       const qty = entry.quantity > 1 ? `<span class="item-slot__qty">×${entry.quantity}</span>` : "";
 
+      const rarity = entry.rarity ?? item?.rarity ?? "common";
+      const rarityFrame = raritySlotFrameClass(rarity, lootConfig);
+      const rarityStyle = raritySlotFrameStyle(rarity, lootConfig);
+
       slots.push(`
         <button
           type="button"
-          class="item-slot item-slot--bag${selected ? " item-slot--selected" : ""}"
+          class="item-slot item-slot--bag${rarityFrame}${rarityStyle ? " item-slot--rarity-frame" : ""}${selected ? " item-slot--selected" : ""}"
+          style="${rarityStyle ?? ""}"
           data-instance-id="${entry.instanceId}"
           aria-label="${item?.name ?? entry.itemId}"
           ${busy ? "disabled" : ""}
         >
           ${qty}
-          ${renderItemSlotContent(item)}
+          ${renderItemSlotContent(item, entry)}
         </button>
       `);
     } else {
@@ -146,29 +171,36 @@ function renderItemDetail(
     `;
   }
 
-  const rarityLabel = RARITY_LABELS[item.rarity] ?? item.rarity;
-  const stats = formatCategorySummary(item.categories as CategoryTree | undefined);
-  const canEquip = item.slot !== null && item.slot !== undefined;
+  const displayItem = resolveDisplayItem(entry, item);
+  const rarityLabel = resolveRarityLabel(displayItem.rarity, options.state.lootConfig);
+  const statSections = formatItemStatSections(entry, item.categories as CategoryTree | undefined);
+  const canEquip = displayItem.slot !== null && displayItem.slot !== undefined;
   const isEquipped = equipSlot !== null;
 
-  const iconUrl = resolveItemIcon(item.assets);
+  const iconUrl = resolveItemIcon(displayItem.assets);
 
   return `
-    <div class="inventory-detail__card">
-      ${
-        iconUrl
-          ? `<img class="inventory-detail__icon" src="${iconUrl}" alt="" aria-hidden="true" />`
-          : ""
-      }
+    <div class="inventory-detail__card inventory-detail__card--${displayItem.rarity}">
+      <img class="inventory-detail__icon" src="${iconUrl}" alt="" aria-hidden="true" />
       <header class="inventory-detail__header">
-        <h3 class="inventory-detail__name">${item.name}</h3>
+        <h3 class="inventory-detail__name">${displayItem.name}</h3>
         <span class="inventory-detail__rarity">${rarityLabel}</span>
       </header>
-      <p class="inventory-detail__type">${item.type}${item.level ? ` · Nv. ${item.level}` : ""}</p>
-      ${item.description ? `<p class="inventory-detail__desc">${item.description}</p>` : ""}
+      <p class="inventory-detail__type">${displayItem.type}${displayItem.level ? ` · Nv. ${displayItem.level}` : ""}</p>
+      ${item.description ? `<p class="inventory-detail__desc">${displayItem.description}</p>` : ""}
       ${
-        stats.length
-          ? `<ul class="inventory-detail__stats">${stats.map((s) => `<li>${s}</li>`).join("")}</ul>`
+        statSections.base.length
+          ? `<ul class="inventory-detail__stats">${statSections.base.map((s) => `<li>${s}</li>`).join("")}</ul>`
+          : ""
+      }
+      ${
+        statSections.additional.length
+          ? `<div class="inventory-detail__affixes">
+              <h4 class="inventory-detail__affixes-title">Atributos adicionais</h4>
+              <ul class="inventory-detail__stats inventory-detail__stats--affixes">
+                ${statSections.additional.map((s) => `<li>${s}</li>`).join("")}
+              </ul>
+            </div>`
           : ""
       }
       <div class="inventory-detail__actions">
@@ -179,25 +211,38 @@ function renderItemDetail(
               ? `<button type="button" class="ui-btn ui-btn--sm" data-action="equip" data-instance-id="${entry.instanceId}" ${options.busy ? "disabled" : ""}>Equipar</button>`
               : `<p class="inventory-detail__hint">Item de consumo — uso em combate (em breve).</p>`
         }
+        ${
+          !isEquipped
+            ? `<button type="button" class="ui-btn ui-btn--sm ui-btn--discard" data-action="discard" data-instance-id="${entry.instanceId}" ${options.busy ? "disabled" : ""}>Descartar</button>`
+            : ""
+        }
       </div>
     </div>
   `;
 }
 
-function renderItemSlotContent(item: ItemSummary | null | undefined): string {
+function renderItemSlotContent(
+  item: ItemSummary | null | undefined,
+  entry?: InventoryEntry | null,
+): string {
   if (!item) return "";
 
-  const iconUrl = resolveItemIcon(item.assets);
-  if (iconUrl) {
-    return `<img class="item-slot__icon" src="${iconUrl}" alt="" aria-hidden="true" />`;
-  }
+  const displayItem = entry ? resolveDisplayItem(entry, item) : item;
+  const iconUrl = resolveItemIcon(displayItem.assets);
+  return `<img class="item-slot__icon" src="${iconUrl}" alt="" aria-hidden="true" />`;
+}
 
-  return `<span class="item-slot__name">${item.name}</span>`;
+function resolveDisplayItem(entry: InventoryEntry, catalogItem: ItemSummary): ItemSummary {
+  return {
+    ...catalogItem,
+    rarity: entry.rarity ?? catalogItem.rarity,
+    categories: (entry.rolledCategories ?? catalogItem.categories) as ItemSummary["categories"],
+  };
 }
 
 function findSelectedItem(
   bagItems: InventoryEntry[],
-  equipment: Record<string, { instanceId: string; itemId: string } | null>,
+  equipment: Record<string, EquippedEntry | null>,
   selectedInstanceId: string | null,
   catalog: Record<string, ItemSummary>,
 ): { entry: InventoryEntry | null; item: ItemSummary | null; equipSlot: string | null } {
@@ -217,7 +262,14 @@ function findSelectedItem(
   for (const [slot, equipped] of Object.entries(equipment)) {
     if (equipped?.instanceId === selectedInstanceId) {
       return {
-        entry: { instanceId: equipped.instanceId, itemId: equipped.itemId, quantity: 1 },
+        entry: {
+          instanceId: equipped.instanceId,
+          itemId: equipped.itemId,
+          quantity: 1,
+          rarity: equipped.rarity,
+          rolledCategories: equipped.rolledCategories,
+          rolledAffixes: equipped.rolledAffixes,
+        },
         item: catalog[equipped.itemId] ?? null,
         equipSlot: slot,
       };
@@ -246,6 +298,12 @@ export function bindInventoryPanel(root: HTMLElement, options: InventoryPanelOpt
     const btn = e.currentTarget as HTMLButtonElement;
     const slot = btn.dataset.equipSlot;
     if (slot) options.onUnequip(slot);
+  });
+
+  root.querySelector<HTMLButtonElement>('[data-action="discard"]')?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const id = btn.dataset.instanceId;
+    if (id) options.onDiscard(id);
   });
 }
 
@@ -286,4 +344,4 @@ export function computeVitalBarPercents(state: GameStateResponse): {
   };
 }
 
-export { EQUIP_SLOT_LABELS, RARITY_LABELS };
+export { EQUIP_SLOT_LABELS };

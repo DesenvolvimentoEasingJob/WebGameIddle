@@ -10,5 +10,15 @@
   "assets": {
     "sprite": "mobs/f1-wolf.png",
     "icon": "mobs/f1-wolf-icon.png"
+  },
+  "loot": {
+    "dropChance": 0.14,
+    "rarityWeights": {
+      "common": 68,
+      "uncommon": 24,
+      "rare": 6,
+      "epic": 1.5,
+      "legendary": 0.5
+    }
   }
 }

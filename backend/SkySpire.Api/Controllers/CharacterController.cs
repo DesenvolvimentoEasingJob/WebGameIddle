@@ -33,6 +33,13 @@ public class GameController(GameDataLoader gameData) : ControllerBase
 
         return Ok(classes);
     }
+
+    [HttpGet("loot-config")]
+    [AllowAnonymous]
+    public IActionResult GetLootConfig()
+    {
+        return Ok(LootConfigBuilder.Build(gameData));
+    }
 }
 
 [ApiController]

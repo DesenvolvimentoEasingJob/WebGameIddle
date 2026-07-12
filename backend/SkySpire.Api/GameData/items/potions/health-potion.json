@@ -3,6 +3,7 @@
   "name": "Poção de Vida",
   "description": "Restaura uma quantidade de HP.",
   "type": "consumable",
+  "itemKind": "potion",
   "slot": null,
   "rarity": "common",
   "level": 1,
@@ -10,5 +11,5 @@
   "stackable": true,
   "maxStack": 99,
   "categories": {},
-  "assets": { "icon": "items/health-potion.png" }
+  "assets": { "icon": "items/potions/health-potion.png" }
 }

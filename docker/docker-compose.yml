@@ -37,8 +37,11 @@ services:
       Jwt__Audience: ${JWT_AUDIENCE}
       Jwt__ExpirationHours: ${JWT_EXPIRATION_HOURS}
       CharacterStorage__Root: /app/data/characters
+      OpenAI__ApiKey: ${OPENAI_API_KEY}
+      OpenAI__Model: ${OPENAI_MODEL}
     volumes:
       - characterdata:/app/data/characters
+      - ../backend/SkySpire.Api/GameData:/app/GameData
     depends_on:
       db:
         condition: service_healthy

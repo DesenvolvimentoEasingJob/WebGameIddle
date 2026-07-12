@@ -1,0 +1,53 @@
+{
+  "types": {
+    "staff": {
+      "slot": "weapon",
+      "classes": ["mage"],
+      "baseCategories": {
+        "attributes": { "intelligence": { "base": 5 } },
+        "damage": { "magical": { "bonusPercent": 8 } }
+      },
+      "affixPool": [
+        { "affixId": "bonusIntelligence", "weight": 25 },
+        { "affixId": "magicalDamageBonus", "weight": 25 },
+        { "affixId": "lifeSteal", "weight": 18 },
+        { "affixId": "critChance", "weight": 17 },
+        { "affixId": "hpBonus", "weight": 15 }
+      ]
+    },
+    "sword": {
+      "slot": "weapon",
+      "classes": ["warrior", "rogue"],
+      "baseCategories": {
+        "attributes": { "strength": { "base": 4 } },
+        "damage": { "physical": { "bonusPercent": 6 } }
+      },
+      "affixPool": [
+        { "affixId": "bonusStrength", "weight": 25 },
+        { "affixId": "physicalDamageBonus", "weight": 25 },
+        { "affixId": "critChance", "weight": 20 },
+        { "affixId": "lifeSteal", "weight": 15 },
+        { "affixId": "hpBonus", "weight": 15 }
+      ]
+    },
+    "armor": {
+      "slot": "armor",
+      "classes": [],
+      "baseCategories": {
+        "attributes": { "agility": { "base": 3 } }
+      },
+      "affixPool": [
+        { "affixId": "bonusAgility", "weight": 22 },
+        { "affixId": "bonusStrength", "weight": 20 },
+        { "affixId": "lifeSteal", "weight": 20 },
+        { "affixId": "critChance", "weight": 18 },
+        { "affixId": "hpBonus", "weight": 20 }
+      ]
+    },
+    "potion": {
+      "slot": null,
+      "classes": [],
+      "affixPool": []
+    }
+  }
+}

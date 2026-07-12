@@ -63,6 +63,25 @@ public class GamePlayController(GamePlayService gamePlayService) : ControllerBas
         return Ok(result);
     }
 
+    [HttpPost("discard")]
+    public async Task<IActionResult> DiscardItem(
+        int slotIndex,
+        [FromBody] DiscardItemRequest request,
+        CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.DiscardItemAsync(
+            userId.Value, slotIndex, request.InstanceId, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
     [HttpPatch("tower")]
     public async Task<IActionResult> UpdateTowerSettings(
         int slotIndex,
@@ -74,7 +93,7 @@ public class GamePlayController(GamePlayService gamePlayService) : ControllerBas
             return Unauthorized(new ErrorResponse("Token inválido."));
 
         var (result, error) = await gamePlayService.UpdateTowerSettingsAsync(
-            userId.Value, slotIndex, request.AutoAscend, ct);
+            userId.Value, slotIndex, request.AutoAscend, request.ContinuousAttack, ct);
 
         if (error is not null)
             return BadRequest(new ErrorResponse(error));
@@ -91,6 +110,57 @@ public class GamePlayController(GamePlayService gamePlayService) : ControllerBas
 
         var (result, error) = await gamePlayService.StartTowerCombatAsync(
             userId.Value, slotIndex, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
+    [HttpPost("tower/repeat")]
+    public async Task<IActionResult> RepeatTowerFloor(int slotIndex, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.RepeatTowerFloorAsync(
+            userId.Value, slotIndex, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
+    [HttpPost("tower/advance")]
+    public async Task<IActionResult> AdvanceTowerFloor(int slotIndex, CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.AdvanceTowerFloorAsync(
+            userId.Value, slotIndex, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
+    [HttpPost("tower/navigate")]
+    public async Task<IActionResult> NavigateTowerFloor(
+        int slotIndex,
+        [FromBody] NavigateTowerFloorRequest request,
+        CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.NavigateTowerFloorAsync(
+            userId.Value, slotIndex, request.Direction, ct);
 
         if (error is not null)
             return BadRequest(new ErrorResponse(error));

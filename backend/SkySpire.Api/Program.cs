@@ -21,11 +21,22 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<GameDataLoader>();
+builder.Services.AddSingleton<GameDataWriter>();
+builder.Services.AddSingleton<GameDataItemEnsurer>();
+builder.Services.AddSingleton<GameDataItemRenamer>();
 builder.Services.AddSingleton<CharacterSigner>();
 builder.Services.AddSingleton<CharacterStorage>();
 builder.Services.AddSingleton<GameStateInitializer>();
 builder.Services.AddSingleton<CharacterBuilder>();
 builder.Services.AddScoped<CharacterService>();
+builder.Services.AddHttpClient("OpenAI", client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com/");
+    client.Timeout = TimeSpan.FromSeconds(20);
+});
+builder.Services.AddSingleton<ItemNamingService>();
+builder.Services.AddSingleton<ProceduralItemGenerator>();
+builder.Services.AddSingleton<ItemDropService>();
 builder.Services.AddScoped<GamePlayService>();
 
 var jwtSecret = builder.Configuration["Jwt:Secret"]
@@ -71,6 +82,16 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
+}
+
+{
+    var itemEnsurer = app.Services.GetRequiredService<GameDataItemEnsurer>();
+    var gameDataWriter = app.Services.GetRequiredService<GameDataWriter>();
+    var itemRenamer = app.Services.GetRequiredService<GameDataItemRenamer>();
+    gameDataWriter.OrganizeItemStorage();
+    itemRenamer.RenameLegacyItems();
+    itemEnsurer.MigrateCharacterGeneratedItems();
+    itemEnsurer.EnsureReferencedItems();
 }
 
 app.UseCors("FrontDev");

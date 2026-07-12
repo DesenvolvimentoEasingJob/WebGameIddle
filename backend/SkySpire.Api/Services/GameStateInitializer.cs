@@ -24,6 +24,7 @@ public class GameStateInitializer(GameDataLoader gameData)
             ["currentFloor"] = 1,
             ["unlockedFloor"] = 1,
             ["autoAscend"] = false,
+            ["continuousAttack"] = false,
             ["mobsKilledThisFloor"] = 0,
             ["bossDefeated"] = false,
         };
@@ -69,6 +70,22 @@ public class GameStateInitializer(GameDataLoader gameData)
         if (!JsonNodesEqual(equipment, synced))
         {
             document["equipment"] = synced;
+            changed = true;
+        }
+
+        return changed;
+    }
+
+    public bool EnsureTowerFields(JsonObject document)
+    {
+        var tower = document["tower"]?.AsObject();
+        if (tower is null)
+            return false;
+
+        var changed = false;
+        if (tower["continuousAttack"] is null)
+        {
+            tower["continuousAttack"] = false;
             changed = true;
         }
 

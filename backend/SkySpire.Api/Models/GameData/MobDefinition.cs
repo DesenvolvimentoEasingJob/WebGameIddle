@@ -13,6 +13,7 @@ public class MobDefinition
     public int Xp { get; init; }
     public int Gold { get; init; }
     public JsonObject? Assets { get; init; }
+    public MobLootProfile? Loot { get; init; }
 }
 
 public class TowerFloorDefinition
@@ -24,4 +25,5 @@ public class TowerFloorDefinition
     public int MobCount { get; init; }
     public IReadOnlyList<MobDefinition> MobPool { get; init; } = [];
     public required MobDefinition Boss { get; init; }
+    public string? LootPool { get; init; }
 }

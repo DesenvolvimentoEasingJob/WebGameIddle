@@ -1,0 +1,10 @@
+{
+  "prefixes": ["Sombrio", "Antigo", "Radiante", "Místico", "Quebrado", "Sagrado", "Corrompido"],
+  "kindLabels": {
+    "staff": "Cajado",
+    "sword": "Espada",
+    "armor": "Armadura",
+    "bow": "Arco",
+    "potion": "Poção"
+  }
+}

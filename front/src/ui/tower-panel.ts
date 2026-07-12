@@ -7,6 +7,7 @@ import {
 import { resolveCharacterSprite, resolveFloorBackground, resolveMobIcon, resolveMobSprite } from "./game-assets";
 import { resolveMobSpriteSheet, resolvePlayerSpriteSheet } from "../animation/sprite-registry";
 import { computeDisplayStats } from "./inventory-panel";
+import { renderTowerFloorNav } from "./tower-navigation";
 import { canStartTowerCombat } from "./tower-combat";
 
 export interface TowerPanelOptions {
@@ -44,6 +45,7 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
   const classLabel = CLASS_LABELS[char.classId] ?? char.classId;
   const playerStats = computeDisplayStats(state);
   const canCombat = canStartTowerCombat(state);
+  const canRepeat = tower.bossDefeated;
   const combatLabel = facingBoss ? "Enfrentar chefe" : "Iniciar combate";
 
   return `
@@ -154,22 +156,44 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
         </div>
       </section>
 
+      ${renderTowerFloorNav({ tower })}
+
       <footer class="tower-actions">
+        <label class="tower-actions__continuous">
+          <input
+            id="tower-continuous-attack"
+            class="ui-checkbox"
+            type="checkbox"
+            ${(tower.continuousAttack ?? false) ? "checked" : ""}
+          />
+          Ataque contínuo — farmar este andar infinitamente
+        </label>
         <p class="tower-actions__hint" id="tower-combat-status">
           ${
-            tower.bossDefeated
-              ? "Andar concluído — ative subir automático ou avance manualmente (em breve)."
-              : "O servidor calcula o combate; o front apenas anima o resultado."
+            (tower.continuousAttack ?? false)
+              ? "Ataque contínuo ativo — derrote inimigos e o chefe repetidamente para subir de nível."
+              : tower.bossDefeated
+                ? "Andar concluído — repita para farmar ou troque de andar."
+                : "Troque de andar entre os desbloqueados e inicie o combate."
           }
         </p>
-        <button
-          type="button"
-          id="tower-start-combat"
-          class="ui-btn ui-btn--sm"
-          ${canCombat ? "" : "disabled"}
-        >
-          ${combatLabel}
-        </button>
+        <div class="tower-actions__buttons">
+          ${
+            canRepeat
+              ? `<button type="button" id="tower-repeat-floor" class="ui-atlas-btn ui-atlas-btn--hounting" aria-label="Repetir andar" title="Repetir andar"><span class="ui-atlas-btn__sr">Repetir andar</span></button>`
+              : ""
+          }
+          <button
+            type="button"
+            id="tower-start-combat"
+            class="ui-atlas-btn ui-atlas-btn--play"
+            aria-label="${combatLabel}"
+            title="${combatLabel}"
+            ${canCombat ? "" : "disabled"}
+          >
+            <span class="ui-atlas-btn__sr">${combatLabel}</span>
+          </button>
+        </div>
       </footer>
     </div>
   `;
@@ -186,4 +210,11 @@ function getCurrentEnemy(
   if (pool.length === 0) return floor.boss;
 
   return pool[tower.mobsKilledThisFloor % pool.length];
+}
+
+export function getCurrentTowerEnemy(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  tower: GameStateResponse["characterJson"]["tower"],
+): TowerMobSummary {
+  return getCurrentEnemy(floor, tower);
 }

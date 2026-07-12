@@ -5,5 +5,6 @@
   "ownerName": null,
   "mobCount": 10,
   "mobPool": ["f1-slime", "f1-bat"],
-  "boss": "f1-guardian"
+  "boss": "f1-guardian",
+  "lootPool": "floor-1"
 }

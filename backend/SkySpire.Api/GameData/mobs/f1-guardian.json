@@ -7,5 +7,15 @@
   "defense": 12,
   "xp": 200,
   "gold": 50,
-  "assets": { "sprite": "mobs/f1-guardian.png", "icon": "mobs/f1-guardian-icon.png" }
+  "assets": { "sprite": "mobs/f1-guardian.png", "icon": "mobs/f1-guardian-icon.png" },
+  "loot": {
+    "dropChance": 1.0,
+    "rarityWeights": {
+      "common": 15,
+      "uncommon": 35,
+      "rare": 30,
+      "epic": 15,
+      "legendary": 5
+    }
+  }
 }

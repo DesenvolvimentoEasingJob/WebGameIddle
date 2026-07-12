@@ -1,0 +1,34 @@
+{
+  "rarities": {
+    "common": {
+      "order": 0,
+      "baseStatMultiplier": 1.0,
+      "affixRolls": [0, 1],
+      "label": "Comum"
+    },
+    "uncommon": {
+      "order": 1,
+      "baseStatMultiplier": 1.15,
+      "affixRolls": [1, 1],
+      "label": "Incomum"
+    },
+    "rare": {
+      "order": 2,
+      "baseStatMultiplier": 1.35,
+      "affixRolls": [1, 2],
+      "label": "Raro"
+    },
+    "epic": {
+      "order": 3,
+      "baseStatMultiplier": 1.6,
+      "affixRolls": [2, 3],
+      "label": "Épico"
+    },
+    "legendary": {
+      "order": 4,
+      "baseStatMultiplier": 2.0,
+      "affixRolls": [3, 4],
+      "label": "Lendário"
+    }
+  }
+}

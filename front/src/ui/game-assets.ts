@@ -1,5 +1,7 @@
 /** Caminhos relativos a `front/assets/` vindos do JSON do backend. */
 
+import type { RolledAffix } from "../api/gameplay";
+
 export const UNKNOWN_ASSET_URL = "/assets/unknown.png";
 
 const raceAssets = import.meta.glob<string>("../../assets/races/*.png", {
@@ -60,8 +62,7 @@ export function resolveFloorBackground(floor: number): string {
       return url;
     }
   }
-  const first = Object.values(floorBackgroundAssets)[0];
-  return first ?? UNKNOWN_ASSET_URL;
+  return UNKNOWN_ASSET_URL;
 }
 
 export function resolveGameAsset(relativePath: string): string | null {
@@ -80,33 +81,34 @@ export function resolveGameAssetOrUnknown(relativePath?: string | null): string 
   return resolveGameAsset(relativePath) ?? UNKNOWN_ASSET_URL;
 }
 
-export function resolveRaceSprite(assets?: Record<string, string>): string | null {
-  const path = assets?.sprite;
-  return path ? resolveGameAsset(path) : null;
+export function resolveRaceSprite(assets?: Record<string, string>): string {
+  return resolveGameAssetOrUnknown(assets?.sprite);
 }
 
-export function resolveRaceProfile(raceId: string): string | null {
+export function resolveRaceProfile(raceId: string): string {
   const target = `profile/${raceId}.png`;
   for (const [path, url] of Object.entries(raceProfileAssets)) {
     if (path.replace(/\\/g, "/").endsWith(`/${target}`)) {
       return url;
     }
   }
-  return null;
+  return UNKNOWN_ASSET_URL;
 }
 
 export function resolveClassSprite(
   raceId: string,
   assets?: Record<string, string>,
-): string | null {
+): string {
   const suffix = assets?.spriteSuffix;
-  if (!suffix) return null;
-  return resolveGameAsset(`classes/${raceId}-${suffix}.png`);
+  if (!suffix) return UNKNOWN_ASSET_URL;
+  return resolveGameAssetOrUnknown(`classes/${raceId}-${suffix}.png`);
 }
 
-export function resolveItemIcon(assets?: { icon?: string }): string | null {
-  const path = assets?.icon;
-  return path ? resolveGameAsset(path) : null;
+export function resolveItemIcon(assets?: { icon?: string }): string {
+  if (!assets?.icon || assets.icon === "unknown.png")
+    return UNKNOWN_ASSET_URL;
+
+  return resolveGameAssetOrUnknown(assets.icon);
 }
 
 export function resolveCharacterSprite(assets?: { sprite?: string }): string {
@@ -130,11 +132,6 @@ export function resolveMobIcon(
   return resolveGameAssetOrUnknown(path);
 }
 
-export interface CategoryTree {
-  attributes?: Record<string, { base?: number }>;
-  damage?: Record<string, { bonusPercent?: number }>;
-}
-
 const ATTRIBUTE_LABELS: Record<string, string> = {
   strength: "Força",
   agility: "Agilidade",
@@ -145,6 +142,21 @@ const DAMAGE_LABELS: Record<string, string> = {
   physical: "Dano físico",
   magical: "Dano mágico",
 };
+
+export interface CategoryTree {
+  attributes?: Record<string, { base?: number; bonus?: number }>;
+  damage?: Record<string, { bonusPercent?: number }>;
+  combat?: Record<string, number>;
+}
+
+export function formatAffixSummary(affixes?: RolledAffix[]): string[] {
+  if (!affixes?.length) return [];
+
+  return affixes.map((affix) => {
+    const suffix = affix.suffix ?? "";
+    return `${affix.label}: +${affix.value}${suffix}`;
+  });
+}
 
 export function formatCategorySummary(categories?: CategoryTree): string[] {
   if (!categories) return [];
@@ -168,4 +180,13 @@ export function formatCategorySummary(categories?: CategoryTree): string[] {
   }
 
   return lines;
+}
+
+export function formatItemStatSections(entry?: {
+  rolledCategories?: CategoryTree;
+  rolledAffixes?: RolledAffix[];
+}, catalogCategories?: CategoryTree): { base: string[]; additional: string[] } {
+  const base = formatCategorySummary(entry?.rolledCategories ?? catalogCategories);
+  const additional = formatAffixSummary(entry?.rolledAffixes);
+  return { base, additional };
 }

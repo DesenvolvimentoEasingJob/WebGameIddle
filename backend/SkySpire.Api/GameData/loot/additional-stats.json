@@ -1,0 +1,64 @@
+{
+  "affixes": {
+    "lifeSteal": {
+      "label": "Roubo de vida",
+      "categoryPath": "combat.lifeStealPercent",
+      "formula": "uniform",
+      "range": { "min": 1, "max": 4 },
+      "rarityRangeStep": 1,
+      "suffix": "%"
+    },
+    "critChance": {
+      "label": "Chance crítica",
+      "categoryPath": "combat.critChancePercent",
+      "formula": "uniform",
+      "range": { "min": 2, "max": 6 },
+      "rarityRangeStep": 2,
+      "suffix": "%"
+    },
+    "bonusStrength": {
+      "label": "Força adicional",
+      "categoryPath": "attributes.strength.bonus",
+      "formula": "uniform",
+      "range": { "min": 1, "max": 3 },
+      "rarityRangeStep": 1
+    },
+    "bonusAgility": {
+      "label": "Agilidade adicional",
+      "categoryPath": "attributes.agility.bonus",
+      "formula": "uniform",
+      "range": { "min": 1, "max": 3 },
+      "rarityRangeStep": 1
+    },
+    "bonusIntelligence": {
+      "label": "Inteligência adicional",
+      "categoryPath": "attributes.intelligence.bonus",
+      "formula": "uniform",
+      "range": { "min": 1, "max": 3 },
+      "rarityRangeStep": 1
+    },
+    "physicalDamageBonus": {
+      "label": "Dano físico adicional",
+      "categoryPath": "damage.physical.bonusPercent",
+      "formula": "uniform",
+      "range": { "min": 2, "max": 8 },
+      "rarityRangeStep": 2,
+      "suffix": "%"
+    },
+    "magicalDamageBonus": {
+      "label": "Dano mágico adicional",
+      "categoryPath": "damage.magical.bonusPercent",
+      "formula": "uniform",
+      "range": { "min": 2, "max": 8 },
+      "rarityRangeStep": 2,
+      "suffix": "%"
+    },
+    "hpBonus": {
+      "label": "Vida adicional",
+      "categoryPath": "combat.hpBonus",
+      "formula": "uniform",
+      "range": { "min": 5, "max": 20 },
+      "rarityRangeStep": 5
+    }
+  }
+}

@@ -3,6 +3,7 @@
   "name": "Cajado de Madeira",
   "description": "Canaliza energia arcana básica.",
   "type": "weapon",
+  "itemKind": "staff",
   "slot": "weapon",
   "rarity": "common",
   "level": 1,

@@ -3,6 +3,7 @@
   "name": "Armadura de Couro",
   "description": "Proteção leve para aventuras iniciais.",
   "type": "armor",
+  "itemKind": "armor",
   "slot": "armor",
   "rarity": "common",
   "level": 1,

@@ -3,6 +3,7 @@
   "name": "Espada de Ferro",
   "description": "Uma espada simples, confiável para iniciantes.",
   "type": "weapon",
+  "itemKind": "sword",
   "slot": "weapon",
   "rarity": "common",
   "level": 1,
@@ -15,5 +16,5 @@
       "physical": { "bonusPercent": 8 }
     }
   },
-  "assets": { "icon": "items/iron-sword.png" }
+  "assets": { "icon": "items/swords/iron-sword.png" }
 }

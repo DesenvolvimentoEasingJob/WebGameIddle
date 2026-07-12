@@ -12,7 +12,9 @@ public class GamePlayService(
     GameDataLoader gameData,
     CharacterStorage storage,
     CharacterBuilder builder,
-    GameStateInitializer gameStateInitializer)
+    GameStateInitializer gameStateInitializer,
+    ItemDropService itemDropService,
+    GameDataItemEnsurer gameDataItemEnsurer)
 {
     public async Task<(GameStateResponse? Result, string? Error)> GetGameStateAsync(
         Guid userId,
@@ -26,7 +28,7 @@ public class GamePlayService(
         return (BuildGameStateResponse(document!), null);
     }
 
-    public async Task<(GameStateResponse? Result, string? Error)> EquipItemAsync(
+    public async Task<(GamePatchResponse? Result, string? Error)> EquipItemAsync(
         Guid userId,
         int slotIndex,
         string instanceId,
@@ -47,7 +49,7 @@ public class GamePlayService(
             return (null, "Item não encontrado no inventário.");
 
         var itemId = entry["itemId"]?.GetValue<string>();
-        if (itemId is null || gameData.GetItem(itemId) is not { } itemDef)
+        if (itemId is null || CharacterItemCatalog.Resolve(gameData, document, itemId) is not { } itemDef)
             return (null, "Definição do item não encontrada.");
 
         if (itemDef.Slot is null)
@@ -72,28 +74,19 @@ public class GamePlayService(
             if (inventoryItems.Count >= capacity)
                 return (null, "Inventário cheio. Desequipe um item antes.");
 
-            inventoryItems.Add(new JsonObject
-            {
-                ["instanceId"] = previous["instanceId"]!.DeepClone(),
-                ["itemId"] = previous["itemId"]!.DeepClone(),
-                ["quantity"] = 1,
-            });
+            inventoryItems.Add(CopyInstanceEntry(previous, 1));
         }
 
-        equipment[equipSlot] = new JsonObject
-        {
-            ["instanceId"] = instanceId,
-            ["itemId"] = itemId,
-        };
+        equipment[equipSlot] = CopyInstanceEntry(entry);
 
         inventoryItems.Remove(entry);
         document["updatedAt"] = DateTime.UtcNow.ToString("O");
         await storage.SaveAsync(userId, character!.Id, document, ct);
 
-        return (BuildGameStateResponse(document), null);
+        return (BuildCharacterPatch(document, includeEffectiveCategories: true), null);
     }
 
-    public async Task<(GameStateResponse? Result, string? Error)> UnequipItemAsync(
+    public async Task<(GamePatchResponse? Result, string? Error)> UnequipItemAsync(
         Guid userId,
         int slotIndex,
         string equipSlot,
@@ -122,24 +115,58 @@ public class GamePlayService(
         if (inventoryItems.Count >= capacity)
             return (null, "Inventário cheio.");
 
-        inventoryItems.Add(new JsonObject
-        {
-            ["instanceId"] = equipped["instanceId"]!.DeepClone(),
-            ["itemId"] = equipped["itemId"]!.DeepClone(),
-            ["quantity"] = 1,
-        });
+        inventoryItems.Add(CopyInstanceEntry(equipped, equipped["quantity"]?.GetValue<int>() ?? 1));
 
         equipment[equipSlot] = null;
         document["updatedAt"] = DateTime.UtcNow.ToString("O");
         await storage.SaveAsync(userId, character!.Id, document, ct);
 
-        return (BuildGameStateResponse(document), null);
+        return (BuildCharacterPatch(document, includeEffectiveCategories: true), null);
     }
 
-    public async Task<(GameStateResponse? Result, string? Error)> UpdateTowerSettingsAsync(
+    public async Task<(GamePatchResponse? Result, string? Error)> DiscardItemAsync(
+        Guid userId,
+        int slotIndex,
+        string instanceId,
+        CancellationToken ct)
+    {
+        var (character, document, error) = await LoadCompleteCharacterAsync(userId, slotIndex, ct);
+        if (error is not null)
+            return (null, error);
+
+        var equipment = document!["equipment"]?.AsObject();
+        if (equipment is not null)
+        {
+            foreach (var (_, value) in equipment)
+            {
+                if (value is JsonObject equipped
+                    && equipped["instanceId"]?.GetValue<string>() == instanceId)
+                    return (null, "Desequipe o item antes de descartá-lo.");
+            }
+        }
+
+        var inventoryItems = document["inventory"]?["items"]?.AsArray()
+            ?? throw new InvalidOperationException("Inventário inválido.");
+
+        var entry = inventoryItems
+            .OfType<JsonObject>()
+            .FirstOrDefault(i => i["instanceId"]?.GetValue<string>() == instanceId);
+
+        if (entry is null)
+            return (null, "Item não encontrado no inventário.");
+
+        inventoryItems.Remove(entry);
+        document["updatedAt"] = DateTime.UtcNow.ToString("O");
+        await storage.SaveAsync(userId, character!.Id, document, ct);
+
+        return (BuildCharacterPatch(document), null);
+    }
+
+    public async Task<(GamePatchResponse? Result, string? Error)> UpdateTowerSettingsAsync(
         Guid userId,
         int slotIndex,
         bool autoAscend,
+        bool continuousAttack,
         CancellationToken ct)
     {
         var (character, document, error) = await LoadCompleteCharacterAsync(userId, slotIndex, ct);
@@ -150,10 +177,86 @@ public class GamePlayService(
             ?? throw new InvalidOperationException("Dados da torre inválidos.");
 
         tower["autoAscend"] = autoAscend;
+        tower["continuousAttack"] = continuousAttack;
         document["updatedAt"] = DateTime.UtcNow.ToString("O");
         await storage.SaveAsync(userId, character!.Id, document, ct);
 
-        return (BuildGameStateResponse(document), null);
+        return (BuildCharacterPatch(document), null);
+    }
+
+    public async Task<(GamePatchResponse? Result, string? Error)> RepeatTowerFloorAsync(
+        Guid userId,
+        int slotIndex,
+        CancellationToken ct)
+    {
+        var (character, document, error) = await LoadCompleteCharacterAsync(userId, slotIndex, ct);
+        if (error is not null)
+            return (null, error);
+
+        var tower = document!["tower"]?.AsObject()
+            ?? throw new InvalidOperationException("Dados da torre inválidos.");
+
+        var bossDefeated = tower["bossDefeated"]?.GetValue<bool>() ?? false;
+        if (!bossDefeated)
+            return (null, "Conclua o andar derrotando o chefe antes de repetir.");
+
+        ResetTowerFloorProgress(tower);
+        document["updatedAt"] = DateTime.UtcNow.ToString("O");
+        await storage.SaveAsync(userId, character!.Id, document, ct);
+
+        return (BuildCharacterPatch(document), null);
+    }
+
+    public async Task<(GamePatchResponse? Result, string? Error)> AdvanceTowerFloorAsync(
+        Guid userId,
+        int slotIndex,
+        CancellationToken ct) =>
+        await NavigateTowerFloorAsync(userId, slotIndex, "up", ct);
+
+    public async Task<(GamePatchResponse? Result, string? Error)> NavigateTowerFloorAsync(
+        Guid userId,
+        int slotIndex,
+        string direction,
+        CancellationToken ct)
+    {
+        var (character, document, error) = await LoadCompleteCharacterAsync(userId, slotIndex, ct);
+        if (error is not null)
+            return (null, error);
+
+        var tower = document!["tower"]?.AsObject()
+            ?? throw new InvalidOperationException("Dados da torre inválidos.");
+
+        var currentFloor = tower["currentFloor"].GetInt32Value(1);
+        var unlockedFloor = tower["unlockedFloor"].GetInt32Value(1);
+        var normalized = direction.Trim().ToLowerInvariant();
+
+        int targetFloor;
+        if (normalized is "up")
+        {
+            if (currentFloor >= unlockedFloor)
+                return (null, "Nenhum andar superior desbloqueado.");
+            targetFloor = currentFloor + 1;
+        }
+        else if (normalized is "down")
+        {
+            if (currentFloor <= 1)
+                return (null, "Você já está no primeiro andar.");
+            targetFloor = currentFloor - 1;
+        }
+        else
+        {
+            return (null, "Direção inválida. Use up ou down.");
+        }
+
+        if (gameData.GetTowerFloor(targetFloor) is null)
+            return (null, "Andar não encontrado.");
+
+        tower["currentFloor"] = targetFloor;
+        ResetTowerFloorProgress(tower);
+        document["updatedAt"] = DateTime.UtcNow.ToString("O");
+        await storage.SaveAsync(userId, character!.Id, document, ct);
+
+        return (BuildCharacterPatch(document, includeFloor: true), null);
     }
 
     public async Task<(StartTowerCombatResponse? Result, string? Error)> StartTowerCombatAsync(
@@ -173,6 +276,7 @@ public class GamePlayService(
         if (floorDef is null)
             return (null, "Andar não encontrado.");
 
+        var floorBefore = tower["currentFloor"].GetInt32Value(1);
         var (enemy, isBoss, encounterError) = ResolveCurrentEncounter(tower, floorDef);
         if (encounterError is not null)
             return (null, encounterError);
@@ -181,15 +285,35 @@ public class GamePlayService(
         var playerStats = CombatStatsCalculator.FromCharacter(document, effectiveCategories);
         var combat = TowerCombatSimulator.Simulate(playerStats, enemy!, isBoss);
 
+        var newItemIds = new List<string>();
         if (combat.Outcome == "player_win" && combat.Rewards is { } rewards)
         {
-            ApplyCombatVictory(document, tower, floorDef, isBoss, rewards);
+            var (items, lostItems) = await ApplyCombatVictoryAsync(
+                document, tower, floorDef, enemy!, isBoss, rewards, ct);
             document["updatedAt"] = DateTime.UtcNow.ToString("O");
             await storage.SaveAsync(userId, character!.Id, document, ct);
+
+            if (items.Count > 0 || lostItems.Count > 0)
+            {
+                combat = combat with
+                {
+                    Rewards = rewards with { Items = items, LostItems = lostItems },
+                };
+            }
+
+            foreach (var item in items)
+                newItemIds.Add(item.ItemId);
+            foreach (var item in lostItems)
+                newItemIds.Add(item.ItemId);
         }
 
-        var gameState = BuildGameStateResponse(document);
-        return (new StartTowerCombatResponse(combat, gameState), null);
+        var floorAfter = tower["currentFloor"].GetInt32Value(1);
+        var patch = BuildCharacterPatch(
+            document,
+            includeFloor: floorAfter != floorBefore,
+            newCatalogEntries: BuildNewCatalogEntries(document, newItemIds));
+
+        return (new StartTowerCombatResponse(combat, patch), null);
     }
 
     private static (MobDefinition? Enemy, bool IsBoss, string? Error) ResolveCurrentEncounter(
@@ -213,12 +337,20 @@ public class GamePlayService(
         return (floorDef.MobPool[index], false, null);
     }
 
-    private static void ApplyCombatVictory(
+    private static void ResetTowerFloorProgress(JsonObject tower)
+    {
+        tower["mobsKilledThisFloor"] = 0;
+        tower["bossDefeated"] = false;
+    }
+
+    private async Task<(IReadOnlyList<DroppedItemDto> Items, IReadOnlyList<DroppedItemDto> LostItems)> ApplyCombatVictoryAsync(
         JsonObject document,
         JsonObject tower,
         TowerFloorDefinition floorDef,
+        MobDefinition enemy,
         bool isBoss,
-        TowerCombatRewardsDto rewards)
+        TowerCombatRewardsDto rewards,
+        CancellationToken ct)
     {
         var progression = document["progression"]?.AsObject()
             ?? throw new InvalidOperationException("Progressão inválida.");
@@ -241,8 +373,8 @@ public class GamePlayService(
 
         if (isBoss)
         {
-            tower["bossDefeated"] = true;
             var autoAscend = tower["autoAscend"]?.GetValue<bool>() ?? false;
+            var continuousAttack = tower["continuousAttack"]?.GetValue<bool>() ?? false;
             var currentFloor = tower["currentFloor"].GetInt32Value(1);
             var unlockedFloor = tower["unlockedFloor"].GetInt32Value(1);
 
@@ -252,8 +384,15 @@ public class GamePlayService(
             if (autoAscend)
             {
                 tower["currentFloor"] = currentFloor + 1;
-                tower["mobsKilledThisFloor"] = 0;
-                tower["bossDefeated"] = false;
+                ResetTowerFloorProgress(tower);
+            }
+            else if (continuousAttack)
+            {
+                ResetTowerFloorProgress(tower);
+            }
+            else
+            {
+                tower["bossDefeated"] = true;
             }
         }
         else
@@ -261,7 +400,32 @@ public class GamePlayService(
             var killed = tower["mobsKilledThisFloor"].GetInt32Value();
             tower["mobsKilledThisFloor"] = killed + 1;
         }
+
+        var classId = document["classId"]?.GetValue<string>();
+        var drop = await itemDropService.TryRollDropAsync(document, enemy, floorDef, classId, ct);
+        if (drop is null)
+            return ([], []);
+
+        var dto = ToDroppedItemDto(drop);
+        var addResult = itemDropService.TryAddToInventory(document, drop);
+        return addResult switch
+        {
+            InventoryAddResult.Added => ([dto], []),
+            InventoryAddResult.InventoryFull => ([], [dto]),
+            _ => ([], []),
+        };
     }
+
+    private static DroppedItemDto ToDroppedItemDto(ItemDropResult drop) =>
+        new(
+            drop.Instance["instanceId"]!.GetValue<string>(),
+            drop.ItemDef.Id,
+            drop.ItemDef.Name,
+            drop.RarityId,
+            drop.Instance["quantity"]?.GetValue<int>() ?? 1,
+            drop.Instance["rolledCategories"],
+            drop.Instance["rolledAffixes"],
+            drop.ItemDef.Assets);
 
     private async Task<(Character? Character, JsonObject? Document, string? Error)> LoadCompleteCharacterAsync(
         Guid userId,
@@ -312,6 +476,17 @@ public class GamePlayService(
             document["updatedAt"] = DateTime.UtcNow.ToString("O");
             await storage.SaveAsync(userId, character.Id, document, ct);
         }
+        else if (gameStateInitializer.EnsureTowerFields(document))
+        {
+            document["updatedAt"] = DateTime.UtcNow.ToString("O");
+            await storage.SaveAsync(userId, character.Id, document, ct);
+        }
+
+        if (gameDataItemEnsurer.EnsureDocumentItems(document))
+        {
+            document["updatedAt"] = DateTime.UtcNow.ToString("O");
+            await storage.SaveAsync(userId, character.Id, document, ct);
+        }
 
         return (character, document, null);
     }
@@ -319,13 +494,53 @@ public class GamePlayService(
     private static IReadOnlyList<string> ReadEquipmentSlots(JsonObject document) =>
         GameStateInitializer.ReadEquipmentSlots(document);
 
+    private GamePatchResponse BuildCharacterPatch(
+        JsonObject document,
+        bool includeFloor = false,
+        bool includeEffectiveCategories = false,
+        IReadOnlyDictionary<string, ItemSummaryDto>? newCatalogEntries = null)
+    {
+        object? currentFloor = null;
+        if (includeFloor)
+        {
+            var floorNum = document["tower"]?["currentFloor"]?.GetValue<int>() ?? 1;
+            currentFloor = gameData.GetTowerFloor(floorNum);
+        }
+
+        object? effectiveCategories = includeEffectiveCategories
+            ? ComputeEffectiveCategories(document)
+            : null;
+
+        return new GamePatchResponse(document, newCatalogEntries, currentFloor, effectiveCategories);
+    }
+
+    private Dictionary<string, ItemSummaryDto>? BuildNewCatalogEntries(
+        JsonObject document,
+        IReadOnlyList<string> itemIds)
+    {
+        if (itemIds.Count == 0)
+            return null;
+
+        var result = new Dictionary<string, ItemSummaryDto>(StringComparer.OrdinalIgnoreCase);
+        foreach (var id in itemIds.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            if (CharacterItemCatalog.Resolve(gameData, document, id) is { } item)
+                result[item.Id] = ToItemDto(item);
+        }
+
+        return result.Count > 0 ? result : null;
+    }
+
     private GameStateResponse BuildGameStateResponse(JsonObject document)
     {
-        var catalog = gameData.Items.Values
-            .ToDictionary(
-                i => i.Id,
-                i => ToItemDto(i),
-                StringComparer.OrdinalIgnoreCase);
+        var catalog = new Dictionary<string, ItemSummaryDto>(StringComparer.OrdinalIgnoreCase);
+        foreach (var item in gameData.Items.Values)
+            catalog[item.Id] = ToItemDto(item);
+
+        // Itens gerados legados (ainda não migrados para o GameData) não podem
+        // sobrescrever o catálogo global.
+        foreach (var item in CharacterItemCatalog.EnumerateGenerated(document))
+            catalog.TryAdd(item.Id, ToItemDto(item));
 
         var currentFloor = document["tower"]?["currentFloor"]?.GetValue<int>() ?? 1;
         var floorDef = gameData.GetTowerFloor(currentFloor);
@@ -335,7 +550,8 @@ public class GamePlayService(
             document,
             catalog,
             floorDef,
-            effectiveCategories);
+            effectiveCategories,
+            LootConfigBuilder.Build(gameData));
     }
 
     private JsonObject ComputeEffectiveCategories(JsonObject document)
@@ -349,14 +565,51 @@ public class GamePlayService(
 
         foreach (var slot in ReadEquipmentSlots(document))
         {
-            var itemId = equipment[slot]?.AsObject()?["itemId"]?.GetValue<string>();
-            if (itemId is null || gameData.GetItem(itemId) is not { } itemDef)
+            var equipped = equipment[slot]?.AsObject();
+            var itemId = equipped?["itemId"]?.GetValue<string>();
+            if (itemId is null || CharacterItemCatalog.Resolve(gameData, document, itemId) is not { } itemDef)
                 continue;
 
-            baseCategories = CategoryMerger.Merge(baseCategories, itemDef.Categories);
+            var itemCategories = ResolveInstanceCategories(equipped, itemDef);
+            baseCategories = CategoryMerger.Merge(baseCategories, itemCategories);
         }
 
         return baseCategories;
+    }
+
+    private static JsonObject ResolveInstanceCategories(JsonObject? instance, ItemDefinition itemDef)
+    {
+        JsonObject baseCategories;
+        if (instance?["rolledCategories"] is JsonObject rolled)
+            baseCategories = rolled;
+        else
+            baseCategories = itemDef.Categories;
+
+        if (instance?["rolledAffixes"] is JsonArray affixes)
+            return ItemAffixRoller.MergeAffixesIntoCategories(baseCategories, affixes);
+
+        return baseCategories;
+    }
+
+    private static JsonObject CopyInstanceEntry(JsonObject source, int? quantityOverride = null)
+    {
+        var copy = new JsonObject
+        {
+            ["instanceId"] = source["instanceId"]!.DeepClone(),
+            ["itemId"] = source["itemId"]!.DeepClone(),
+            ["quantity"] = quantityOverride ?? source["quantity"]?.GetValue<int>() ?? 1,
+        };
+
+        if (source["rarity"] is not null)
+            copy["rarity"] = source["rarity"].DeepClone();
+
+        if (source["rolledCategories"] is not null)
+            copy["rolledCategories"] = source["rolledCategories"].DeepClone();
+
+        if (source["rolledAffixes"] is not null)
+            copy["rolledAffixes"] = source["rolledAffixes"].DeepClone();
+
+        return copy;
     }
 
     private static ItemSummaryDto ToItemDto(ItemDefinition item) =>

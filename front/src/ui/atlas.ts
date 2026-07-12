@@ -19,7 +19,16 @@ export const ITEM_SLOT_FRAMES: Record<string, FrameName> = {
 };
 
 export function slotFrameForRarity(rarity: string): FrameName {
-  return ITEM_SLOT_FRAMES[rarity] ?? "slot-common";
+  if (rarity in ITEM_SLOT_FRAMES) {
+    return ITEM_SLOT_FRAMES[rarity];
+  }
+
+  const dynamicFrame = `slot-${rarity}` as FrameName;
+  if (dynamicFrame in atlasData.frames) {
+    return dynamicFrame;
+  }
+
+  return "slot-common";
 }
 
 const frames = atlasData.frames as Record<FrameName, Frame>;
@@ -60,6 +69,14 @@ export async function frameDataURL(name: FrameName): Promise<string> {
 export function getFrame(name: FrameName): Frame {
   return frames[name];
 }
+
+/** Frames usados nos controles da torre (andar + combate). */
+export const TOWER_CONTROL_FRAMES = {
+  floorDown: "btn-back",
+  floorUp: "btn-next",
+  combat: "btn-play",
+  repeat: "btn-hounting",
+} as const satisfies Record<string, FrameName>;
 
 /**
  * Registra cada frame do atlas como CSS custom property no :root

@@ -8,6 +8,7 @@ public class ItemDefinition
     public required string Name { get; init; }
     public string? Description { get; init; }
     public required string Type { get; init; }
+    public string? ItemKind { get; init; }
     public string? Slot { get; init; }
     public required string Rarity { get; init; }
     public int Level { get; init; }

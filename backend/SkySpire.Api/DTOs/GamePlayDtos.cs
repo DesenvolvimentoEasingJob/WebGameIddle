@@ -18,7 +18,8 @@ public record GameStateResponse(
     object CharacterJson,
     IReadOnlyDictionary<string, ItemSummaryDto> ItemCatalog,
     object? CurrentFloor,
-    object EffectiveCategories);
+    object EffectiveCategories,
+    GameLootConfigDto LootConfig);
 
 public record EquipItemRequest
 {
@@ -30,9 +31,20 @@ public record UnequipItemRequest
     public required string EquipSlot { get; init; }
 }
 
+public record DiscardItemRequest
+{
+    public required string InstanceId { get; init; }
+}
+
 public record UpdateTowerSettingsRequest
 {
     public bool AutoAscend { get; init; }
+    public bool ContinuousAttack { get; init; }
+}
+
+public record NavigateTowerFloorRequest
+{
+    public required string Direction { get; init; }
 }
 
 public record TowerCombatTurnDto(
@@ -40,9 +52,24 @@ public record TowerCombatTurnDto(
     string Kind,
     int Damage,
     int PlayerHpRemaining,
-    int EnemyHpRemaining);
+    int EnemyHpRemaining,
+    int Heal = 0);
 
-public record TowerCombatRewardsDto(int Xp, int Gold);
+public record DroppedItemDto(
+    string InstanceId,
+    string ItemId,
+    string Name,
+    string Rarity,
+    int Quantity,
+    object? RolledCategories,
+    object? RolledAffixes,
+    object? Assets);
+
+public record TowerCombatRewardsDto(
+    int Xp,
+    int Gold,
+    IReadOnlyList<DroppedItemDto> Items,
+    IReadOnlyList<DroppedItemDto> LostItems);
 
 public record TowerCombatResultDto(
     string Outcome,
@@ -54,6 +81,13 @@ public record TowerCombatResultDto(
     IReadOnlyList<TowerCombatTurnDto> Turns,
     TowerCombatRewardsDto? Rewards);
 
+/// <summary>Incremental state after a mutation — omits static catalog, loot config, and unchanged floor.</summary>
+public record GamePatchResponse(
+    object CharacterJson,
+    IReadOnlyDictionary<string, ItemSummaryDto>? NewCatalogEntries = null,
+    object? CurrentFloor = null,
+    object? EffectiveCategories = null);
+
 public record StartTowerCombatResponse(
     TowerCombatResultDto Combat,
-    GameStateResponse GameState);
+    GamePatchResponse Patch);

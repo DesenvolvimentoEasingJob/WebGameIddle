@@ -1,0 +1,16 @@
+{
+  "pools": {
+    "floor-1": {
+      "entries": [
+        { "itemId": "wooden-staff", "weight": 25 },
+        { "itemId": "iron-sword", "weight": 25 },
+        { "itemId": "leather-armor", "weight": 20 },
+        { "itemId": "health-potion", "weight": 30 },
+        { "itemKind": "staff", "weight": 8 },
+        { "itemKind": "sword", "weight": 8 },
+        { "itemKind": "armor", "weight": 6 }
+      ]
+    }
+  },
+  "defaultPool": "floor-1"
+}
