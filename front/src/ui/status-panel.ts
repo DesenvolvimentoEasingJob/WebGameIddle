@@ -146,8 +146,10 @@ export function renderStatusPanel(options: StatusPanelOptions): string {
   const attrs = collectAttributeRows(state);
   const combatBonuses = collectCombatBonusRows(state);
   const derived = computeFullCombatStats(state);
-  // Mantém sidebar/dock coerentes com o mesmo cálculo quando possível.
   void computeDisplayStats;
+
+  const totalMobsKilled = char.tower.totalMobsKilled ?? 0;
+  const totalBossesKilled = char.tower.totalBossesKilled ?? 0;
 
   return `
     <div class="status-layout">
@@ -178,35 +180,51 @@ export function renderStatusPanel(options: StatusPanelOptions): string {
       </header>
 
       <div class="status-grid">
-        <section class="status-section" aria-label="Atributos">
-          <h3 class="status-section__title">Atributos</h3>
-          <table class="status-table">
-            <thead>
-              <tr>
-                <th scope="col">Atributo</th>
-                <th scope="col">Base</th>
-                <th scope="col">Bônus</th>
-                <th scope="col">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${attrs
-                .map(
-                  (row) => `
+        <div class="status-column">
+          <section class="status-section" aria-label="Atributos">
+            <h3 class="status-section__title">Atributos</h3>
+            <table class="status-table">
+              <thead>
                 <tr>
-                  <th scope="row">${row.label}</th>
-                  <td>${formatNumber(row.base)}</td>
-                  <td class="${row.bonus > 0 ? "status-table__bonus" : ""}">${
-                    row.bonus > 0 ? `+${formatNumber(row.bonus)}` : "—"
-                  }</td>
-                  <td><strong>${formatNumber(row.total)}</strong></td>
+                  <th scope="col">Atributo</th>
+                  <th scope="col">Base</th>
+                  <th scope="col">Bônus</th>
+                  <th scope="col">Total</th>
                 </tr>
-              `,
-                )
-                .join("")}
-            </tbody>
-          </table>
-        </section>
+              </thead>
+              <tbody>
+                ${attrs
+                  .map(
+                    (row) => `
+                  <tr>
+                    <th scope="row">${row.label}</th>
+                    <td>${formatNumber(row.base)}</td>
+                    <td class="${row.bonus > 0 ? "status-table__bonus" : ""}">${
+                      row.bonus > 0 ? `+${formatNumber(row.bonus)}` : "—"
+                    }</td>
+                    <td><strong>${formatNumber(row.total)}</strong></td>
+                  </tr>
+                `,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
+          </section>
+
+          <section class="status-section status-section--tower" aria-label="Histórico de abates">
+            <h3 class="status-section__title">Histórico de abates</h3>
+            <dl class="status-stat-list">
+              <div class="status-stat-list__row">
+                <dt>Monstros derrotados</dt>
+                <dd>${formatNumber(totalMobsKilled)}</dd>
+              </div>
+              <div class="status-stat-list__row">
+                <dt>Chefes derrotados</dt>
+                <dd>${formatNumber(totalBossesKilled)}</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
 
         <section class="status-section" aria-label="Combate">
           <h3 class="status-section__title">Combate</h3>

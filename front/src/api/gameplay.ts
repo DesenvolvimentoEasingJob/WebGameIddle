@@ -57,6 +57,8 @@ export interface TowerState {
   continuousAttack: boolean;
   mobsKilledThisFloor: number;
   bossDefeated: boolean;
+  totalMobsKilled?: number;
+  totalBossesKilled?: number;
 }
 
 export interface CharacterGameJson {
