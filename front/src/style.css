@@ -8,6 +8,7 @@
 html,
 body {
   margin: 0;
+  height: 100%;
   min-height: 100%;
 }
 
@@ -663,48 +664,91 @@ body {
 
 /* ---------- Game hub (inventário / mercado / torre) ---------- */
 
-.app-main--game {
-  box-sizing: border-box;
+/* Preenche a viewport inteira — sem folga embaixo nem scroll da página. */
+.app-bg.app-bg--game {
   height: 100dvh;
   max-height: 100dvh;
-  padding-block: 0.35rem;
   overflow: hidden;
 }
 
-.app-bg.app-bg--game,
-.app-bg.app-bg--game #app {
+body:has(.app-bg--game) {
   height: 100dvh;
   max-height: 100dvh;
+  overflow: hidden;
+}
+
+.app-bg.app-bg--game #app {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.app-main--game.container,
+.app-main--game {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 100% !important;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  padding-block: 0.35rem;
+  padding-inline: 0.35rem;
+  margin: 0;
   overflow: hidden;
 }
 
 .app-main--game .app-main__row {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
   height: 100%;
   min-height: 0;
   max-height: 100%;
-  align-items: stretch;
+  margin: 0 !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
   overflow: hidden;
 }
 
 .col-game-full {
+  display: flex !important;
+  flex-direction: column;
+  flex: 1 1 auto !important;
   max-width: 100% !important;
-  flex: 0 0 100% !important;
   width: 100% !important;
   height: 100%;
   min-height: 0;
+  padding-left: 0.15rem !important;
+  padding-right: 0.15rem !important;
+  overflow: hidden;
+}
+
+.col-game-full #screen-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
   overflow: hidden;
 }
 
 .game-hub {
   display: grid;
-  grid-template-columns: minmax(200px, 240px) 1fr;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
   gap: 0.55rem;
+  flex: 1 1 auto;
   height: 100%;
   max-height: 100%;
   min-height: 0;
   width: 100%;
-  max-width: min(100%, 1600px);
-  margin: 0 auto;
+  max-width: min(100%, 1280px);
+  margin-inline: auto;
   overflow: hidden;
 }
 
@@ -713,6 +757,7 @@ body {
   flex-direction: column;
   gap: 0.55rem;
   min-height: 0;
+  height: 100%;
   overflow: auto;
   padding: 0.5rem 0.45rem;
   border-style: solid;
@@ -723,11 +768,9 @@ body {
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.55));
 }
 
-.game-sidebar__profile {
-  display: flex;
-  gap: 0.65rem;
-  align-items: center;
-  padding-inline: 0.15rem;
+.game-sidebar #game-exit,
+.game-sidebar .ui-btn--ghost {
+  margin-top: auto;
 }
 
 .game-sidebar__avatar-wrap {
@@ -1034,6 +1077,7 @@ body {
 .game-main {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
   height: 100%;
@@ -1090,7 +1134,7 @@ body {
 
 .game-combat-strip {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(170px, 210px);
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 200px);
   gap: 0.5rem;
   flex: 0 0 236px;
   height: 236px;
@@ -1098,6 +1142,35 @@ body {
   min-height: 236px;
   align-items: stretch;
   overflow: hidden;
+}
+
+.combat-dock__arena.tower-arena {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  justify-items: stretch;
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  border-width: 12px;
+  padding: 0.2rem 0.35rem 1.25rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center 35%;
+}
+
+.combat-dock__arena .tower-fighter--player {
+  justify-self: start;
+  max-width: 280px;
+  width: 100%;
+}
+
+.combat-dock__arena .tower-fighter--enemy {
+  justify-self: end;
+  max-width: 280px;
+  width: 100%;
 }
 
 .combat-dock {
@@ -1120,22 +1193,6 @@ body {
   color: rgba(232, 220, 192, 0.7);
   text-align: center;
   font-size: 0.75rem;
-}
-
-.combat-dock__arena.tower-arena {
-  position: relative;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: stretch;
-  height: 100%;
-  min-height: 0;
-  max-height: 100%;
-  border-width: 12px;
-  padding: 0.2rem 0.35rem 1.25rem;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center 35%;
 }
 
 .combat-dock__arena .tower-fighter {
