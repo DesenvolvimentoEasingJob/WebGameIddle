@@ -350,7 +350,7 @@ public class GameDataLoader(IWebHostEnvironment environment)
         };
     }
 
-    private static TowerFloorDefinition ScaleFloorForTarget(TowerFloorDefinition template, int targetFloor)
+    private TowerFloorDefinition ScaleFloorForTarget(TowerFloorDefinition template, int targetFloor)
     {
         if (template.Floor == targetFloor)
             return template;
@@ -501,11 +501,11 @@ public class GameDataLoader(IWebHostEnvironment environment)
             var affixCategoryWeights = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
             if (typeNode["affixCategoryWeights"]?.AsObject() is { } weightsNode)
             {
-                foreach (var (key, value) in weightsNode)
+                foreach (var (key, weightValue) in weightsNode)
                 {
-                    if (value is null)
+                    if (weightValue is null)
                         continue;
-                    affixCategoryWeights[key] = value.GetValue<double>();
+                    affixCategoryWeights[key] = weightValue.GetValue<double>();
                 }
             }
 

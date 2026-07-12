@@ -40,7 +40,7 @@ builder.Services.Configure<LootOptions>(
 builder.Services.AddSingleton<ItemIntegrityService>();
 builder.Services.AddSingleton<ItemAffixRoller>();
 builder.Services.AddSingleton<ItemInstanceBuilder>();
-builder.Services.AddSingleton<TradeService>();
+builder.Services.AddScoped<TradeService>();
 builder.Services.AddSingleton<ProceduralItemGenerator>();
 builder.Services.AddSingleton<ItemDropService>();
 builder.Services.AddScoped<GamePlayService>();

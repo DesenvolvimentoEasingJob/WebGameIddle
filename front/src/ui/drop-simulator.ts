@@ -1,4 +1,4 @@
-import type { DroppedItem, GameLootConfig } from "../api/gameplay";
+import type { GameLootConfig } from "../api/gameplay";
 
 /** Deterministic drop preview for VFX — does not mutate inventory. */
 export function simulateDropPreview(
@@ -8,13 +8,16 @@ export function simulateDropPreview(
 ): { rarityId: string; label: string } | null {
   const rng = seededRandom(`${seed}:${rollIndex}`);
   const rarities = Object.entries(lootConfig.rarities)
-    .map(([id, rarity]) => ({ id, ...rarity }))
+    .map(([id, rarity]) => ({ ...rarity, id }))
     .sort((a, b) => a.order - b.order);
 
   if (rarities.length === 0)
     return null;
 
-  const totalWeight = rarities.reduce((sum, r) => sum + (r as { dropWeight?: number }).dropWeight ?? 1, 0);
+  const totalWeight = rarities.reduce(
+    (sum, r) => sum + ((r as { dropWeight?: number }).dropWeight ?? 1),
+    0,
+  );
   let roll = rng() * totalWeight;
 
   for (const rarity of rarities) {
@@ -25,7 +28,7 @@ export function simulateDropPreview(
     }
   }
 
-  const last = rarities[rarities.length - 1];
+  const last = rarities[rarities.length - 1]!;
   return { rarityId: last.id, label: last.label };
 }
 
