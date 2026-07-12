@@ -1,12 +1,5 @@
-import {
-  CLASS_LABELS,
-  RACE_LABELS,
-  type GameStateResponse,
-  type TowerMobSummary,
-} from "../api/gameplay";
-import { resolveCharacterSprite, resolveFloorBackground, resolveMobIcon, resolveMobSprite } from "./game-assets";
-import { resolveMobSpriteSheet, resolvePlayerSpriteSheet } from "../animation/sprite-registry";
-import { computeDisplayStats } from "./inventory-panel";
+import type { GameStateResponse, TowerMobSummary } from "../api/gameplay";
+import { resolveMobIcon } from "./game-assets";
 import { renderTowerFloorNav } from "./tower-navigation";
 import { canStartTowerCombat } from "./tower-combat";
 
@@ -15,8 +8,9 @@ export interface TowerPanelOptions {
   username: string;
 }
 
+/** Controles / progresso da torre — a arena fica no dock persistente. */
 export function renderTowerPanel(options: TowerPanelOptions): string {
-  const { state, username } = options;
+  const { state } = options;
   const char = state.characterJson;
   const floor = state.currentFloor;
   const tower = char.tower;
@@ -33,23 +27,14 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
   const mobCount = floor.mobCount;
   const killed = tower.mobsKilledThisFloor;
   const facingBoss = !tower.bossDefeated && killed >= mobCount;
-  const currentEnemy = getCurrentEnemy(floor, tower);
-  const playerHasSheet = Boolean(resolvePlayerSpriteSheet(char.raceId, char.classId));
-  const enemyHasSheet = Boolean(resolveMobSpriteSheet(currentEnemy.id));
-  const playerSprite = resolveCharacterSprite(char.assets);
-  const enemySprite = resolveMobSprite(currentEnemy.id, currentEnemy.assets);
   const bossIcon = resolveMobIcon(floor.boss.id, floor.boss.assets);
-  const floorBg = resolveFloorBackground(floor.floor);
   const ownerLabel = floor.ownerName?.trim() || "Sem dono";
-  const raceLabel = RACE_LABELS[char.raceId] ?? char.raceId;
-  const classLabel = CLASS_LABELS[char.classId] ?? char.classId;
-  const playerStats = computeDisplayStats(state);
   const canCombat = canStartTowerCombat(state);
   const canRepeat = tower.bossDefeated;
   const combatLabel = facingBoss ? "Enfrentar chefe" : "Iniciar combate";
 
   return `
-    <div class="tower-layout">
+    <div class="tower-layout tower-layout--controls">
       <header class="tower-header">
         <div class="tower-header__info">
           <h2 class="game-panel__title">Andar ${floor.floor} — ${floor.name}</h2>
@@ -57,64 +42,6 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
         </div>
         <p class="tower-header__progress">${killed} / ${mobCount} inimigos · ${tower.bossDefeated ? "Chefe derrotado" : facingBoss ? "Chefe aguardando" : "Em progresso"}</p>
       </header>
-
-      <div
-        class="tower-arena"
-        style="background-image: linear-gradient(to top, rgba(8, 6, 18, 0.35) 0%, transparent 28%), url('${floorBg}')"
-        aria-label="Arena de combate"
-      >
-        <figure class="tower-fighter tower-fighter--player">
-          <div
-            class="tower-combat-hp tower-combat-hp--player"
-            data-combat-hp="player"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="${playerStats.hp}"
-            aria-valuenow="${playerStats.hp}"
-            aria-label="HP do jogador"
-          >
-            <div class="tower-combat-hp__fill" style="width: 100%"></div>
-            <span class="tower-combat-hp__text">${playerStats.hp.toLocaleString("pt-BR")} / ${playerStats.hp.toLocaleString("pt-BR")}</span>
-          </div>
-          <div class="tower-fighter__stage">
-            ${
-              playerHasSheet
-                ? `<div class="sprite-sheet-stage sprite-sheet-stage--player" data-tower-player-sprite aria-hidden="true"></div>`
-                : `<img class="tower-fighter__fallback" src="${playerSprite}" alt="" aria-hidden="true" />`
-            }
-          </div>
-          <figcaption class="tower-fighter__caption">
-            <strong>${username}</strong>
-            <span>${raceLabel} · ${classLabel} · Nv. ${char.progression.level}</span>
-          </figcaption>
-        </figure>
-
-        <figure class="tower-fighter tower-fighter--enemy${facingBoss || tower.bossDefeated ? " tower-fighter--boss" : ""}">
-          <div
-            class="tower-combat-hp tower-combat-hp--enemy"
-            data-combat-hp="enemy"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="${currentEnemy.hp}"
-            aria-valuenow="${currentEnemy.hp}"
-            aria-label="HP do inimigo"
-          >
-            <div class="tower-combat-hp__fill" style="width: 100%"></div>
-            <span class="tower-combat-hp__text">${currentEnemy.hp.toLocaleString("pt-BR")} / ${currentEnemy.hp.toLocaleString("pt-BR")}</span>
-          </div>
-          <div class="tower-fighter__stage">
-            ${
-              enemyHasSheet
-                ? `<div class="sprite-sheet-stage sprite-sheet-stage--enemy" data-tower-enemy-sprite aria-hidden="true"></div>`
-                : `<img class="tower-fighter__fallback" src="${enemySprite}" alt="" aria-hidden="true" />`
-            }
-          </div>
-          <figcaption class="tower-fighter__caption">
-            <strong>${currentEnemy.name}</strong>
-            <span>Nv. ${currentEnemy.level} · HP ${currentEnemy.hp.toLocaleString("pt-BR")}</span>
-          </figcaption>
-        </figure>
-      </div>
 
       <section class="tower-track" aria-label="Progresso do andar">
         <h3 class="tower-track__title">Inimigos do andar</h3>
@@ -171,10 +98,10 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
         <p class="tower-actions__hint" id="tower-combat-status">
           ${
             (tower.continuousAttack ?? false)
-              ? "Ataque contínuo ativo — derrote inimigos e o chefe repetidamente para subir de nível."
+              ? "Ataque contínuo ativo — o combate roda no painel inferior em qualquer aba."
               : tower.bossDefeated
                 ? "Andar concluído — repita para farmar ou troque de andar."
-                : "Troque de andar entre os desbloqueados e inicie o combate."
+                : "O combate aparece sempre no painel inferior. Inicie aqui ou ative o ataque contínuo."
           }
         </p>
         <div class="tower-actions__buttons">
