@@ -1163,8 +1163,12 @@ body:has(.app-bg--game) {
   border-width: 12px;
   padding: 0.2rem 0.35rem 1.25rem;
   overflow: hidden;
-  background-size: cover;
-  background-position: center 35%;
+  /* Gradiente + imagem do andar: ambos preenchem a arena (evita faixas pretas) */
+  background-size: 100% 100%, 100% 100%;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
 }
 
 .combat-dock__arena .tower-fighter--player {
@@ -1995,8 +1999,10 @@ body:has(.app-bg--game) {
   border-image: var(--ui-panel-square) 48 / 7px stretch;
   background-color: #0a0812;
   background-position: center;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
   overflow: hidden;
   image-rendering: pixelated;
 }

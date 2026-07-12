@@ -56,13 +56,19 @@ const gameAssetModules: Record<string, string> = {
 
 /** Background do andar na arena (ex.: backgrounds/flor-1.png). */
 export function resolveFloorBackground(floor: number): string {
+  const entries = Object.entries(floorBackgroundAssets)
+    .map(([path, url]) => ({ path: path.replace(/\\/g, "/"), url }))
+    .sort((a, b) => a.path.localeCompare(b.path, undefined, { numeric: true }));
+
+  if (entries.length === 0) return UNKNOWN_ASSET_URL;
+
   const target = `flor-${floor}.png`;
-  for (const [path, url] of Object.entries(floorBackgroundAssets)) {
-    if (path.replace(/\\/g, "/").endsWith(`/${target}`)) {
-      return url;
-    }
-  }
-  return UNKNOWN_ASSET_URL;
+  const exact = entries.find((entry) => entry.path.endsWith(`/${target}`));
+  if (exact) return exact.url;
+
+  // Reutiliza os fundos disponíveis em ciclo (só existe flor-1 por enquanto).
+  const index = Math.max(0, floor - 1) % entries.length;
+  return entries[index]!.url;
 }
 
 export function resolveGameAsset(relativePath: string): string | null {
