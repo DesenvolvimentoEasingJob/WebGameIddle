@@ -1,4 +1,5 @@
-import type { GameStateResponse } from "../api/gameplay";
+import type { GameStateResponse, TowerMobSummary } from "../api/gameplay";
+import { resolveMobIcon } from "./game-assets";
 import { getTowerFloorNavState } from "./tower-navigation";
 import { canStartTowerCombat } from "./tower-combat";
 import { getCurrentTowerEnemy } from "./tower-panel";
@@ -23,7 +24,7 @@ export function updateTowerPanelAfterCombat(
 
   const progressEl = panelEl.querySelector<HTMLElement>(".tower-header__progress");
   if (progressEl) {
-    progressEl.textContent = `${killed} / ${mobCount} inimigos · ${
+    progressEl.textContent = `${killed} / ${mobCount} · ${
       tower.bossDefeated
         ? "Chefe derrotado"
         : facingBoss
@@ -32,7 +33,17 @@ export function updateTowerPanelAfterCombat(
     }`;
   }
 
+  const progressPct = Math.min(
+    100,
+    Math.round(((tower.bossDefeated ? mobCount + 1 : killed) / (mobCount + 1)) * 100),
+  );
+  const fillEl = panelEl.querySelector<HTMLElement>(".tower-mission-progress__fill");
+  const pctEl = panelEl.querySelector<HTMLElement>(".tower-mission-progress__pct");
+  if (fillEl) fillEl.style.width = `${progressPct}%`;
+  if (pctEl) pctEl.textContent = `${progressPct}%`;
+
   updateTowerTrack(panelEl, tower, killed, facingBoss);
+  updateTowerTargetCard(panelEl, currentEnemy, facingBoss || tower.bossDefeated);
 
   const enemyFigure = panelEl.querySelector<HTMLElement>(".tower-fighter--enemy");
   if (enemyFigure) {
@@ -70,6 +81,37 @@ export function updateTowerPanelAfterCombat(
   updateTowerActionButtons(panelEl, state, canStartTowerCombat(state), bossDefeated);
 
   return needsRepeatButton;
+}
+
+function updateTowerTargetCard(
+  panelEl: HTMLElement,
+  enemy: TowerMobSummary,
+  isBossTarget: boolean,
+): void {
+  const target = panelEl.querySelector<HTMLElement>(".tower-target");
+  if (!target) return;
+
+  const label = target.querySelector<HTMLElement>(".tower-target__label");
+  if (label) label.textContent = isBossTarget ? "Chefe do andar" : "Próximo alvo";
+
+  const frame = target.querySelector<HTMLElement>(".tower-target__frame");
+  frame?.classList.toggle("tower-target__frame--boss", isBossTarget);
+
+  const icon = target.querySelector<HTMLImageElement>("[data-tower-target-icon]");
+  if (icon) icon.src = resolveMobIcon(enemy.id, enemy.assets);
+
+  const name = target.querySelector<HTMLElement>(".tower-target__name");
+  if (name) name.textContent = enemy.name;
+
+  const stats = target.querySelector<HTMLElement>(".tower-target__stats");
+  if (stats) {
+    stats.textContent = `Nv. ${enemy.level} · HP ${enemy.hp.toLocaleString("pt-BR")} · ATK ${enemy.attack.toLocaleString("pt-BR")} · DEF ${enemy.defense.toLocaleString("pt-BR")}`;
+  }
+
+  const reward = target.querySelector<HTMLElement>(".tower-target__reward");
+  if (reward) {
+    reward.textContent = `+${enemy.xp.toLocaleString("pt-BR")} XP · +${enemy.gold.toLocaleString("pt-BR")} ouro`;
+  }
 }
 
 function updateTowerTrack(
