@@ -95,6 +95,15 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
           />
           Ataque contínuo — farmar este andar infinitamente
         </label>
+        <label class="tower-actions__continuous">
+          <input
+            id="tower-auto-ascend"
+            class="ui-checkbox"
+            type="checkbox"
+            ${(tower.autoAscend ?? false) ? "checked" : ""}
+          />
+          Subir andar ao desbloquear
+        </label>
         <p class="tower-actions__hint" id="tower-combat-status">
           ${
             (tower.continuousAttack ?? false)
