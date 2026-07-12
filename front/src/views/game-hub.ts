@@ -29,6 +29,7 @@ import {
   type GameTab,
 } from "../ui/inventory-panel";
 import { renderTowerPanel } from "../ui/tower-panel";
+import { renderStatusPanel } from "../ui/status-panel";
 import { bindTowerFloorNav } from "../ui/tower-navigation";
 import {
   isTowerCombatLoopRunning,
@@ -66,6 +67,7 @@ export function renderGameHub(root: HTMLElement): void {
 
         <nav class="game-nav" aria-label="Menus principais">
           <button type="button" class="ui-btn ui-btn--sm ui-btn--active" data-tab="inventory">Inventário</button>
+          <button type="button" class="ui-btn ui-btn--sm" data-tab="status">Status</button>
           <button type="button" class="ui-btn ui-btn--sm" data-tab="market">Mercado</button>
           <button type="button" class="ui-btn ui-btn--sm" data-tab="tower">Torre</button>
         </nav>
@@ -402,13 +404,17 @@ function renderActivePanel(options?: { forceTowerRemount?: boolean; forceDockRem
     return;
   }
 
-  const labels: Record<Exclude<GameTab, "inventory" | "tower">, string> = {
-    market: "Mercado",
-  };
+  if (activeTab === "status") {
+    panel.innerHTML = renderStatusPanel({
+      state: cachedState,
+      username: getStoredUser()?.username ?? "Aventureiro",
+    });
+    return;
+  }
 
   panel.innerHTML = `
     <div class="game-panel__placeholder">
-      <h2 class="game-panel__title">${labels[activeTab]}</h2>
+      <h2 class="game-panel__title">Mercado</h2>
       <p>Em breve — o combate da torre continua no painel inferior.</p>
     </div>
   `;

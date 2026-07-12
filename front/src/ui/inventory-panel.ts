@@ -9,7 +9,7 @@ import {
 import { formatItemStatSections, resolveItemIcon, type CategoryTree } from "./game-assets";
 import { raritySlotFrameClass, raritySlotFrameStyle, resolveRarityLabel } from "./loot-config";
 
-export type GameTab = "inventory" | "market" | "tower";
+export type GameTab = "inventory" | "market" | "tower" | "status";
 
 export interface InventoryPanelOptions {
   state: GameStateResponse;
@@ -445,15 +445,30 @@ export function computeDisplayStats(state: GameStateResponse): {
   mp: number;
 } {
   const attrs = (state.effectiveCategories as CategoryTree)?.attributes ?? {};
-  const str = attrs.strength?.base ?? 0;
-  const agi = attrs.agility?.base ?? 0;
-  const int = attrs.intelligence?.base ?? 0;
+  const combat = (state.effectiveCategories as CategoryTree)?.combat ?? {};
+  const damage = (state.effectiveCategories as CategoryTree)?.damage ?? {};
+  const read = (key: string) => {
+    const node = attrs[key];
+    return (node?.base ?? 0) + (node?.bonus ?? 0);
+  };
+  const str = read("strength");
+  const agi = read("agility");
+  const int = read("intelligence");
   const level = state.characterJson.progression?.level ?? 1;
+  const hpBonus = Number(combat.hpBonus) || 0;
+  const physicalBonus = damage.physical?.bonusPercent ?? 0;
+  const magicalBonus = damage.magical?.bonusPercent ?? 0;
+
+  let attack = str * 12 + agi * 4 + int * 2 + level * 10;
+  const bonusPercent = Math.max(physicalBonus, magicalBonus);
+  if (bonusPercent > 0) {
+    attack = Math.round(attack * (1 + bonusPercent / 100));
+  }
 
   return {
-    attack: Math.round(str * 12 + agi * 4 + int * 2 + level * 10),
+    attack: Math.round(attack),
     defense: Math.round(str * 3 + agi * 6 + int * 2 + level * 8),
-    hp: Math.round(str * 8 + agi * 4 + int * 3 + level * 50),
+    hp: Math.round(str * 8 + agi * 4 + int * 3 + level * 50 + hpBonus),
     mp: Math.round(int * 12 + level * 30),
   };
 }
