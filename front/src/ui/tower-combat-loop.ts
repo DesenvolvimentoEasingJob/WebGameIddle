@@ -1,6 +1,6 @@
 import { repeatTowerFloor, startTowerCombat, startTowerCombatBatch, type GameStateResponse } from "../api/gameplay";
 import { applyGamePatch } from "../state/game-cache";
-import { formatCombatRewardMessage } from "./combat-rewards";
+import { publishCombatRewardEvents } from "./combat-rewards";
 import { formatSimulatedDrop, simulateDropPreview } from "./drop-simulator";
 import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 import {
@@ -88,8 +88,6 @@ function getLiveArena(panelEl: HTMLElement): HTMLElement | null {
 async function paceCombatReplay(
   panelEl: HTMLElement,
   combat: Parameters<typeof playTowerCombatReplay>[1],
-  fightCount: number,
-  onStatus: (message: string) => void,
 ): Promise<void> {
   const expectedMs = estimateTowerCombatDurationMs(combat);
   const startedAt = performance.now();
@@ -98,16 +96,10 @@ async function paceCombatReplay(
   if (arena) {
     // Com arena montada, sempre atualiza HP no tempo certo.
     // Sprites só com a aba visível (em background o RAF fica throttled).
-    onStatus(
-      document.hidden
-        ? `Combate ${fightCount} em andamento…`
-        : `Reproduzindo combate ${fightCount}…`,
-    );
     await playTowerCombatReplay(arena, combat, getTowerAnimators(), {
       animate: !document.hidden,
     });
   } else {
-    onStatus(`Combate ${fightCount} em andamento…`);
     await awaitTowerCombatTiming(combat);
   }
 
@@ -176,7 +168,6 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
           : undefined;
 
       fightCount += 1;
-      onStatus(`Farmando andar… combate ${fightCount}`);
 
       const useBatch = Boolean(state?.characterJson.tower.continuousAttack);
       const preview = useBatch && state?.lootConfig
@@ -196,7 +187,7 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
 
       if (generation !== activeLoopGeneration) break;
 
-      await paceCombatReplay(panelEl, combat, fightCount, onStatus);
+      await paceCombatReplay(panelEl, combat);
 
       if (generation !== activeLoopGeneration) break;
 
@@ -222,11 +213,11 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
       }
 
       const reward = combat.rewards;
-      onStatus(
-        reward
-          ? `Vitória ${fightCount}! ${formatCombatRewardMessage(reward, gameState.lootConfig)}`
-          : `Vitória ${fightCount}!`,
-      );
+      if (reward) {
+        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
+      } else {
+        onStatus("Vitória!");
+      }
 
       if (!getState()?.characterJson.tower.continuousAttack) break;
       if (!canStartTowerCombat({ characterJson: gameState.characterJson })) break;
@@ -261,9 +252,7 @@ export async function runSingleTowerCombat(options: {
   if (!state) return "error";
 
   try {
-    onStatus("Calculando combate no servidor…");
     const { combat, patch } = await requestTowerCombat(slotIndex, false);
-    onStatus("Reproduzindo combate…");
 
     const liveArena = getLiveArena(panelEl);
     if (liveArena) {
@@ -280,11 +269,11 @@ export async function runSingleTowerCombat(options: {
 
     if (combat.outcome === "player_win") {
       const reward = combat.rewards;
-      onStatus(
-        reward
-          ? `Vitória! ${formatCombatRewardMessage(reward, gameState.lootConfig)}`
-          : "Vitória!",
-      );
+      if (reward) {
+        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
+      } else {
+        onStatus("Vitória!");
+      }
       return "win";
     }
 
