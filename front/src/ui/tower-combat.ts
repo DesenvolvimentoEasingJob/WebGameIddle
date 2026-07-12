@@ -2,8 +2,29 @@ import type { SpriteAnimator } from "../animation/SpriteAnimator";
 import type { TowerCombatResult } from "../api/gameplay";
 import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 
+/** Duração aproximada de um swing (6 frames @ 12fps + folga do fallback sem sheet). */
+const ATTACK_SWING_MS = 520;
+const CRITICAL_SWING_MS = 650;
+const TURN_GAP_MS = 320;
+
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+/** Tempo total que o replay visual levaria — usado para pacing headless. */
+export function estimateTowerCombatDurationMs(combat: TowerCombatResult): number {
+  let total = 0;
+  for (const turn of combat.turns) {
+    total += turn.kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS;
+    total += TURN_GAP_MS;
+  }
+  return total;
+}
+
+/** Espera o mesmo tempo do combate animado, sem precisar da arena. */
+export async function awaitTowerCombatTiming(combat: TowerCombatResult): Promise<void> {
+  const ms = estimateTowerCombatDurationMs(combat);
+  if (ms > 0) await delay(ms);
 }
 
 function resolveCombatStages(arena: HTMLElement): {
@@ -19,6 +40,7 @@ function resolveCombatStages(arena: HTMLElement): {
     enemyHpBar: arena.querySelector<HTMLElement>('[data-combat-hp="enemy"]'),
   };
 }
+
 function playAnimation(
   animator: SpriteAnimator,
   kind: "attack" | "critical",
@@ -77,6 +99,7 @@ function showDamageFloater(
 
   window.setTimeout(() => floater.remove(), 1100);
 }
+
 /** Reproduz animações e números de dano com base no log assinado pelo backend. */
 export async function playTowerCombatReplay(
   arena: HTMLElement,
@@ -95,17 +118,22 @@ export async function playTowerCombatReplay(
   arena.classList.add("tower-arena--combat");
 
   for (const turn of combat.turns) {
+    // Só aborta se a arena sumir de verdade; torre "parked" continua conectada.
     if (!arena.isConnected) break;
+    if (document.hidden) break;
 
     const isPlayer = turn.actor === "player";
     const animator = isPlayer ? resolvedAnimators.player : resolvedAnimators.enemy;
-    const targetStage = isPlayer ? enemyStage : playerStage;    const kind = turn.kind === "critical" ? "critical" : "attack";
+    const targetStage = isPlayer ? enemyStage : playerStage;
+    const kind = turn.kind === "critical" ? "critical" : "attack";
 
     if (animator) {
       await playAnimation(animator, kind);
     } else {
-      await delay(kind === "critical" ? 650 : 520);
+      await delay(kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS);
     }
+
+    if (!arena.isConnected || document.hidden) break;
 
     if (targetStage) {
       showDamageFloater(targetStage, turn.damage, {
@@ -117,7 +145,7 @@ export async function playTowerCombatReplay(
     updateCombatHpBar(playerHpBar, turn.playerHpRemaining, combat.playerMaxHp);
     updateCombatHpBar(enemyHpBar, turn.enemyHpRemaining, combat.enemyMaxHp);
 
-    await delay(320);
+    await delay(TURN_GAP_MS);
   }
 
   resolvedAnimators.player?.play("idle");

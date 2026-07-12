@@ -156,7 +156,10 @@ export function renderGameHub(root: HTMLElement): void {
 
       <main class="game-main" aria-live="polite">
         <div id="game-panel" class="game-panel">
-          <p class="game-loading">Carregando personagem…</p>
+          <div id="panel-tower" class="game-panel-layer" data-panel="tower" hidden></div>
+          <div id="panel-tab" class="game-panel-layer game-panel-layer--active" data-panel="tab">
+            <p class="game-loading">Carregando personagem…</p>
+          </div>
         </div>
         <p id="game-error" class="auth-error" role="alert" hidden></p>
       </main>
@@ -167,11 +170,12 @@ export function renderGameHub(root: HTMLElement): void {
   document.querySelector(".app-main")?.classList.add("app-main--game");
   document.querySelector(".col-12")?.classList.add("col-game-full");
 
-  const panelEl = root.querySelector<HTMLElement>("#game-panel")!;
   const errorEl = root.querySelector<HTMLParagraphElement>("#game-error")!;
 
   root.querySelector<HTMLButtonElement>("#game-exit")!.addEventListener("click", () => {
+    stopTowerCombatLoop();
     destroyTowerSprites();
+    busy = false;
     resetGameCache();
     document.getElementById("game-title")?.removeAttribute("hidden");
     document.querySelector(".app-main")?.classList.remove("app-main--game");
@@ -181,14 +185,10 @@ export function renderGameHub(root: HTMLElement): void {
 
   root.querySelectorAll<HTMLButtonElement>(".game-nav .ui-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const nextTab = btn.dataset.tab as GameTab;
-      if (activeTab === "tower" && nextTab !== "tower") {
-        resetTowerCombatUiState();
-      }
-      activeTab = nextTab;
+      activeTab = btn.dataset.tab as GameTab;
       root.querySelectorAll(".game-nav .ui-btn").forEach((b) => b.classList.remove("ui-btn--active"));
       btn.classList.add("ui-btn--active");
-      renderActivePanel(panelEl);
+      renderActivePanel();
     });
   });
 
@@ -201,7 +201,7 @@ export function renderGameHub(root: HTMLElement): void {
     applyProfileAvatar(root, meta.raceId);
   }
 
-  void loadGame(slotIndex, panelEl, errorEl, root);
+  void loadGame(slotIndex, errorEl, root);
 }
 
 function applyProfileAvatar(root: HTMLElement, raceId: string): void {
@@ -218,7 +218,6 @@ function applyProfileAvatar(root: HTMLElement, raceId: string): void {
 
 async function loadGame(
   slotIndex: number,
-  panelEl: HTMLElement,
   errorEl: HTMLParagraphElement,
   root: HTMLElement,
 ): Promise<void> {
@@ -240,11 +239,51 @@ async function loadGame(
   try {
     cachedState = initGameCacheFromBootstrap(await fetchGameState(slotIndex));
     updateSidebar(root, cachedState);
-    renderActivePanel(panelEl);
+    renderActivePanel();
+    maybeResumeContinuousCombat();
   } catch (err) {
-    panelEl.innerHTML = "";
+    getTabLayer().innerHTML = "";
     errorEl.textContent = formatApiError(err, "Não foi possível entrar no jogo.");
     errorEl.hidden = false;
+  }
+}
+
+function getTowerLayer(): HTMLElement {
+  return document.querySelector<HTMLElement>("#panel-tower")!;
+}
+
+function getTabLayer(): HTMLElement {
+  return document.querySelector<HTMLElement>("#panel-tab")!;
+}
+
+function isTowerMounted(): boolean {
+  return getTowerLayer().querySelector(".tower-layout") != null;
+}
+
+/** Mostra a aba pedida sem desmontar a torre (animações continuam parked). */
+function syncPanelLayers(): void {
+  const tower = getTowerLayer();
+  const tab = getTabLayer();
+
+  if (activeTab === "tower") {
+    tower.hidden = false;
+    tower.classList.add("game-panel-layer--active");
+    tower.classList.remove("game-panel-layer--parked");
+    tab.hidden = true;
+    tab.classList.remove("game-panel-layer--active");
+    return;
+  }
+
+  tab.hidden = false;
+  tab.classList.add("game-panel-layer--active");
+
+  if (isTowerMounted()) {
+    tower.hidden = false;
+    tower.classList.remove("game-panel-layer--active");
+    tower.classList.add("game-panel-layer--parked");
+  } else {
+    tower.hidden = true;
+    tower.classList.remove("game-panel-layer--active", "game-panel-layer--parked");
   }
 }
 
@@ -322,21 +361,14 @@ function updateVitalBar(
   bar.setAttribute("aria-valuetext", valueText);
 }
 
-function resetTowerCombatUiState(): void {
-  stopTowerCombatLoop();
-  destroyTowerSprites();
-  busy = false;
-}
-
-function renderActivePanel(panelEl: HTMLElement): void {
+function renderActivePanel(options?: { forceTowerRemount?: boolean }): void {
   if (!cachedState) return;
 
-  if (activeTab !== "tower") {
-    resetTowerCombatUiState();
-  }
+  syncPanelLayers();
 
   if (activeTab === "inventory") {
-    panelEl.innerHTML = renderInventoryPanel({
+    const tabLayer = getTabLayer();
+    tabLayer.innerHTML = renderInventoryPanel({
       state: cachedState,
       selectedInstanceId,
       busy,
@@ -346,29 +378,30 @@ function renderActivePanel(panelEl: HTMLElement): void {
       onDiscard: () => {},
     });
 
-    bindInventoryPanel(panelEl, {
+    bindInventoryPanel(tabLayer, {
       state: cachedState,
       selectedInstanceId,
       busy,
       onSelect: (id) => {
         selectedInstanceId = id;
-        renderActivePanel(panelEl);
+        renderActivePanel();
       },
       onEquip: (instanceId) => {
-        void handleEquip(instanceId, panelEl);
+        void handleEquip(instanceId);
       },
       onUnequip: (equipSlot) => {
-        void handleUnequip(equipSlot, panelEl);
+        void handleUnequip(equipSlot);
       },
       onDiscard: (instanceId) => {
-        void handleDiscard(instanceId, panelEl);
+        void handleDiscard(instanceId);
       },
     });
     return;
   }
 
   if (activeTab === "tower") {
-    mountTowerPanel(panelEl, {
+    ensureTowerMounted({
+      force: options?.forceTowerRemount === true,
       autoStart:
         Boolean(cachedState.characterJson.tower.continuousAttack) &&
         canStartTowerCombat(cachedState) &&
@@ -382,7 +415,7 @@ function renderActivePanel(panelEl: HTMLElement): void {
     market: "Mercado",
   };
 
-  panelEl.innerHTML = `
+  getTabLayer().innerHTML = `
     <div class="game-panel__placeholder">
       <h2 class="game-panel__title">${labels[activeTab]}</h2>
       <p>Em breve — primeiro equipe seu personagem no inventário.</p>
@@ -390,10 +423,10 @@ function renderActivePanel(panelEl: HTMLElement): void {
   `;
 }
 
-async function handleEquip(instanceId: string, panelEl: HTMLElement): Promise<void> {
+async function handleEquip(instanceId: string): Promise<void> {
   if (busy || !cachedState) return;
   busy = true;
-  renderActivePanel(panelEl);
+  renderActivePanel();
 
   try {
     cachedState = applyGamePatch(cachedState, await equipItem(getActiveSlot(), instanceId));
@@ -403,14 +436,14 @@ async function handleEquip(instanceId: string, panelEl: HTMLElement): Promise<vo
     showGameError(formatApiError(err, "Falha ao equipar."));
   } finally {
     busy = false;
-    renderActivePanel(panelEl);
+    renderActivePanel();
   }
 }
 
-async function handleUnequip(equipSlot: string, panelEl: HTMLElement): Promise<void> {
+async function handleUnequip(equipSlot: string): Promise<void> {
   if (busy || !cachedState) return;
   busy = true;
-  renderActivePanel(panelEl);
+  renderActivePanel();
 
   try {
     cachedState = applyGamePatch(cachedState, await unequipItem(getActiveSlot(), equipSlot));
@@ -419,14 +452,14 @@ async function handleUnequip(equipSlot: string, panelEl: HTMLElement): Promise<v
     showGameError(formatApiError(err, "Falha ao desequipar."));
   } finally {
     busy = false;
-    renderActivePanel(panelEl);
+    renderActivePanel();
   }
 }
 
-async function handleDiscard(instanceId: string, panelEl: HTMLElement): Promise<void> {
+async function handleDiscard(instanceId: string): Promise<void> {
   if (busy || !cachedState) return;
   busy = true;
-  renderActivePanel(panelEl);
+  renderActivePanel();
 
   try {
     cachedState = applyGamePatch(cachedState, await discardItem(getActiveSlot(), instanceId));
@@ -436,8 +469,20 @@ async function handleDiscard(instanceId: string, panelEl: HTMLElement): Promise<
     showGameError(formatApiError(err, "Falha ao descartar."));
   } finally {
     busy = false;
-    renderActivePanel(panelEl);
+    renderActivePanel();
   }
+}
+
+function ensureTowerMounted(options?: { autoStart?: boolean; force?: boolean }): void {
+  if (!cachedState) return;
+
+  // Durante o farm contínuo a arena precisa permanecer intacta (sprites + HP mid-fight).
+  if (isTowerMounted() && isTowerCombatLoopRunning() && options?.force !== true) {
+    setTowerControlsDisabled(getTowerLayer(), true);
+    return;
+  }
+
+  mountTowerPanel(getTowerLayer(), { autoStart: options?.autoStart });
 }
 
 function mountTowerPanel(panelEl: HTMLElement, options?: { autoStart?: boolean }): void {
@@ -445,6 +490,7 @@ function mountTowerPanel(panelEl: HTMLElement, options?: { autoStart?: boolean }
 
   towerBindSerial += 1;
   destroyTowerSprites();
+  panelEl.hidden = false;
   panelEl.innerHTML = renderTowerPanel({
     state: cachedState,
     username: getStoredUser()?.username ?? "Aventureiro",
@@ -453,23 +499,29 @@ function mountTowerPanel(panelEl: HTMLElement, options?: { autoStart?: boolean }
   bindTowerCombat(panelEl, options);
   bindTowerFloorNav(panelEl, {
     onNavigate: (direction) => {
-      const root = document.querySelector(".game-hub") as HTMLElement | null;
       const errorEl = document.querySelector<HTMLParagraphElement>("#game-error");
-      if (root && errorEl) {
-        void handleNavigateFloor(direction, panelEl, errorEl);
+      if (errorEl) {
+        void handleNavigateFloor(direction, errorEl);
       }
     },
   });
+
+  if (isTowerCombatLoopRunning()) {
+    setTowerControlsDisabled(panelEl, true);
+  }
+
+  syncPanelLayers();
 }
 
-async function handleStartCombat(panelEl: HTMLElement): Promise<void> {
+async function handleStartCombat(): Promise<void> {
   if (busy || !cachedState) return;
 
+  const panelEl = getTowerLayer();
   const btn = panelEl.querySelector<HTMLButtonElement>("#tower-start-combat");
   if (!btn) return;
 
   if (cachedState.characterJson.tower.continuousAttack) {
-    void startContinuousCombat(panelEl);
+    void startContinuousCombat();
     return;
   }
 
@@ -499,15 +551,26 @@ async function handleStartCombat(panelEl: HTMLElement): Promise<void> {
   }
 
   busy = false;
-  renderActivePanel(panelEl);
+  renderActivePanel({ forceTowerRemount: true });
 }
 
-function startContinuousCombat(panelEl: HTMLElement): void {
-  if (busy || isTowerCombatLoopRunning() || !cachedState) return;
-  if (!cachedState.characterJson.tower.continuousAttack) return;
+function maybeResumeContinuousCombat(): void {
+  if (!cachedState?.characterJson.tower.continuousAttack) return;
+  if (!canStartTowerCombat(cachedState)) return;
+  if (isTowerCombatLoopRunning()) return;
+  ensureTowerMounted({ autoStart: false });
+  startContinuousCombat();
+}
 
-  busy = true;
+function startContinuousCombat(): void {
+  if (isTowerCombatLoopRunning() || !cachedState) return;
+  if (!cachedState.characterJson.tower.continuousAttack) return;
+  if (!canStartTowerCombat(cachedState)) return;
+
+  ensureTowerMounted({ autoStart: false });
+  const panelEl = getTowerLayer();
   setTowerControlsDisabled(panelEl, true);
+  syncPanelLayers();
 
   void runTowerCombatLoop({
     slotIndex: getActiveSlot(),
@@ -521,7 +584,8 @@ function startContinuousCombat(panelEl: HTMLElement): void {
       if (root) updateSidebar(root as HTMLElement, state);
     },
     onPanelRefresh: () => {
-      if (activeTab !== "tower" || !cachedState) return;
+      if (!cachedState) return;
+      // Remount só a torre; inventário/mercado em outras camadas não são afetados.
       mountTowerPanel(panelEl, { autoStart: false });
       setTowerControlsDisabled(panelEl, true);
     },
@@ -540,11 +604,10 @@ function startContinuousCombat(panelEl: HTMLElement): void {
           },
         };
       }
-      void disableContinuousAttackAfterDefeat(panelEl);
+      void disableContinuousAttackAfterDefeat();
     },
     onFinished: () => {
-      busy = false;
-      if (activeTab === "tower" && cachedState) {
+      if (cachedState && isTowerMounted()) {
         mountTowerPanel(panelEl, { autoStart: false });
       }
     },
@@ -552,7 +615,8 @@ function startContinuousCombat(panelEl: HTMLElement): void {
 }
 
 function setTowerControlsDisabled(panelEl: HTMLElement, disabled: boolean): void {
-  panelEl.querySelector<HTMLButtonElement>("#tower-start-combat")!.disabled = disabled;
+  const combatBtn = panelEl.querySelector<HTMLButtonElement>("#tower-start-combat");
+  if (combatBtn) combatBtn.disabled = disabled;
   panelEl.querySelector<HTMLButtonElement>("#tower-floor-up")?.toggleAttribute("disabled", disabled);
   panelEl.querySelector<HTMLButtonElement>("#tower-floor-down")?.toggleAttribute("disabled", disabled);
   panelEl.querySelector<HTMLButtonElement>("#tower-repeat-floor")?.toggleAttribute("disabled", disabled);
@@ -562,30 +626,29 @@ function bindTowerCombat(panelEl: HTMLElement, options?: { autoStart?: boolean }
   const bindId = towerBindSerial;
 
   panelEl.querySelector<HTMLButtonElement>("#tower-start-combat")?.addEventListener("click", () => {
-    void handleStartCombat(panelEl);
+    void handleStartCombat();
   });
   panelEl.querySelector<HTMLButtonElement>("#tower-repeat-floor")?.addEventListener("click", () => {
-    void handleRepeatFloor(panelEl);
+    void handleRepeatFloor();
   });
   panelEl.querySelector<HTMLInputElement>("#tower-continuous-attack")?.addEventListener("change", (e) => {
-    void handleContinuousAttackChange((e.target as HTMLInputElement).checked, panelEl);
+    void handleContinuousAttackChange((e.target as HTMLInputElement).checked);
   });
 
   if (options?.autoStart !== true) return;
   if (!cachedState?.characterJson.tower.continuousAttack || !canStartTowerCombat(cachedState)) return;
-  if (busy || isTowerCombatLoopRunning()) return;
+  if (isTowerCombatLoopRunning()) return;
 
   void waitForTowerAnimatorsReady().then(() => {
     if (bindId !== towerBindSerial) return;
-    if (busy || isTowerCombatLoopRunning() || activeTab !== "tower" || !cachedState) return;
+    if (isTowerCombatLoopRunning() || !cachedState) return;
     if (!cachedState.characterJson.tower.continuousAttack || !canStartTowerCombat(cachedState)) return;
-    startContinuousCombat(panelEl);
+    startContinuousCombat();
   });
 }
 
 async function handleNavigateFloor(
   direction: "up" | "down",
-  panelEl: HTMLElement,
   errorEl: HTMLParagraphElement,
 ): Promise<void> {
   if (busy || !cachedState) return;
@@ -598,7 +661,7 @@ async function handleNavigateFloor(
     errorEl.hidden = true;
     const root = document.querySelector(".game-hub");
     if (root) updateSidebar(root as HTMLElement, cachedState);
-    renderActivePanel(panelEl);
+    renderActivePanel({ forceTowerRemount: true });
   } catch (err) {
     showGameError(formatApiError(err, "Falha ao trocar de andar."));
   } finally {
@@ -606,7 +669,7 @@ async function handleNavigateFloor(
   }
 }
 
-async function handleRepeatFloor(panelEl: HTMLElement): Promise<void> {
+async function handleRepeatFloor(): Promise<void> {
   if (busy || !cachedState) return;
 
   stopTowerCombatLoop();
@@ -618,7 +681,7 @@ async function handleRepeatFloor(panelEl: HTMLElement): Promise<void> {
     if (errorEl) errorEl.hidden = true;
     const root = document.querySelector(".game-hub");
     if (root) updateSidebar(root as HTMLElement, cachedState);
-    renderActivePanel(panelEl);
+    renderActivePanel({ forceTowerRemount: true });
   } catch (err) {
     showGameError(formatApiError(err, "Falha ao repetir o andar."));
   } finally {
@@ -649,7 +712,7 @@ async function handleAutoAscendChange(checked: boolean, errorEl: HTMLParagraphEl
   }
 }
 
-async function disableContinuousAttackAfterDefeat(panelEl: HTMLElement): Promise<void> {
+async function disableContinuousAttackAfterDefeat(): Promise<void> {
   if (!cachedState?.characterJson.tower.continuousAttack) return;
 
   try {
@@ -673,17 +736,22 @@ async function disableContinuousAttackAfterDefeat(panelEl: HTMLElement): Promise
 
   const root = document.querySelector(".game-hub");
   if (root) updateSidebar(root as HTMLElement, cachedState);
-  renderActivePanel(panelEl);
+  if (activeTab === "tower") {
+    renderActivePanel({ forceTowerRemount: true });
+  } else if (isTowerMounted()) {
+    mountTowerPanel(getTowerLayer(), { autoStart: false });
+    syncPanelLayers();
+  }
 }
 
-async function handleContinuousAttackChange(checked: boolean, panelEl: HTMLElement): Promise<void> {
+async function handleContinuousAttackChange(checked: boolean): Promise<void> {
   if (!cachedState) return;
 
+  const panelEl = getTowerLayer();
   const errorEl = document.querySelector<HTMLParagraphElement>("#game-error");
 
   if (!checked) {
     stopTowerCombatLoop();
-    busy = false;
   }
 
   try {
@@ -698,9 +766,13 @@ async function handleContinuousAttackChange(checked: boolean, panelEl: HTMLEleme
 
     if (checked) {
       towerBindSerial += 1;
-      startContinuousCombat(panelEl);
-    } else {
-      renderActivePanel(panelEl);
+      startContinuousCombat();
+      setTowerControlsDisabled(panelEl, true);
+    } else if (activeTab === "tower") {
+      renderActivePanel({ forceTowerRemount: true });
+    } else if (isTowerMounted()) {
+      mountTowerPanel(panelEl, { autoStart: false });
+      syncPanelLayers();
     }
   } catch (err) {
     if (errorEl) {

@@ -1014,6 +1014,7 @@ body {
 }
 
 .game-panel {
+  position: relative;
   flex: 1;
   padding: 0.85rem 0.75rem;
   border-style: solid;
@@ -1023,6 +1024,23 @@ body {
   image-rendering: pixelated;
   filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.55));
   min-height: 400px;
+}
+
+/* Torre fica no DOM (parked) ao trocar de aba — animações / HP seguem vivos. */
+.game-panel-layer--active {
+  position: relative;
+  z-index: 1;
+  visibility: visible;
+}
+
+.game-panel-layer--parked {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  visibility: hidden;
+  pointer-events: none;
+  padding: inherit;
+  overflow: hidden;
 }
 
 .game-panel__title {

@@ -122,7 +122,12 @@ export class SpriteAnimator {
   }
 
   destroy(): void {
-    this.stop();
+    const pendingEnd = this.playOptions?.onEnd;
+    this.stopLoop();
+    this.isPlaying = false;
+    this.playOptions = null;
+    // Resolve waiters (ex.: replay de combate) se a sheet sumir ao trocar de aba.
+    pendingEnd?.();
     this.element.style.backgroundImage = "";
     this.element.classList.remove("sprite-sheet", "sprite-sheet--flip-x");
   }
