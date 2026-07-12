@@ -8,17 +8,33 @@ export interface TowerPanelOptions {
   username: string;
 }
 
+function getEnemyAtIndex(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  index: number,
+): TowerMobSummary {
+  if (index >= floor.mobCount) return floor.boss;
+  const pool = floor.mobPool;
+  if (pool.length === 0) return floor.boss;
+  return pool[index % pool.length]!;
+}
+
 function getCurrentEnemy(
   floor: NonNullable<GameStateResponse["currentFloor"]>,
   tower: GameStateResponse["characterJson"]["tower"],
 ): TowerMobSummary {
   if (tower.bossDefeated) return floor.boss;
-  if (tower.mobsKilledThisFloor >= floor.mobCount) return floor.boss;
+  return getEnemyAtIndex(floor, tower.mobsKilledThisFloor);
+}
 
-  const pool = floor.mobPool;
-  if (pool.length === 0) return floor.boss;
-
-  return pool[tower.mobsKilledThisFloor % pool.length];
+/** Inimigo seguinte na rota do andar (após o alvo atual), se houver. */
+export function getNextTowerEnemy(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  tower: GameStateResponse["characterJson"]["tower"],
+): TowerMobSummary | null {
+  if (tower.bossDefeated) return null;
+  const nextIndex = tower.mobsKilledThisFloor + 1;
+  if (nextIndex > floor.mobCount) return null;
+  return getEnemyAtIndex(floor, nextIndex);
 }
 
 export function getCurrentTowerEnemy(
@@ -35,6 +51,57 @@ function progressPhaseLabel(
   if (tower.bossDefeated) return "Chefe derrotado";
   if (facingBoss) return "Chefe aguardando";
   return "Em progresso";
+}
+
+function renderTargetCard(options: {
+  role: "current" | "next";
+  label: string;
+  enemy: TowerMobSummary | null;
+  isBoss: boolean;
+  emptyText?: string;
+}): string {
+  const { role, label, enemy, isBoss, emptyText = "Nenhum inimigo restante" } = options;
+
+  if (!enemy) {
+    return `
+      <section class="tower-target tower-target--${role} tower-target--empty" data-tower-target="${role}" aria-label="${label}">
+        <p class="tower-target__label">${label}</p>
+        <p class="tower-target__empty">${emptyText}</p>
+      </section>
+    `;
+  }
+
+  const icon = resolveMobIcon(enemy.id, enemy.assets);
+
+  return `
+    <section class="tower-target tower-target--${role}" data-tower-target="${role}" aria-label="${label}">
+      <p class="tower-target__label">${label}</p>
+      <div class="tower-target__main">
+        <div class="tower-target__frame${isBoss ? " tower-target__frame--boss" : ""}">
+          <img
+            class="tower-target__icon"
+            src="${icon}"
+            alt=""
+            aria-hidden="true"
+            data-tower-target-icon
+          />
+        </div>
+        <div class="tower-target__info">
+          <h3 class="tower-target__name">${enemy.name}</h3>
+          <p class="tower-target__stats">
+            Nv. ${enemy.level}
+            · HP ${enemy.hp.toLocaleString("pt-BR")}
+            · ATK ${enemy.attack.toLocaleString("pt-BR")}
+            · DEF ${enemy.defense.toLocaleString("pt-BR")}
+          </p>
+          <p class="tower-target__reward">
+            +${enemy.xp.toLocaleString("pt-BR")} XP
+            · +${enemy.gold.toLocaleString("pt-BR")} ouro
+          </p>
+        </div>
+      </div>
+    </section>
+  `;
 }
 
 /** Controles / progresso da torre — a arena fica no dock persistente. */
@@ -62,8 +129,9 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
   const canRepeat = tower.bossDefeated;
   const combatLabel = facingBoss ? "Enfrentar chefe" : "Iniciar combate";
   const currentEnemy = getCurrentEnemy(floor, tower);
-  const currentIcon = resolveMobIcon(currentEnemy.id, currentEnemy.assets);
-  const isBossTarget = facingBoss || tower.bossDefeated;
+  const nextEnemy = getNextTowerEnemy(floor, tower);
+  const currentIsBoss = facingBoss || tower.bossDefeated || killed >= mobCount;
+  const nextIsBoss = nextEnemy != null && nextEnemy.id === floor.boss.id;
   const phase = progressPhaseLabel(tower, facingBoss);
   const progressPct = Math.min(
     100,
@@ -90,33 +158,42 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
       </header>
 
       <div class="tower-mission-body">
-        <section class="tower-target" aria-label="Alvo atual">
-          <p class="tower-target__label">${isBossTarget ? "Chefe do andar" : "Próximo alvo"}</p>
-          <div class="tower-target__main">
-            <div class="tower-target__frame${isBossTarget ? " tower-target__frame--boss" : ""}">
-              <img
-                class="tower-target__icon"
-                src="${currentIcon}"
-                alt=""
-                aria-hidden="true"
-                data-tower-target-icon
-              />
-            </div>
-            <div class="tower-target__info">
-              <h3 class="tower-target__name">${currentEnemy.name}</h3>
-              <p class="tower-target__stats">
-                Nv. ${currentEnemy.level}
-                · HP ${currentEnemy.hp.toLocaleString("pt-BR")}
-                · ATK ${currentEnemy.attack.toLocaleString("pt-BR")}
-                · DEF ${currentEnemy.defense.toLocaleString("pt-BR")}
-              </p>
-              <p class="tower-target__reward">
-                +${currentEnemy.xp.toLocaleString("pt-BR")} XP
-                · +${currentEnemy.gold.toLocaleString("pt-BR")} ouro
-              </p>
-            </div>
-          </div>
-        </section>
+        <div class="tower-target-stack">
+          ${renderTargetCard({
+            role: "current",
+            label: "Alvo atual",
+            enemy: currentEnemy,
+            isBoss: currentIsBoss,
+          })}
+          ${renderTargetCard({
+            role: "next",
+            label: "Próximo alvo",
+            enemy: nextEnemy,
+            isBoss: nextIsBoss,
+            emptyText: tower.bossDefeated ? "Andar concluído" : "Fim da rota do andar",
+          })}
+        </div>
+
+        <div class="tower-farm-options" aria-label="Opções de farm">
+          <label class="tower-actions__continuous">
+            <input
+              id="tower-continuous-attack"
+              class="ui-checkbox"
+              type="checkbox"
+              ${(tower.continuousAttack ?? false) ? "checked" : ""}
+            />
+            Ataque contínuo
+          </label>
+          <label class="tower-actions__continuous">
+            <input
+              id="tower-auto-ascend"
+              class="ui-checkbox"
+              type="checkbox"
+              ${(tower.autoAscend ?? false) ? "checked" : ""}
+            />
+            Subir andar automaticamente
+          </label>
+        </div>
 
         <aside class="tower-mission-side" aria-label="Rota do andar">
           <section class="tower-track" aria-label="Inimigos do andar">
@@ -180,26 +257,6 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
 
       <footer class="tower-actions tower-actions--bar">
         ${renderTowerFloorNav({ tower })}
-        <div class="tower-actions__toggles">
-          <label class="tower-actions__continuous">
-            <input
-              id="tower-continuous-attack"
-              class="ui-checkbox"
-              type="checkbox"
-              ${(tower.continuousAttack ?? false) ? "checked" : ""}
-            />
-            Ataque contínuo
-          </label>
-          <label class="tower-actions__continuous">
-            <input
-              id="tower-auto-ascend"
-              class="ui-checkbox"
-              type="checkbox"
-              ${(tower.autoAscend ?? false) ? "checked" : ""}
-            />
-            Subir andar automaticamente
-          </label>
-        </div>
         <div class="tower-actions__buttons">
           ${
             canRepeat

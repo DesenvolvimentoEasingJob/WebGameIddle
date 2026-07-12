@@ -2,7 +2,7 @@ import type { GameStateResponse, TowerMobSummary } from "../api/gameplay";
 import { resolveMobIcon } from "./game-assets";
 import { getTowerFloorNavState } from "./tower-navigation";
 import { canStartTowerCombat } from "./tower-combat";
-import { getCurrentTowerEnemy } from "./tower-panel";
+import { getCurrentTowerEnemy, getNextTowerEnemy } from "./tower-panel";
 import { rebindEnemySprite } from "./tower-sprites";
 
 export function updateTowerPanelAfterCombat(
@@ -21,6 +21,9 @@ export function updateTowerPanelAfterCombat(
   const facingBoss = !tower.bossDefeated && killed >= mobCount;
   const bossDefeated = tower.bossDefeated;
   const currentEnemy = getCurrentTowerEnemy(floor, tower);
+  const nextEnemy = getNextTowerEnemy(floor, tower);
+  const currentIsBoss = facingBoss || bossDefeated || killed >= mobCount;
+  const nextIsBoss = nextEnemy != null && nextEnemy.id === floor.boss.id;
 
   const progressEl = panelEl.querySelector<HTMLElement>(".tower-header__progress");
   if (progressEl) {
@@ -43,7 +46,14 @@ export function updateTowerPanelAfterCombat(
   if (pctEl) pctEl.textContent = `${progressPct}%`;
 
   updateTowerTrack(panelEl, tower, killed, facingBoss);
-  updateTowerTargetCard(panelEl, currentEnemy, facingBoss || tower.bossDefeated);
+  updateTowerTargetCard(panelEl, "current", currentEnemy, currentIsBoss);
+  updateTowerTargetCard(
+    panelEl,
+    "next",
+    nextEnemy,
+    nextIsBoss,
+    bossDefeated ? "Andar concluído" : "Fim da rota do andar",
+  );
 
   const enemyFigure = panelEl.querySelector<HTMLElement>(".tower-fighter--enemy");
   if (enemyFigure) {
@@ -85,14 +95,55 @@ export function updateTowerPanelAfterCombat(
 
 function updateTowerTargetCard(
   panelEl: HTMLElement,
-  enemy: TowerMobSummary,
+  role: "current" | "next",
+  enemy: TowerMobSummary | null,
   isBossTarget: boolean,
+  emptyText = "Nenhum inimigo restante",
 ): void {
-  const target = panelEl.querySelector<HTMLElement>(".tower-target");
+  const target = panelEl.querySelector<HTMLElement>(`[data-tower-target="${role}"]`);
   if (!target) return;
 
-  const label = target.querySelector<HTMLElement>(".tower-target__label");
-  if (label) label.textContent = isBossTarget ? "Chefe do andar" : "Próximo alvo";
+  const labelText = role === "current" ? "Alvo atual" : "Próximo alvo";
+  let label = target.querySelector<HTMLElement>(".tower-target__label");
+  if (!label) {
+    label = document.createElement("p");
+    label.className = "tower-target__label";
+    target.prepend(label);
+  }
+  label.textContent = labelText;
+
+  if (!enemy) {
+    target.classList.add("tower-target--empty");
+    target.querySelector(".tower-target__main")?.remove();
+    let empty = target.querySelector<HTMLElement>(".tower-target__empty");
+    if (!empty) {
+      empty = document.createElement("p");
+      empty.className = "tower-target__empty";
+      target.appendChild(empty);
+    }
+    empty.textContent = emptyText;
+    return;
+  }
+
+  target.classList.remove("tower-target--empty");
+  target.querySelector(".tower-target__empty")?.remove();
+
+  let main = target.querySelector<HTMLElement>(".tower-target__main");
+  if (!main) {
+    main = document.createElement("div");
+    main.className = "tower-target__main";
+    main.innerHTML = `
+      <div class="tower-target__frame">
+        <img class="tower-target__icon" src="" alt="" aria-hidden="true" data-tower-target-icon />
+      </div>
+      <div class="tower-target__info">
+        <h3 class="tower-target__name"></h3>
+        <p class="tower-target__stats"></p>
+        <p class="tower-target__reward"></p>
+      </div>
+    `;
+    target.appendChild(main);
+  }
 
   const frame = target.querySelector<HTMLElement>(".tower-target__frame");
   frame?.classList.toggle("tower-target__frame--boss", isBossTarget);
