@@ -27,6 +27,8 @@ public class GameStateInitializer(GameDataLoader gameData)
             ["continuousAttack"] = false,
             ["mobsKilledThisFloor"] = 0,
             ["bossDefeated"] = false,
+            ["totalMobsKilled"] = 0,
+            ["totalBossesKilled"] = 0,
         };
 
         document["inventory"] = new JsonObject
@@ -86,6 +88,18 @@ public class GameStateInitializer(GameDataLoader gameData)
         if (tower["continuousAttack"] is null)
         {
             tower["continuousAttack"] = false;
+            changed = true;
+        }
+
+        if (tower["totalMobsKilled"] is null)
+        {
+            tower["totalMobsKilled"] = 0;
+            changed = true;
+        }
+
+        if (tower["totalBossesKilled"] is null)
+        {
+            tower["totalBossesKilled"] = 0;
             changed = true;
         }
 

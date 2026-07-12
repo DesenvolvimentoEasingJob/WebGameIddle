@@ -584,6 +584,9 @@ public class GamePlayService(
 
         if (isBoss)
         {
+            var totalBosses = tower["totalBossesKilled"].GetInt32Value();
+            tower["totalBossesKilled"] = totalBosses + 1;
+
             var autoAscend = tower["autoAscend"]?.GetValue<bool>() ?? false;
             var continuousAttack = tower["continuousAttack"]?.GetValue<bool>() ?? false;
             var currentFloor = tower["currentFloor"].GetInt32Value(1);
@@ -610,6 +613,9 @@ public class GamePlayService(
         {
             var killed = tower["mobsKilledThisFloor"].GetInt32Value();
             tower["mobsKilledThisFloor"] = killed + 1;
+
+            var totalMobs = tower["totalMobsKilled"].GetInt32Value();
+            tower["totalMobsKilled"] = totalMobs + 1;
         }
 
         var classId = document["classId"]?.GetValue<string>();
@@ -702,23 +708,24 @@ public class GamePlayService(
         if (document is null)
             return (null, null, "Dados do personagem não encontrados.");
 
+        var needsSave = false;
+
         if (document["progression"] is null)
         {
             document = gameStateInitializer.EnsureGameState(document);
-            await storage.SaveAsync(userId, character.Id, document, ct);
-        }
-        else if (gameStateInitializer.EnsureEquipmentSlots(document))
-        {
-            document["updatedAt"] = DateTime.UtcNow.ToString("O");
-            await storage.SaveAsync(userId, character.Id, document, ct);
-        }
-        else if (gameStateInitializer.EnsureTowerFields(document))
-        {
-            document["updatedAt"] = DateTime.UtcNow.ToString("O");
-            await storage.SaveAsync(userId, character.Id, document, ct);
+            needsSave = true;
         }
 
+        if (gameStateInitializer.EnsureEquipmentSlots(document))
+            needsSave = true;
+
+        if (gameStateInitializer.EnsureTowerFields(document))
+            needsSave = true;
+
         if (gameDataItemEnsurer.EnsureDocumentItems(document))
+            needsSave = true;
+
+        if (needsSave)
         {
             document["updatedAt"] = DateTime.UtcNow.ToString("O");
             await storage.SaveAsync(userId, character.Id, document, ct);

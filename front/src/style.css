@@ -3056,6 +3056,17 @@ body:has(.app-bg--game) {
   font-variant-numeric: tabular-nums;
 }
 
+.status-column {
+  display: grid;
+  gap: 0.65rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.status-section--tower {
+  flex: 0 0 auto;
+}
+
 @media (max-width: 991.98px) {
   .status-header,
   .status-grid {
