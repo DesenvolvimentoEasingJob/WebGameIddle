@@ -93,7 +93,7 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
             type="checkbox"
             ${(tower.continuousAttack ?? false) ? "checked" : ""}
           />
-          Ataque contínuo — farmar este andar infinitamente
+          Ataque contínuo
         </label>
         <label class="tower-actions__continuous">
           <input
@@ -102,17 +102,8 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
             type="checkbox"
             ${(tower.autoAscend ?? false) ? "checked" : ""}
           />
-          Subir andar ao desbloquear
+          Subir andar automaticamente
         </label>
-        <p class="tower-actions__hint" id="tower-combat-status">
-          ${
-            (tower.continuousAttack ?? false)
-              ? "Ataque contínuo ativo — o combate roda no painel inferior em qualquer aba."
-              : tower.bossDefeated
-                ? "Andar concluído — repita para farmar ou troque de andar."
-                : "O combate aparece sempre no painel inferior. Inicie aqui ou ative o ataque contínuo."
-          }
-        </p>
         <div class="tower-actions__buttons">
           ${
             canRepeat
