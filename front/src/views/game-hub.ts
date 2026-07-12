@@ -77,15 +77,7 @@ export function renderGameHub(root: HTMLElement): void {
         <section class="game-tower-summary" aria-label="Torre Infinita">
           <h2 class="game-tower-summary__title">Torre Infinita</h2>
           <p class="game-tower-summary__floor">Andar: <strong id="tower-floor">—</strong></p>
-          <label class="game-tower-summary__auto">
-            <input id="tower-auto-ascend" class="ui-checkbox" type="checkbox" />
-            Subir andar ao desbloquear
-          </label>
           <p class="game-tower-summary__unlocked">Desbloqueado até: <span id="tower-unlocked">—</span></p>
-          <div class="game-tower-summary__progress">
-            <div id="tower-progress-bar" class="game-tower-summary__progress-bar" style="width: 0%"></div>
-          </div>
-          <p class="game-tower-summary__progress-label">Progresso: <span id="tower-progress-text">0 / 10</span></p>
         </section>
 
         <section class="game-stats" aria-label="Status do personagem">
@@ -203,10 +195,6 @@ export function renderGameHub(root: HTMLElement): void {
     });
   });
 
-  root.querySelector<HTMLInputElement>("#tower-auto-ascend")!.addEventListener("change", (e) => {
-    void handleAutoAscendChange((e.target as HTMLInputElement).checked, errorEl);
-  });
-
   const meta = getActiveCharacterMeta();
   if (meta.raceId) {
     applyProfileAvatar(root, meta.raceId);
@@ -300,15 +288,9 @@ function updateSidebar(root: HTMLElement, state: GameStateResponse): void {
   updateVitalBar(root, "#bar-xp", vitals.xp, char.progression.xp, xpToNext, "#bar-xp-text");
 
   const tower = char.tower;
-  const mobCount = state.currentFloor?.mobCount ?? 10;
-  const progress = tower.mobsKilledThisFloor ?? 0;
-  const pct = Math.min(100, Math.round((progress / mobCount) * 100));
 
   root.querySelector("#tower-floor")!.textContent = String(tower.currentFloor);
-  root.querySelector<HTMLInputElement>("#tower-auto-ascend")!.checked = tower.autoAscend;
   root.querySelector("#tower-unlocked")!.textContent = String(tower.unlockedFloor);
-  root.querySelector<HTMLElement>("#tower-progress-bar")!.style.width = `${pct}%`;
-  root.querySelector("#tower-progress-text")!.textContent = `${progress} / ${mobCount}`;
 
   root.querySelector("#stat-atk")!.textContent = formatNumber(stats.attack);
   root.querySelector("#stat-def")!.textContent = formatNumber(stats.defense);
@@ -677,6 +659,10 @@ function bindTowerCombat(panelEl: HTMLElement, options?: { autoStart?: boolean }
   panelEl.querySelector<HTMLInputElement>("#tower-continuous-attack")?.addEventListener("change", (e) => {
     void handleContinuousAttackChange((e.target as HTMLInputElement).checked);
   });
+  panelEl.querySelector<HTMLInputElement>("#tower-auto-ascend")?.addEventListener("change", (e) => {
+    const errorEl = document.querySelector<HTMLParagraphElement>("#game-error");
+    if (errorEl) void handleAutoAscendChange((e.target as HTMLInputElement).checked, errorEl);
+  });
 
   if (options?.autoStart !== true) return;
   if (!cachedState?.characterJson.tower.continuousAttack || !canStartTowerCombat(cachedState)) return;
@@ -747,10 +733,9 @@ async function handleAutoAscendChange(checked: boolean, errorEl: HTMLParagraphEl
   } catch (err) {
     errorEl.textContent = formatApiError(err, "Falha ao salvar preferência.");
     errorEl.hidden = false;
-    const root = document.querySelector(".game-hub");
-    if (root) {
-      root.querySelector<HTMLInputElement>("#tower-auto-ascend")!.checked =
-        cachedState.characterJson.tower.autoAscend;
+    const checkbox = document.querySelector<HTMLInputElement>("#tower-auto-ascend");
+    if (checkbox) {
+      checkbox.checked = cachedState.characterJson.tower.autoAscend;
     }
   }
 }
