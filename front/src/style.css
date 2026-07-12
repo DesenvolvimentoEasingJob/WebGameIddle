@@ -773,6 +773,14 @@ body:has(.app-bg--game) {
   margin-top: auto;
 }
 
+.game-sidebar__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
 .game-sidebar__avatar-wrap {
   position: relative;
   width: 72px;
@@ -809,6 +817,7 @@ body:has(.app-bg--game) {
   display: grid;
   gap: 0.1rem;
   min-width: 0;
+  justify-items: center;
 }
 
 .game-sidebar__name {
