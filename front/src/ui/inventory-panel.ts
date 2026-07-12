@@ -176,6 +176,12 @@ function renderItemDetail(
   const statSections = formatItemStatSections(entry, item.categories as CategoryTree | undefined);
   const canEquip = displayItem.slot !== null && displayItem.slot !== undefined;
   const isEquipped = equipSlot !== null;
+  const equippedComparison = !isEquipped && displayItem.slot
+    ? resolveEquippedItem(
+        options.state.characterJson.equipment[displayItem.slot],
+        options.state.itemCatalog,
+      )
+    : null;
 
   const iconUrl = resolveItemIcon(displayItem.assets);
 
@@ -213,11 +219,119 @@ function renderItemDetail(
         }
         ${
           !isEquipped
-            ? `<button type="button" class="ui-btn ui-btn--sm ui-btn--discard" data-action="discard" data-instance-id="${entry.instanceId}" ${options.busy ? "disabled" : ""}>Descartar</button>`
+            ? `${equippedComparison ? `<button type="button" class="ui-btn ui-btn--sm" data-action="compare">Comparar</button>` : ""}
+               <button type="button" class="ui-btn ui-btn--sm ui-btn--discard" data-action="discard" data-instance-id="${entry.instanceId}" ${options.busy ? "disabled" : ""}>Descartar</button>`
             : ""
         }
       </div>
     </div>
+    ${equippedComparison ? renderComparisonDialog(equippedComparison, { entry, item }, options) : ""}
+  `;
+}
+
+function resolveEquippedItem(
+  equipped: EquippedEntry | null | undefined,
+  catalog: Record<string, ItemSummary>,
+): { entry: InventoryEntry; item: ItemSummary } | null {
+  if (!equipped) return null;
+
+  const item = catalog[equipped.itemId];
+  if (!item) return null;
+
+  return {
+    entry: {
+      instanceId: equipped.instanceId,
+      itemId: equipped.itemId,
+      quantity: 1,
+      rarity: equipped.rarity,
+      rolledCategories: equipped.rolledCategories,
+      rolledAffixes: equipped.rolledAffixes,
+    },
+    item,
+  };
+}
+
+function renderComparisonDialog(
+  equipped: { entry: InventoryEntry; item: ItemSummary },
+  selected: { entry: InventoryEntry; item: ItemSummary },
+  options: InventoryPanelOptions,
+): string {
+  return `
+    <dialog class="ui-modal item-compare" aria-labelledby="item-compare-title">
+      <section class="ui-panel ui-panel--picker item-compare__panel" aria-label="Comparar atributos">
+        <div class="ui-divider" role="presentation"></div>
+        <div class="item-compare__content">
+          <header class="item-compare__header">
+            <p id="item-compare-title" class="wizard-step">Comparar itens</p>
+            <form method="dialog">
+              <button type="submit" class="ui-btn-close" aria-label="Fechar comparação"></button>
+            </form>
+          </header>
+          <div class="item-compare__grid">
+            ${renderComparisonItem("Equipado", equipped.entry, equipped.item, options.state.lootConfig)}
+            ${renderComparisonItem("Selecionado", selected.entry, selected.item, options.state.lootConfig)}
+          </div>
+          <div class="item-compare__actions">
+            <button
+              type="button"
+              class="ui-btn ui-btn--sm"
+              data-action="replace"
+              data-instance-id="${selected.entry.instanceId}"
+              ${options.busy ? "disabled" : ""}
+            >Substituir</button>
+          </div>
+        </div>
+        <div class="ui-divider ui-divider--flip" role="presentation"></div>
+      </section>
+    </dialog>
+  `;
+}
+
+function renderComparisonItem(
+  label: string,
+  entry: InventoryEntry,
+  item: ItemSummary,
+  lootConfig: GameStateResponse["lootConfig"],
+): string {
+  const displayItem = resolveDisplayItem(entry, item);
+  const rarityLabel = resolveRarityLabel(displayItem.rarity, lootConfig);
+  const statSections = formatItemStatSections(entry, item.categories as CategoryTree | undefined);
+  const iconUrl = resolveItemIcon(displayItem.assets);
+  const typeLine = `${displayItem.type}${displayItem.level ? ` · Nv. ${displayItem.level}` : ""}`;
+
+  return `
+    <section class="picker-preview item-compare__column" aria-label="${label}: ${displayItem.name}">
+      <span class="item-compare__label">${label}</span>
+      <div class="picker-preview__frame item-compare__icon-frame">
+        <img class="item-compare__icon" src="${iconUrl}" alt="" aria-hidden="true" />
+      </div>
+      <header class="inventory-detail__header item-compare__meta">
+        <h3 class="inventory-detail__name">${displayItem.name}</h3>
+        <span class="inventory-detail__rarity">${rarityLabel}</span>
+      </header>
+      <p class="inventory-detail__type">${typeLine}</p>
+      ${item.description ? `<p class="inventory-detail__desc">${displayItem.description}</p>` : ""}
+      ${
+        statSections.base.length
+          ? `<ul class="inventory-detail__stats">${statSections.base.map((stat) => `<li>${stat}</li>`).join("")}</ul>`
+          : ""
+      }
+      ${
+        statSections.additional.length
+          ? `<div class="inventory-detail__affixes">
+              <h4 class="inventory-detail__affixes-title">Atributos adicionais</h4>
+              <ul class="inventory-detail__stats inventory-detail__stats--affixes">
+                ${statSections.additional.map((stat) => `<li>${stat}</li>`).join("")}
+              </ul>
+            </div>`
+          : ""
+      }
+      ${
+        !statSections.base.length && !statSections.additional.length
+          ? `<p class="picker-preview__placeholder">Sem atributos.</p>`
+          : ""
+      }
+    </section>
   `;
 }
 
@@ -304,6 +418,23 @@ export function bindInventoryPanel(root: HTMLElement, options: InventoryPanelOpt
     const btn = e.currentTarget as HTMLButtonElement;
     const id = btn.dataset.instanceId;
     if (id) options.onDiscard(id);
+  });
+
+  const compareDialog = root.querySelector<HTMLDialogElement>(".ui-modal.item-compare");
+  root.querySelector<HTMLButtonElement>('[data-action="compare"]')?.addEventListener("click", () => {
+    compareDialog?.showModal();
+  });
+
+  compareDialog?.addEventListener("click", (event) => {
+    if (event.target === compareDialog) compareDialog.close();
+  });
+
+  compareDialog?.querySelector<HTMLButtonElement>('[data-action="replace"]')?.addEventListener("click", (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const id = btn.dataset.instanceId;
+    if (!id) return;
+    compareDialog?.close();
+    options.onEquip(id);
   });
 }
 

@@ -59,6 +59,7 @@ body {
 .ui-btn-close,
 .ui-atlas-btn,
 .ui-divider,
+.ui-modal,
 .game-sidebar,
 .game-panel,
 .inventory-bag__frame,
@@ -76,6 +77,7 @@ body {
 .atlas-ready .ui-btn-close,
 .atlas-ready .ui-atlas-btn,
 .atlas-ready .ui-divider,
+.atlas-ready .ui-modal,
 .atlas-ready .game-sidebar,
 .atlas-ready .game-panel,
 .atlas-ready .inventory-bag__frame,
@@ -1384,12 +1386,123 @@ body {
   opacity: 0.9;
 }
 
+.ui-modal {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
+}
+
+.ui-modal::backdrop {
+  background: rgba(5, 3, 10, 0.78);
+}
+
+.item-compare__panel {
+  width: min(620px, calc(100vw - 2rem));
+  max-width: none;
+  margin: 0;
+}
+
+.item-compare__content {
+  padding: 0.35rem 0.85rem 0.75rem;
+}
+
+.item-compare__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.item-compare__header .wizard-step {
+  margin: 0;
+}
+
+.item-compare__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.item-compare__column {
+  min-width: 0;
+  align-items: stretch;
+}
+
+.item-compare__label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(232, 220, 192, 0.65);
+  text-align: center;
+}
+
+.item-compare__icon-frame {
+  min-height: 72px;
+  padding: 0.35rem;
+}
+
+.item-compare__icon {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 64px;
+  max-height: 64px;
+  margin: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.55));
+}
+
+.item-compare__column .picker-preview__title {
+  text-align: center;
+}
+
+.item-compare__meta {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.15rem;
+}
+
+.item-compare__column .inventory-detail__type,
+.item-compare__column .inventory-detail__desc {
+  text-align: center;
+}
+
+.item-compare__column .inventory-detail__stats,
+.item-compare__column .inventory-detail__affixes {
+  width: 100%;
+}
+
+.item-compare__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.item-compare__actions .ui-btn {
+  width: auto;
+  min-width: 10rem;
+  max-width: 14rem;
+  padding-inline: 1.35rem;
+}
+
 @media (max-width: 991.98px) {
   .game-hub {
     grid-template-columns: 1fr;
   }
 
   .inventory-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .item-compare__grid {
     grid-template-columns: 1fr;
   }
 
