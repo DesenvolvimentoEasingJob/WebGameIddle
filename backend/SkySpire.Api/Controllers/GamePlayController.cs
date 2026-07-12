@@ -117,6 +117,67 @@ public class GamePlayController(GamePlayService gamePlayService) : ControllerBas
         return Ok(result);
     }
 
+    [HttpPost("tower/combat-batch")]
+    public async Task<IActionResult> StartTowerCombatBatch(
+        int slotIndex,
+        [FromBody] TowerCombatBatchRequest request,
+        CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.StartTowerCombatBatchAsync(
+            userId.Value, slotIndex, request.KillCount, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
+    [HttpPost("trade")]
+    public async Task<IActionResult> TradeItem(
+        int slotIndex,
+        [FromBody] TradeItemRequest request,
+        CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.TradeItemAsync(
+            userId.Value, slotIndex, request.TargetSlotIndex, request.InstanceId, ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
+    [HttpPost("apply-gem")]
+    public async Task<IActionResult> ApplyGem(
+        int slotIndex,
+        [FromBody] ApplyGemRequest request,
+        CancellationToken ct)
+    {
+        var userId = GetUserId();
+        if (userId is null)
+            return Unauthorized(new ErrorResponse("Token inválido."));
+
+        var (result, error) = await gamePlayService.ApplyGemAsync(
+            userId.Value,
+            slotIndex,
+            request.ItemInstanceId,
+            request.GemInstanceId,
+            ct);
+
+        if (error is not null)
+            return BadRequest(new ErrorResponse(error));
+
+        return Ok(result);
+    }
+
     [HttpPost("tower/repeat")]
     public async Task<IActionResult> RepeatTowerFloor(int slotIndex, CancellationToken ct)
     {

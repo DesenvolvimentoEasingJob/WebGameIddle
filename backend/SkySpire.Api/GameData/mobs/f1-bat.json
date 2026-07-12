@@ -9,13 +9,6 @@
   "gold": 6,
   "assets": { "sprite": "mobs/f1-bat.png", "icon": "mobs/f1-bat-icon.png" },
   "loot": {
-    "dropChance": 0.12,
-    "rarityWeights": {
-      "common": 70,
-      "uncommon": 22,
-      "rare": 6,
-      "epic": 1.5,
-      "legendary": 0.5
-    }
+    "dropChance": 0.12
   }
 }

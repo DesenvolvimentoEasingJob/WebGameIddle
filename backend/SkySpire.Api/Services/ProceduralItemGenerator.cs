@@ -6,7 +6,8 @@ namespace SkySpire.Api.Services;
 public class ProceduralItemGenerator(
     GameDataLoader gameData,
     ItemNamingService namingService,
-    GameDataWriter gameDataWriter)
+    GameDataWriter gameDataWriter,
+    Microsoft.Extensions.Options.IOptions<LootOptions> lootOptions)
 {
     private static readonly Lock GenerationLock = new();
 
@@ -51,7 +52,10 @@ public class ProceduralItemGenerator(
         var rarityLabel = gameData.Rarities.TryGetValue(rarityId, out var rarityDef)
             ? rarityDef.Label
             : rarityId;
-        var name = await namingService.GenerateItemNameAsync(itemKind, rarityLabel, classId, ct);
+        var useAiNaming = rarity.Order >= lootOptions.Value.AiNamingMinRarityOrder;
+        var name = useAiNaming
+            ? await namingService.GenerateItemNameAsync(itemKind, rarityLabel, classId, ct)
+            : namingService.BuildFallbackName(itemKind, rarityLabel);
         var id = targetItemId ?? ItemSlugBuilder.Build(name, itemKind, id => gameData.GetItem(id) is not null);
         var level = Math.Max(1, floorLevel);
         var slot = typeDef.Slot;

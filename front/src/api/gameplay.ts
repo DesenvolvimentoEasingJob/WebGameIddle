@@ -31,17 +31,32 @@ export interface InventoryEntry {
   instanceId: string;
   itemId: string;
   quantity: number;
+  level?: number;
   rarity?: string;
   rolledCategories?: Record<string, unknown>;
   rolledAffixes?: RolledAffix[];
+  dropMeta?: {
+    floor: number;
+    mobId: string;
+    seed: string;
+    rollIndex: number;
+    rolledAt?: string;
+  };
+  integrity?: {
+    hash: string;
+    signature: string;
+  };
 }
 
 export interface EquippedEntry {
   instanceId: string;
   itemId: string;
+  level?: number;
   rarity?: string;
   rolledCategories?: Record<string, unknown>;
   rolledAffixes?: RolledAffix[];
+  dropMeta?: InventoryEntry["dropMeta"];
+  integrity?: InventoryEntry["integrity"];
 }
 
 export interface CharacterProgression {
@@ -103,6 +118,7 @@ export interface RaritySummary {
   label: string;
   order: number;
   baseStatMultiplier: number;
+  dropWeight?: number;
   affixRollMin: number;
   affixRollMax: number;
   slotFrame?: string | null;
@@ -141,9 +157,13 @@ export interface DroppedItem {
   itemId: string;
   name: string;
   rarity: string;
+  level: number;
   quantity: number;
   rolledCategories?: Record<string, unknown>;
+  rolledAffixes?: RolledAffix[];
   assets?: { icon?: string };
+  dropMeta?: InventoryEntry["dropMeta"];
+  integrity?: InventoryEntry["integrity"];
 }
 
 export interface TowerCombatRewards {
@@ -166,6 +186,23 @@ export interface TowerCombatResult {
 
 export interface StartTowerCombatResponse {
   combat: TowerCombatResult;
+  patch: GamePatchResponse;
+}
+
+export interface TowerCombatBatchResult {
+  killCount: number;
+  wins: number;
+  defeats: number;
+  totalXp: number;
+  totalGold: number;
+  items: DroppedItem[];
+  lostItems: DroppedItem[];
+  batchSeed: string;
+  combats: TowerCombatResult[];
+}
+
+export interface StartTowerCombatBatchResponse {
+  batch: TowerCombatBatchResult;
   patch: GamePatchResponse;
 }
 
@@ -235,6 +272,7 @@ function fallbackRarityMap(): Record<string, RaritySummary> {
         label,
         order: 0,
         baseStatMultiplier: 1,
+        dropWeight: 1,
         affixRollMin: 0,
         affixRollMax: 0,
         slotFrame: id === "common" ? "slot-common" : `slot-${id}`,
@@ -422,29 +460,140 @@ export async function startTowerCombat(
         ? {
             xp: raw.combat.rewards.xp,
             gold: raw.combat.rewards.gold,
-            items: (raw.combat.rewards.items ?? []).map((item) => ({
-              instanceId: item.instanceId,
-              itemId: item.itemId,
-              name: item.name,
-              rarity: item.rarity,
-              quantity: item.quantity,
-              rolledCategories: item.rolledCategories,
-              assets: item.assets,
-            })),
-            lostItems: (raw.combat.rewards.lostItems ?? []).map((item) => ({
-              instanceId: item.instanceId,
-              itemId: item.itemId,
-              name: item.name,
-              rarity: item.rarity,
-              quantity: item.quantity,
-              rolledCategories: item.rolledCategories,
-              assets: item.assets,
-            })),
+            items: (raw.combat.rewards.items ?? []).map(normalizeDroppedItem),
+            lostItems: (raw.combat.rewards.lostItems ?? []).map(normalizeDroppedItem),
           }
         : null,
     },
     patch: normalizeGamePatch(raw.patch),
   };
+}
+
+function normalizeDroppedItem(item: {
+  instanceId: string;
+  itemId: string;
+  name: string;
+  rarity: string;
+  level?: number;
+  quantity: number;
+  rolledCategories?: Record<string, unknown>;
+  rolledAffixes?: RolledAffix[];
+  assets?: { icon?: string };
+  dropMeta?: InventoryEntry["dropMeta"];
+  integrity?: InventoryEntry["integrity"];
+}): DroppedItem {
+  return {
+    instanceId: item.instanceId,
+    itemId: item.itemId,
+    name: item.name,
+    rarity: item.rarity,
+    level: item.level ?? 1,
+    quantity: item.quantity,
+    rolledCategories: item.rolledCategories,
+    rolledAffixes: item.rolledAffixes,
+    assets: item.assets,
+    dropMeta: item.dropMeta,
+    integrity: item.integrity,
+  };
+}
+
+export async function startTowerCombatBatch(
+  slotIndex: number,
+  killCount = 5,
+): Promise<StartTowerCombatBatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower/combat-batch`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ killCount }),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao iniciar combate em lote.");
+  }
+
+  const raw = (await response.json()) as {
+    batch: {
+      killCount: number;
+      wins: number;
+      defeats: number;
+      totalXp: number;
+      totalGold: number;
+      items: Parameters<typeof normalizeDroppedItem>[0][];
+      lostItems: Parameters<typeof normalizeDroppedItem>[0][];
+      batchSeed: string;
+      combats: Array<{
+        outcome: string;
+        enemyId: string;
+        enemyName: string;
+        isBoss: boolean;
+        playerMaxHp: number;
+        enemyMaxHp: number;
+        turns: TowerCombatTurn[];
+        rewards: TowerCombatRewards | null;
+      }>;
+    };
+    patch: GamePatchResponse;
+  };
+
+  return {
+    batch: {
+      killCount: raw.batch.killCount,
+      wins: raw.batch.wins,
+      defeats: raw.batch.defeats,
+      totalXp: raw.batch.totalXp,
+      totalGold: raw.batch.totalGold,
+      items: raw.batch.items.map(normalizeDroppedItem),
+      lostItems: raw.batch.lostItems.map(normalizeDroppedItem),
+      batchSeed: raw.batch.batchSeed,
+      combats: raw.batch.combats.map((c) => ({
+        outcome: c.outcome as TowerCombatResult["outcome"],
+        enemyId: c.enemyId,
+        enemyName: c.enemyName,
+        isBoss: c.isBoss,
+        playerMaxHp: c.playerMaxHp,
+        enemyMaxHp: c.enemyMaxHp,
+        turns: c.turns,
+        rewards: c.rewards,
+      })),
+    },
+    patch: normalizeGamePatch(raw.patch),
+  };
+}
+
+export async function tradeItem(
+  slotIndex: number,
+  targetSlotIndex: number,
+  instanceId: string,
+): Promise<GamePatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/trade`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ targetSlotIndex, instanceId }),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao transferir item.");
+  }
+
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
+}
+
+export async function applyGem(
+  slotIndex: number,
+  itemInstanceId: string,
+  gemInstanceId: string,
+): Promise<GamePatchResponse> {
+  const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/apply-gem`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ itemInstanceId, gemInstanceId }),
+  });
+
+  if (!response.ok) {
+    throw await readApiError(response, "Falha ao aplicar joia.");
+  }
+
+  return normalizeGamePatch((await response.json()) as GamePatchResponse);
 }
 
 export const RARITY_LABELS: Record<string, string> = {

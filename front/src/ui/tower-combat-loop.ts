@@ -1,6 +1,7 @@
-import { repeatTowerFloor, startTowerCombat, type GameStateResponse } from "../api/gameplay";
+import { repeatTowerFloor, startTowerCombat, startTowerCombatBatch, type GameStateResponse } from "../api/gameplay";
 import { applyGamePatch } from "../state/game-cache";
 import { formatCombatRewardMessage } from "./combat-rewards";
+import { formatSimulatedDrop, simulateDropPreview } from "./drop-simulator";
 import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 import {
   awaitTowerCombatTiming,
@@ -35,14 +36,36 @@ function tryAcquireLoop(): number | null {
   return generation;
 }
 
-async function requestTowerCombat(slotIndex: number) {
+async function requestTowerCombat(slotIndex: number, useBatch: boolean) {
   if (combatRequestInFlight) {
     throw new Error("Combat request already in flight.");
   }
 
   combatRequestInFlight = true;
   try {
-    return await startTowerCombat(slotIndex);
+    if (useBatch) {
+      const batch = await startTowerCombatBatch(slotIndex, 5);
+      const lastCombat = batch.batch.combats[batch.batch.combats.length - 1];
+      if (!lastCombat) {
+        throw new Error("Batch de combate vazio.");
+      }
+      return {
+        combat: {
+          ...lastCombat,
+          rewards: {
+            xp: batch.batch.totalXp,
+            gold: batch.batch.totalGold,
+            items: batch.batch.items,
+            lostItems: batch.batch.lostItems,
+          },
+        },
+        patch: batch.patch,
+        batchSeed: batch.batch.batchSeed,
+      };
+    }
+
+    const single = await startTowerCombat(slotIndex);
+    return { ...single, batchSeed: null };
   } finally {
     combatRequestInFlight = false;
   }
@@ -157,7 +180,21 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
       fightCount += 1;
       onStatus(`Farmando andar… combate ${fightCount}`);
 
-      const { combat, patch } = await requestTowerCombat(slotIndex);
+      const useBatch = Boolean(state?.characterJson.tower.continuousAttack);
+      const preview = useBatch && state?.lootConfig
+        ? simulateDropPreview(state.lootConfig, `pending-${fightCount}`, fightCount)
+        : null;
+      if (preview) {
+        onStatus(`Farmando… ${formatSimulatedDrop(preview, state?.lootConfig)}`);
+      }
+
+      const { combat, patch, batchSeed } = await requestTowerCombat(slotIndex, useBatch);
+      if (batchSeed && state?.lootConfig) {
+        const confirmed = simulateDropPreview(state.lootConfig, batchSeed, fightCount);
+        if (confirmed) {
+          onStatus(`Seed ${batchSeed.slice(0, 8)}… ${formatSimulatedDrop(confirmed, state.lootConfig)}`);
+        }
+      }
 
       if (generation !== activeLoopGeneration) break;
 
@@ -227,7 +264,7 @@ export async function runSingleTowerCombat(options: {
 
   try {
     onStatus("Calculando combate no servidor…");
-    const { combat, patch } = await requestTowerCombat(slotIndex);
+    const { combat, patch } = await requestTowerCombat(slotIndex, false);
     onStatus("Reproduzindo combate…");
 
     const liveArena = getLiveArena(panelEl);

@@ -3,10 +3,11 @@ using SkySpire.Api.Models.GameData;
 
 namespace SkySpire.Api.Services;
 
-public static class ItemAffixRoller
+public class ItemAffixRoller(GameDataLoader gameData)
 {
-    public static JsonArray RollAffixes(
-        GameDataLoader gameData,
+    private const double MinWeightFraction = 0.01;
+
+    public JsonArray RollAffixes(
         ItemDefinition itemDef,
         int count,
         RarityDefinition rarity,
@@ -17,20 +18,20 @@ public static class ItemAffixRoller
         if (count <= 0)
             return affixes;
 
-        var itemKind = itemDef.ItemKind ?? itemDef.Type;
-        if (!gameData.ItemTypes.TryGetValue(itemKind, out var typeDef) || typeDef.AffixPool.Count == 0)
+        var pool = BuildAffixPool(itemDef);
+        if (pool.Count == 0)
             return affixes;
 
-        var pool = typeDef.AffixPool.ToList();
         var usedAffixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var workingPool = pool.ToList();
 
-        for (var i = 0; i < count && pool.Count > 0; i++)
+        for (var i = 0; i < count && workingPool.Count > 0; i++)
         {
-            var entry = PickWeighted(pool, rng);
+            var entry = PickWeighted(workingPool, rng);
             if (entry is null)
                 break;
 
-            pool.Remove(entry);
+            workingPool.Remove(entry);
             if (!usedAffixes.Add(entry.AffixId))
             {
                 i--;
@@ -52,6 +53,59 @@ public static class ItemAffixRoller
         }
 
         return affixes;
+    }
+
+    private IReadOnlyList<AffixPoolEntry> BuildAffixPool(ItemDefinition itemDef)
+    {
+        var itemKind = itemDef.ItemKind ?? itemDef.Type;
+        if (!gameData.ItemTypes.TryGetValue(itemKind, out var typeDef))
+            return [];
+
+        if (typeDef.AffixCategories.Count > 0)
+            return BuildCategoryPool(typeDef);
+
+        return typeDef.AffixPool;
+    }
+
+    private List<AffixPoolEntry> BuildCategoryPool(ItemTypeDefinition typeDef)
+    {
+        var entries = new List<AffixPoolEntry>();
+        foreach (var affix in gameData.Affixes.Values)
+        {
+            if (!typeDef.AffixCategories.Contains(affix.Category, StringComparer.OrdinalIgnoreCase))
+                continue;
+
+            var categoryBias = typeDef.AffixCategoryWeights.GetValueOrDefault(affix.Category, 1.0);
+            entries.Add(new AffixPoolEntry
+            {
+                AffixId = affix.Id,
+                Weight = Math.Max(affix.MinWeight, affix.MinWeight * categoryBias),
+            });
+        }
+
+        ApplyMinimumWeightFloor(entries);
+        return entries;
+    }
+
+    private static void ApplyMinimumWeightFloor(List<AffixPoolEntry> entries)
+    {
+        if (entries.Count == 0)
+            return;
+
+        var total = entries.Sum(e => e.Weight);
+        var floor = total * MinWeightFraction;
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            if (entries[i].Weight < floor)
+            {
+                entries[i] = new AffixPoolEntry
+                {
+                    AffixId = entries[i].AffixId,
+                    Weight = floor,
+                };
+            }
+        }
     }
 
     public static JsonObject MergeAffixesIntoCategories(
@@ -96,7 +150,7 @@ public static class ItemAffixRoller
     {
         var min = affix.RangeMin;
         var max = affix.RangeMax + (rarity.Order * affix.RarityRangeStep);
-        max += Math.Max(0, (floorLevel - 1) / 3);
+        max += LootScaling.AffixFloorBonus(floorLevel);
 
         if (max < min)
             max = min;

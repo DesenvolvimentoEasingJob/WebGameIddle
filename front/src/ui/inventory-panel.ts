@@ -14,7 +14,12 @@ export type GameTab = "inventory" | "market" | "tower";
 export interface InventoryPanelOptions {
   state: GameStateResponse;
   selectedInstanceId: string | null;
+  bulkMode: boolean;
+  bulkSelectedIds: string[];
   onSelect: (instanceId: string | null) => void;
+  onToggleBulkMode: () => void;
+  onBulkSelect: (instanceId: string) => void;
+  onBulkDiscard: () => void;
   onEquip: (instanceId: string) => void;
   onUnequip: (equipSlot: string) => void;
   onDiscard: (instanceId: string) => void;
@@ -22,7 +27,7 @@ export interface InventoryPanelOptions {
 }
 
 export function renderInventoryPanel(options: InventoryPanelOptions): string {
-  const { state, selectedInstanceId, busy } = options;
+  const { state, selectedInstanceId, bulkMode, bulkSelectedIds, busy } = options;
   const char = state.characterJson;
   const catalog = state.itemCatalog;
   const equipSlots = char.equipmentSlots?.length
@@ -34,24 +39,56 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
 
   return `
     <div class="inventory-layout">
-      <section class="inventory-equip" aria-label="Equipamento">
-        <h2 class="game-panel__title">Equipamento</h2>
-        <div class="equip-grid">
-          ${equipSlots
-            .map((slot) =>
-              renderEquipSlot(
-                slot,
-                EQUIP_SLOT_LABELS[slot] ?? slot,
-                char.equipment[slot],
-                catalog,
-                selectedInstanceId,
-                busy,
-                lootConfig,
-              ),
-            )
-            .join("")}
+      <div class="inventory-equip-column">
+        <div class="inventory-mode-bar">
+          <button
+            type="button"
+            class="ui-btn ui-btn--sm${bulkMode ? " ui-btn--active" : ""}"
+            data-action="toggle-bulk-mode"
+            aria-pressed="${bulkMode}"
+            ${busy ? "disabled" : ""}
+          >
+            Inventário
+          </button>
+          ${
+            bulkMode
+              ? `<span class="inventory-mode-bar__hint">${bulkSelectedIds.length} selecionado(s)</span>`
+              : ""
+          }
         </div>
-      </section>
+        <section class="inventory-equip" aria-label="Equipamento">
+          <h2 class="game-panel__title">Equipamento</h2>
+          <div class="equip-grid">
+            ${equipSlots
+              .map((slot) =>
+                renderEquipSlot(
+                  slot,
+                  EQUIP_SLOT_LABELS[slot] ?? slot,
+                  char.equipment[slot],
+                  catalog,
+                  selectedInstanceId,
+                  busy,
+                  lootConfig,
+                ),
+              )
+              .join("")}
+          </div>
+        </section>
+        ${
+          bulkMode
+            ? `<div class="inventory-bulk-actions">
+                <button
+                  type="button"
+                  class="ui-btn ui-btn--sm ui-btn--discard"
+                  data-action="bulk-discard"
+                  ${busy || bulkSelectedIds.length === 0 ? "disabled" : ""}
+                >
+                  Descartar selecionados
+                </button>
+              </div>`
+            : ""
+        }
+      </div>
 
       <section class="inventory-bag" aria-label="Inventário">
         <header class="inventory-bag__header">
@@ -61,14 +98,14 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
         <div class="inventory-bag__frame">
           <div class="inventory-bag__scroll">
             <div class="item-grid item-grid--bag">
-              ${renderBagSlots(char.inventory, catalog, selectedInstanceId, busy, lootConfig)}
+              ${renderBagSlots(char.inventory, catalog, selectedInstanceId, bulkMode, bulkSelectedIds, busy, lootConfig)}
             </div>
           </div>
         </div>
       </section>
 
       <aside class="inventory-detail" aria-label="Detalhes do item">
-        ${renderItemDetail(selected, options)}
+        ${bulkMode ? renderBulkDetail(bulkSelectedIds, options) : renderItemDetail(selected, options)}
       </aside>
     </div>
   `;
@@ -116,10 +153,41 @@ function renderEquipSlot(
   `;
 }
 
+function renderBulkDetail(bulkSelectedIds: string[], options: InventoryPanelOptions): string {
+  const count = bulkSelectedIds.length;
+
+  if (count === 0) {
+    return `
+      <div class="inventory-detail__empty">
+        <p>Selecione itens do inventário para descartar.</p>
+        <p class="inventory-detail__hint">Clique nos itens para marcar ou desmarcar.</p>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="inventory-detail__bulk">
+      <p class="inventory-detail__bulk-count">${count} item${count === 1 ? "" : "s"} selecionado${count === 1 ? "" : "s"}</p>
+      <div class="inventory-detail__actions">
+        <button
+          type="button"
+          class="ui-btn ui-btn--sm ui-btn--discard"
+          data-action="bulk-discard"
+          ${options.busy ? "disabled" : ""}
+        >
+          Descartar selecionados
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 function renderBagSlots(
   inventory: { capacity: number; items: InventoryEntry[] },
   catalog: Record<string, ItemSummary>,
   selectedInstanceId: string | null,
+  bulkMode: boolean,
+  bulkSelectedIds: string[],
   busy: boolean,
   lootConfig: GameStateResponse["lootConfig"],
 ): string {
@@ -129,7 +197,9 @@ function renderBagSlots(
     const entry = inventory.items[i];
     if (entry) {
       const item = catalog[entry.itemId];
-      const selected = entry.instanceId === selectedInstanceId;
+      const selected = bulkMode
+        ? bulkSelectedIds.includes(entry.instanceId)
+        : entry.instanceId === selectedInstanceId;
       const qty = entry.quantity > 1 ? `<span class="item-slot__qty">×${entry.quantity}</span>` : "";
 
       const rarity = entry.rarity ?? item?.rarity ?? "common";
@@ -350,6 +420,7 @@ function resolveDisplayItem(entry: InventoryEntry, catalogItem: ItemSummary): It
   return {
     ...catalogItem,
     rarity: entry.rarity ?? catalogItem.rarity,
+    level: entry.level ?? catalogItem.level,
     categories: (entry.rolledCategories ?? catalogItem.categories) as ItemSummary["categories"],
   };
 }
@@ -394,7 +465,29 @@ function findSelectedItem(
 }
 
 export function bindInventoryPanel(root: HTMLElement, options: InventoryPanelOptions): void {
-  root.querySelectorAll<HTMLButtonElement>("[data-instance-id]").forEach((btn) => {
+  root.querySelector<HTMLButtonElement>('[data-action="toggle-bulk-mode"]')?.addEventListener("click", () => {
+    options.onToggleBulkMode();
+  });
+
+  root.querySelectorAll<HTMLButtonElement>('[data-action="bulk-discard"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      options.onBulkDiscard();
+    });
+  });
+
+  root.querySelectorAll<HTMLButtonElement>(".item-slot--bag[data-instance-id]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.instanceId;
+      if (!id) return;
+      if (options.bulkMode) {
+        options.onBulkSelect(id);
+        return;
+      }
+      options.onSelect(id === options.selectedInstanceId ? null : id);
+    });
+  });
+
+  root.querySelectorAll<HTMLButtonElement>(".item-slot--equip[data-instance-id]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.dataset.instanceId;
       if (!id) return;

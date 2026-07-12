@@ -7,13 +7,14 @@
         "attributes": { "intelligence": { "base": 5 } },
         "damage": { "magical": { "bonusPercent": 8 } }
       },
-      "affixPool": [
-        { "affixId": "bonusIntelligence", "weight": 25 },
-        { "affixId": "magicalDamageBonus", "weight": 25 },
-        { "affixId": "lifeSteal", "weight": 18 },
-        { "affixId": "critChance", "weight": 17 },
-        { "affixId": "hpBonus", "weight": 15 }
-      ]
+      "affixCategories": ["primary", "magical", "mana", "crit", "survival"],
+      "affixCategoryWeights": {
+        "primary": 2.5,
+        "magical": 2.5,
+        "mana": 2.0,
+        "crit": 1.5,
+        "survival": 1.2
+      }
     },
     "sword": {
       "slot": "weapon",
@@ -22,13 +23,14 @@
         "attributes": { "strength": { "base": 4 } },
         "damage": { "physical": { "bonusPercent": 6 } }
       },
-      "affixPool": [
-        { "affixId": "bonusStrength", "weight": 25 },
-        { "affixId": "physicalDamageBonus", "weight": 25 },
-        { "affixId": "critChance", "weight": 20 },
-        { "affixId": "lifeSteal", "weight": 15 },
-        { "affixId": "hpBonus", "weight": 15 }
-      ]
+      "affixCategories": ["primary", "physical", "crit", "speed", "survival"],
+      "affixCategoryWeights": {
+        "primary": 2.5,
+        "physical": 2.5,
+        "crit": 2.0,
+        "speed": 1.5,
+        "survival": 1.2
+      }
     },
     "armor": {
       "slot": "armor",
@@ -36,17 +38,23 @@
       "baseCategories": {
         "attributes": { "agility": { "base": 3 } }
       },
-      "affixPool": [
-        { "affixId": "bonusAgility", "weight": 22 },
-        { "affixId": "bonusStrength", "weight": 20 },
-        { "affixId": "lifeSteal", "weight": 20 },
-        { "affixId": "critChance", "weight": 18 },
-        { "affixId": "hpBonus", "weight": 20 }
-      ]
+      "affixCategories": ["primary", "defense", "survival", "mana"],
+      "affixCategoryWeights": {
+        "primary": 2.0,
+        "defense": 2.5,
+        "survival": 2.0,
+        "mana": 1.5
+      }
     },
     "potion": {
       "slot": null,
       "classes": [],
+      "affixPool": []
+    },
+    "gem": {
+      "slot": null,
+      "classes": [],
+      "stackable": true,
       "affixPool": []
     }
   }

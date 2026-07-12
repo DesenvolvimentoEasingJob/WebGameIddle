@@ -15,6 +15,7 @@ public static class LootConfigBuilder
                     pair.Value.Label,
                     pair.Value.Order,
                     pair.Value.BaseStatMultiplier,
+                    pair.Value.DropWeight,
                     pair.Value.AffixRollMin,
                     pair.Value.AffixRollMax,
                     ResolveSlotFrame(pair.Key)),

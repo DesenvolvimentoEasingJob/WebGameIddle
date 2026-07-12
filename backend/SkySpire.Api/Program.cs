@@ -35,6 +35,12 @@ builder.Services.AddHttpClient("OpenAI", client =>
     client.Timeout = TimeSpan.FromSeconds(20);
 });
 builder.Services.AddSingleton<ItemNamingService>();
+builder.Services.Configure<LootOptions>(
+    builder.Configuration.GetSection(LootOptions.SectionName));
+builder.Services.AddSingleton<ItemIntegrityService>();
+builder.Services.AddSingleton<ItemAffixRoller>();
+builder.Services.AddSingleton<ItemInstanceBuilder>();
+builder.Services.AddSingleton<TradeService>();
 builder.Services.AddSingleton<ProceduralItemGenerator>();
 builder.Services.AddSingleton<ItemDropService>();
 builder.Services.AddScoped<GamePlayService>();

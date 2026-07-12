@@ -1203,6 +1203,41 @@ body {
   min-width: 0;
 }
 
+.inventory-equip-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.inventory-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.inventory-mode-bar__hint {
+  font-size: 0.78rem;
+  color: rgba(232, 220, 192, 0.65);
+}
+
+.inventory-bulk-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.inventory-detail__bulk {
+  padding: 0.75rem 0.5rem;
+}
+
+.inventory-detail__bulk-count {
+  margin: 0 0 0.65rem;
+  font-size: 0.88rem;
+  color: var(--gold-light);
+}
+
 .inventory-bag__header {
   display: flex;
   justify-content: space-between;

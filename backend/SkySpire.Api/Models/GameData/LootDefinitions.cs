@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 public class MobLootProfile
 {
     public double DropChance { get; init; }
+    public int RarityBonusTiers { get; init; }
     public IReadOnlyDictionary<string, double> RarityWeights { get; init; }
         = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 }
@@ -13,6 +14,7 @@ public class RarityDefinition
 {
     public int Order { get; init; }
     public double BaseStatMultiplier { get; init; }
+    public double DropWeight { get; init; }
     public int AffixRollMin { get; init; }
     public int AffixRollMax { get; init; }
     public string Label { get; init; } = "";
@@ -28,6 +30,9 @@ public class AffixDefinition
     public int RangeMax { get; init; }
     public int RarityRangeStep { get; init; }
     public string? Suffix { get; init; }
+    public string Category { get; init; } = "misc";
+    public int Tier { get; init; } = 1;
+    public double MinWeight { get; init; } = 1;
 }
 
 public class ItemTypeDefinition
@@ -37,6 +42,9 @@ public class ItemTypeDefinition
     public IReadOnlyList<string> Classes { get; init; } = [];
     public JsonObject BaseCategories { get; init; } = new();
     public IReadOnlyList<AffixPoolEntry> AffixPool { get; init; } = [];
+    public IReadOnlyList<string> AffixCategories { get; init; } = [];
+    public IReadOnlyDictionary<string, double> AffixCategoryWeights { get; init; }
+        = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
 }
 
 public class AffixPoolEntry

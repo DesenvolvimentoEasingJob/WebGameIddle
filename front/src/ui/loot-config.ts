@@ -33,11 +33,14 @@ export function raritySlotFrameStyle(
 ): string | undefined {
   if (!rarityId || rarityId === "common") return undefined;
 
+  const order = lootConfig?.rarities[rarityId]?.order ?? 0;
+  const hue = (order * 4) % 360;
+
   const slotFrame = lootConfig?.rarities[rarityId]?.slotFrame ?? `slot-${rarityId}`;
   const frameName = resolveSlotFrameName(rarityId, slotFrame);
   if (frameName === "slot-common") return undefined;
 
-  return `--item-rarity-frame: var(--ui-${frameName}, var(--ui-slot-common));`;
+  return `--item-rarity-frame: var(--ui-${frameName}, var(--ui-slot-common)); --rarity-hue: ${hue}deg;`;
 }
 
 function resolveSlotFrameName(rarityId: string, slotFrame?: string | null): FrameName {

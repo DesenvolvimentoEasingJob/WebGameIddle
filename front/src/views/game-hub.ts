@@ -42,6 +42,8 @@ import { canStartTowerCombat } from "../ui/tower-combat";
 let cachedState: GameStateResponse | null = null;
 let activeTab: GameTab = "inventory";
 let selectedInstanceId: string | null = null;
+let inventoryBulkMode = false;
+let bulkSelectedIds: string[] = [];
 let busy = false;
 let towerBindSerial = 0;
 
@@ -380,8 +382,13 @@ function renderActivePanel(options?: { forceTowerRemount?: boolean; forceDockRem
     panel.innerHTML = renderInventoryPanel({
       state: cachedState,
       selectedInstanceId,
+      bulkMode: inventoryBulkMode,
+      bulkSelectedIds,
       busy,
       onSelect: () => {},
+      onToggleBulkMode: () => {},
+      onBulkSelect: () => {},
+      onBulkDiscard: () => {},
       onEquip: () => {},
       onUnequip: () => {},
       onDiscard: () => {},
@@ -390,10 +397,29 @@ function renderActivePanel(options?: { forceTowerRemount?: boolean; forceDockRem
     bindInventoryPanel(panel, {
       state: cachedState,
       selectedInstanceId,
+      bulkMode: inventoryBulkMode,
+      bulkSelectedIds,
       busy,
       onSelect: (id) => {
         selectedInstanceId = id;
         renderActivePanel();
+      },
+      onToggleBulkMode: () => {
+        inventoryBulkMode = !inventoryBulkMode;
+        bulkSelectedIds = [];
+        selectedInstanceId = null;
+        renderActivePanel();
+      },
+      onBulkSelect: (instanceId) => {
+        if (bulkSelectedIds.includes(instanceId)) {
+          bulkSelectedIds = bulkSelectedIds.filter((id) => id !== instanceId);
+        } else {
+          bulkSelectedIds = [...bulkSelectedIds, instanceId];
+        }
+        renderActivePanel();
+      },
+      onBulkDiscard: () => {
+        void handleBulkDiscard([...bulkSelectedIds]);
       },
       onEquip: (instanceId) => {
         void handleEquip(instanceId);
@@ -476,6 +502,26 @@ async function handleDiscard(instanceId: string): Promise<void> {
     updateSidebar(document.querySelector(".game-hub")!, cachedState);
   } catch (err) {
     showGameError(formatApiError(err, "Falha ao descartar."));
+  } finally {
+    busy = false;
+    renderActivePanel();
+  }
+}
+
+async function handleBulkDiscard(instanceIds: string[]): Promise<void> {
+  if (busy || !cachedState || instanceIds.length === 0) return;
+  busy = true;
+  renderActivePanel();
+
+  try {
+    for (const instanceId of instanceIds) {
+      cachedState = applyGamePatch(cachedState, await discardItem(getActiveSlot(), instanceId));
+    }
+    bulkSelectedIds = [];
+    selectedInstanceId = null;
+    updateSidebar(document.querySelector(".game-hub")!, cachedState);
+  } catch (err) {
+    showGameError(formatApiError(err, "Falha ao descartar itens."));
   } finally {
     busy = false;
     renderActivePanel();

@@ -5,6 +5,7 @@ public record RaritySummaryDto(
     string Label,
     int Order,
     double BaseStatMultiplier,
+    double DropWeight,
     int AffixRollMin,
     int AffixRollMax,
     string? SlotFrame);

@@ -1,5 +1,16 @@
 namespace SkySpire.Api.DTOs;
 
+public record ItemDropMetaDto(
+    int Floor,
+    string MobId,
+    string Seed,
+    int RollIndex,
+    string? RolledAt);
+
+public record ItemIntegrityDto(
+    string Hash,
+    string Signature);
+
 public record ItemSummaryDto(
     string Id,
     string Name,
@@ -60,10 +71,13 @@ public record DroppedItemDto(
     string ItemId,
     string Name,
     string Rarity,
+    int Level,
     int Quantity,
     object? RolledCategories,
     object? RolledAffixes,
-    object? Assets);
+    object? Assets,
+    ItemDropMetaDto? DropMeta = null,
+    ItemIntegrityDto? Integrity = null);
 
 public record TowerCombatRewardsDto(
     int Xp,
@@ -91,3 +105,35 @@ public record GamePatchResponse(
 public record StartTowerCombatResponse(
     TowerCombatResultDto Combat,
     GamePatchResponse Patch);
+
+public record TowerCombatBatchRequest
+{
+    public int KillCount { get; init; } = 1;
+}
+
+public record TowerCombatBatchResultDto(
+    int KillCount,
+    int Wins,
+    int Defeats,
+    int TotalXp,
+    int TotalGold,
+    IReadOnlyList<DroppedItemDto> Items,
+    IReadOnlyList<DroppedItemDto> LostItems,
+    string BatchSeed,
+    IReadOnlyList<TowerCombatResultDto> Combats);
+
+public record StartTowerCombatBatchResponse(
+    TowerCombatBatchResultDto Batch,
+    GamePatchResponse Patch);
+
+public record TradeItemRequest
+{
+    public required int TargetSlotIndex { get; init; }
+    public required string InstanceId { get; init; }
+}
+
+public record ApplyGemRequest
+{
+    public required string ItemInstanceId { get; init; }
+    public required string GemInstanceId { get; init; }
+}

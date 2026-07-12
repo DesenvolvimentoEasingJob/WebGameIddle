@@ -5,7 +5,8 @@ namespace SkySpire.Api.Services;
 
 public class ItemDropService(
     GameDataLoader gameData,
-    ProceduralItemGenerator proceduralItemGenerator)
+    ProceduralItemGenerator proceduralItemGenerator,
+    ItemInstanceBuilder instanceBuilder)
 {
     public async Task<ItemDropResult?> TryRollDropAsync(
         JsonObject document,
@@ -13,18 +14,19 @@ public class ItemDropService(
         TowerFloorDefinition floor,
         string? classId,
         CancellationToken ct,
-        Random? rng = null)
+        Random? rng = null,
+        DropContext? context = null)
     {
         rng ??= Random.Shared;
         var loot = mob.Loot ?? gameData.DefaultMobLoot;
         if (rng.NextDouble() > loot.DropChance)
             return null;
 
-        var rarityId = RollWeighted(loot.RarityWeights, rng);
+        var rarityId = RollRarity(loot, rng);
         if (rarityId is null || !gameData.Rarities.TryGetValue(rarityId, out var rarity))
             return null;
 
-        var poolId = floor.LootPool ?? gameData.DefaultLootPoolId;
+        var poolId = gameData.ResolveLootPoolId(floor.Floor, floor.LootPool);
         if (!gameData.LootPools.TryGetValue(poolId, out var pool))
             return null;
 
@@ -44,7 +46,20 @@ public class ItemDropService(
         if (itemDef is null)
             return null;
 
-        var instance = BuildDropInstance(itemDef, rarity, floor.Floor, rng);
+        var dropContext = context ?? new DropContext(
+            floor.Floor,
+            mob.Id,
+            "ephemeral",
+            0);
+
+        var instance = instanceBuilder.Build(
+            itemDef,
+            rarity,
+            rarityId,
+            floor.Floor,
+            rng,
+            dropContext);
+
         return new ItemDropResult(instance, itemDef, rarityId);
     }
 
@@ -76,6 +91,14 @@ public class ItemDropService(
 
         items.Add(drop.Instance.DeepClone());
         return InventoryAddResult.Added;
+    }
+
+    private string? RollRarity(MobLootProfile loot, Random rng)
+    {
+        if (loot.RarityWeights.Count > 0)
+            return RollWeighted(loot.RarityWeights, rng);
+
+        return RarityRoller.Roll(gameData.Rarities, rng, loot.RarityBonusTiers);
     }
 
     private async Task<ItemDefinition?> ResolveItemDefinitionAsync(
@@ -122,78 +145,6 @@ public class ItemDropService(
             classId,
             ct,
             targetItemId: poolEntry.ItemId);
-    }
-
-    private JsonObject BuildDropInstance(
-        ItemDefinition itemDef,
-        RarityDefinition rarity,
-        int floorLevel,
-        Random rng)
-    {
-        var instance = new JsonObject
-        {
-            ["instanceId"] = Guid.NewGuid().ToString(),
-            ["itemId"] = itemDef.Id,
-            ["quantity"] = 1,
-        };
-
-        if (itemDef.Stackable)
-            return instance;
-
-        instance["rarity"] = ResolveRarityId(rarity);
-        instance["rolledCategories"] = ScaleCategories(itemDef.Categories, rarity.BaseStatMultiplier);
-
-        var affixCount = RollAffixCount(rarity, rng);
-        var rolledAffixes = ItemAffixRoller.RollAffixes(gameData, itemDef, affixCount, rarity, floorLevel, rng);
-        if (rolledAffixes.Count > 0)
-            instance["rolledAffixes"] = rolledAffixes;
-
-        return instance;
-    }
-
-    private string ResolveRarityId(RarityDefinition rarity)
-    {
-        foreach (var (id, def) in gameData.Rarities)
-        {
-            if (def.Order == rarity.Order)
-                return id;
-        }
-
-        return "common";
-    }
-
-    private static int RollAffixCount(RarityDefinition rarity, Random rng)
-    {
-        if (rarity.AffixRollMax <= 0)
-            return 0;
-
-        return rng.Next(rarity.AffixRollMin, rarity.AffixRollMax + 1);
-    }
-
-    private static JsonObject ScaleCategories(JsonObject categories, double multiplier)
-    {
-        var result = new JsonObject();
-        foreach (var (key, value) in categories)
-        {
-            if (value is JsonObject child)
-            {
-                result[key] = ScaleCategories(child, multiplier);
-                continue;
-            }
-
-            if (value is JsonValue jsonValue && jsonValue.TryGetValue(out double number))
-            {
-                var scaled = number * multiplier;
-                result[key] = Math.Abs(scaled % 1) < double.Epsilon
-                    ? JsonValue.Create((long)Math.Round(scaled))
-                    : JsonValue.Create(Math.Round(scaled, 2));
-                continue;
-            }
-
-            result[key] = value?.DeepClone();
-        }
-
-        return result;
     }
 
     private LootPoolEntry? PickPoolEntry(LootPoolDefinition pool, string? classId, Random rng)

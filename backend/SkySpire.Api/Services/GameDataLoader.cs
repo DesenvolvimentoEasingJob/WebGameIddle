@@ -123,6 +123,19 @@ public class GameDataLoader(IWebHostEnvironment environment)
         return ScaleFloorForTarget(template, floor);
     }
 
+    public string ResolveLootPoolId(int floor, string? floorLootPool)
+    {
+        if (!string.IsNullOrWhiteSpace(floorLootPool) && LootPools.ContainsKey(floorLootPool))
+            return floorLootPool;
+
+        var band = ((Math.Max(1, floor) - 1) / 10 + 1) * 10;
+        var bandPool = $"floor-1-{band}";
+        if (LootPools.ContainsKey(bandPool))
+            return bandPool;
+
+        return DefaultLootPoolId;
+    }
+
     private IReadOnlyDictionary<string, ArchetypeDefinition> LoadArchetypes(string folder)
     {
         if (!Directory.Exists(folder))
@@ -317,22 +330,22 @@ public class GameDataLoader(IWebHostEnvironment environment)
         if (node is null)
             return null;
 
-        var weights = node["rarityWeights"]?.AsObject();
-        if (weights is null || weights.Count == 0)
-            return null;
-
         var rarityWeights = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
-        foreach (var (key, value) in weights)
+        if (node["rarityWeights"]?.AsObject() is { } weights)
         {
-            if (value is null)
-                continue;
+            foreach (var (key, value) in weights)
+            {
+                if (value is null)
+                    continue;
 
-            rarityWeights[key] = value.GetValue<double>();
+                rarityWeights[key] = value.GetValue<double>();
+            }
         }
 
         return new MobLootProfile
         {
             DropChance = node["dropChance"]?.GetValue<double>() ?? 0.1,
+            RarityBonusTiers = node["rarityBonusTiers"]?.GetValue<int>() ?? 0,
             RarityWeights = rarityWeights,
         };
     }
@@ -356,7 +369,7 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 .Select(mob => ScaleMob(mob, scale, levelBonus))
                 .ToList(),
             Boss = ScaleMob(template.Boss, scale, levelBonus),
-            LootPool = template.LootPool,
+            LootPool = ResolveLootPoolId(targetFloor, template.LootPool),
         };
     }
 
@@ -398,6 +411,7 @@ public class GameDataLoader(IWebHostEnvironment environment)
             {
                 Order = rarityNode["order"]?.GetValue<int>() ?? 0,
                 BaseStatMultiplier = rarityNode["baseStatMultiplier"]?.GetValue<double>() ?? 1,
+                DropWeight = rarityNode["dropWeight"]?.GetValue<double>() ?? 1,
                 AffixRollMin = rollMin,
                 AffixRollMax = rollMax,
                 Label = rarityNode["label"]?.GetValue<string>() ?? id,
@@ -432,6 +446,9 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 RangeMax = range?["max"]?.GetValue<int>() ?? 1,
                 RarityRangeStep = affixNode["rarityRangeStep"]?.GetValue<int>() ?? 0,
                 Suffix = affixNode["suffix"]?.GetValue<string>(),
+                Category = affixNode["category"]?.GetValue<string>() ?? "misc",
+                Tier = affixNode["tier"]?.GetValue<int>() ?? 1,
+                MinWeight = affixNode["minWeight"]?.GetValue<double>() ?? 1,
             };
         }
 
@@ -476,6 +493,22 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 .Select(entry => entry!)
                 .ToList() ?? [];
 
+            var affixCategories = typeNode["affixCategories"]?.AsArray()
+                ?.Select(c => c?.GetValue<string>() ?? "")
+                .Where(c => c.Length > 0)
+                .ToList() ?? [];
+
+            var affixCategoryWeights = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            if (typeNode["affixCategoryWeights"]?.AsObject() is { } weightsNode)
+            {
+                foreach (var (key, value) in weightsNode)
+                {
+                    if (value is null)
+                        continue;
+                    affixCategoryWeights[key] = value.GetValue<double>();
+                }
+            }
+
             result[id] = new ItemTypeDefinition
             {
                 Id = id,
@@ -483,6 +516,8 @@ public class GameDataLoader(IWebHostEnvironment environment)
                 Classes = classes,
                 BaseCategories = typeNode["baseCategories"]?.AsObject() ?? new JsonObject(),
                 AffixPool = affixPool,
+                AffixCategories = affixCategories,
+                AffixCategoryWeights = affixCategoryWeights,
             };
         }
 

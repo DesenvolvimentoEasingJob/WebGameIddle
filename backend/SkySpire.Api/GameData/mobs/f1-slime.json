@@ -9,13 +9,6 @@
   "gold": 5,
   "assets": { "sprite": "mobs/f1-slime.png", "icon": "mobs/f1-slime-icon.png" },
   "loot": {
-    "dropChance": 0.1,
-    "rarityWeights": {
-      "common": 72,
-      "uncommon": 20,
-      "rare": 6,
-      "epic": 1.5,
-      "legendary": 0.5
-    }
+    "dropChance": 0.1
   }
 }
