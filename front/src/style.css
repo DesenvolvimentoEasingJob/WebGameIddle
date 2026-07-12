@@ -773,6 +773,14 @@ body:has(.app-bg--game) {
   margin-top: auto;
 }
 
+.game-sidebar__profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
 .game-sidebar__avatar-wrap {
   position: relative;
   width: 72px;
@@ -809,6 +817,7 @@ body:has(.app-bg--game) {
   display: grid;
   gap: 0.1rem;
   min-width: 0;
+  justify-items: center;
 }
 
 .game-sidebar__name {
@@ -1119,6 +1128,12 @@ body:has(.app-bg--game) {
   overflow: hidden;
 }
 
+.game-panel > .status-layout {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
 .game-panel > .tower-layout,
 .game-panel > .game-panel__placeholder {
   flex: 1 1 auto;
@@ -1157,8 +1172,12 @@ body:has(.app-bg--game) {
   border-width: 12px;
   padding: 0.2rem 0.35rem 1.25rem;
   overflow: hidden;
-  background-size: cover;
-  background-position: center 35%;
+  /* Gradiente + imagem do andar: ambos preenchem a arena (evita faixas pretas) */
+  background-size: 100% 100%, 100% 100%;
+  background-position: center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
 }
 
 .combat-dock__arena .tower-fighter--player {
@@ -1340,6 +1359,17 @@ body:has(.app-bg--game) {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 150, 47, 0.45) transparent;
+}
+
+.combat-events__list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.combat-events__list::-webkit-scrollbar-thumb {
+  background: rgba(201, 150, 47, 0.45);
+  border-radius: 3px;
 }
 
 .combat-events__item {
@@ -1361,6 +1391,300 @@ body:has(.app-bg--game) {
 .tower-layout--controls {
   display: grid;
   gap: 0.55rem;
+  min-height: 0;
+  height: 100%;
+  align-content: start;
+}
+
+.tower-layout--mission {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 0.65rem;
+}
+
+.tower-mission-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(160px, 0.9fr);
+  gap: 0.75rem 1rem;
+  align-items: end;
+}
+
+.tower-mission-top__eyebrow {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(201, 150, 47, 0.7);
+}
+
+.tower-mission-top__name {
+  margin: 0.15rem 0 0;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+}
+
+.tower-mission-top__meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.65);
+}
+
+.tower-mission-top__meta strong {
+  color: rgba(232, 220, 192, 0.9);
+}
+
+.tower-mission-progress {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.tower-mission-progress__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.68rem;
+  color: rgba(232, 220, 192, 0.75);
+}
+
+.tower-mission-progress__pct {
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+}
+
+.tower-mission-progress__track {
+  height: 8px;
+  border: 1px solid rgba(201, 150, 47, 0.35);
+  background: rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.tower-mission-progress__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5a3a12, #c9962f);
+  transition: width 0.25s ease;
+}
+
+.tower-mission-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.9fr);
+  grid-template-areas:
+    "targets side"
+    "options side";
+  gap: 0.55rem 0.65rem;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.tower-target-stack {
+  grid-area: targets;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 0.5rem;
+  min-height: 0;
+}
+
+.tower-target {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 0;
+  padding: 0.45rem 0.6rem;
+  border-style: solid;
+  border-width: 12px;
+  border-image: var(--ui-panel-square) 48 fill / 12px stretch;
+  background: rgba(0, 0, 0, 0.28);
+  image-rendering: pixelated;
+}
+
+.tower-target--empty {
+  justify-content: center;
+}
+
+.tower-target__empty {
+  margin: 0;
+  font-size: 0.72rem;
+  color: rgba(232, 220, 192, 0.55);
+}
+
+.tower-farm-options {
+  grid-area: options;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  padding: 0.15rem 0.35rem 0;
+}
+
+.tower-mission-side {
+  grid-area: side;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  min-height: 0;
+}
+
+.tower-target__label {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(201, 150, 47, 0.78);
+}
+
+.tower-target__main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.tower-target__frame {
+  position: relative;
+  width: 72px;
+  height: 80px;
+  flex-shrink: 0;
+  background-image: var(--ui-mob-frame-icon);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.tower-target__frame--boss {
+  background-image: var(--ui-portrait-frame-gardiam);
+  width: 76px;
+  height: 82px;
+}
+
+.tower-target__icon {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  width: 64%;
+  height: 64%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.tower-target__frame--boss .tower-target__icon {
+  top: 48%;
+  width: 68%;
+  height: 68%;
+}
+
+.tower-target__name {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--gold-light);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.tower-target__stats {
+  margin: 0.25rem 0 0;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  color: rgba(232, 220, 192, 0.82);
+}
+
+.tower-target__reward {
+  margin: 0.3rem 0 0;
+  font-size: 0.72rem;
+  color: #b8e0b8;
+}
+
+.tower-layout--mission .tower-track {
+  min-height: 0;
+  padding: 0.45rem 0.5rem 0.55rem;
+  border-style: solid;
+  border-width: 12px;
+  border-image: var(--ui-panel-square) 48 fill / 12px stretch;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: auto;
+}
+
+.tower-layout--mission .tower-track__title {
+  margin: 0 0 0.35rem;
+}
+
+.tower-layout--mission .tower-track__list {
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 0.3rem;
+}
+
+.tower-layout--mission .mob-icon-frame {
+  max-width: 48px;
+}
+
+.tower-layout--mission .mob-icon-frame--boss {
+  max-width: 52px;
+}
+
+.tower-boss-peek {
+  padding: 0.45rem 0.55rem;
+  border-style: solid;
+  border-width: 12px;
+  border-image: var(--ui-panel-square) 48 fill / 12px stretch;
+  background: rgba(0, 0, 0, 0.22);
+  text-align: center;
+}
+
+.tower-boss-peek__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(201, 150, 47, 0.75);
+}
+
+.tower-boss-peek__row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tower-boss-peek__icon {
+  max-width: 52px;
+}
+
+.tower-boss-peek__info {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+}
+
+.tower-boss-peek__info .tower-boss-card__name {
+  display: block;
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.tower-boss-peek__info .tower-boss-card__stats,
+.tower-boss-peek__info .tower-boss-card__reward {
+  margin: 0.12rem 0 0;
+  font-size: 0.64rem;
+}
+
+.tower-actions--bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.15rem 0;
+}
+
+.tower-actions--bar .tower-floor-nav {
+  margin: 0;
+  justify-content: flex-start;
+  gap: 0.45rem;
+}
+
+.tower-actions--bar .tower-actions__buttons {
+  justify-content: flex-end;
 }
 
 
@@ -1936,6 +2260,39 @@ body:has(.app-bg--game) {
     max-width: 56px;
   }
 
+  .tower-mission-top,
+  .tower-mission-body {
+    grid-template-columns: 1fr;
+  }
+
+  .tower-mission-body {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "targets"
+      "options"
+      "side";
+  }
+
+  .tower-farm-options {
+    justify-content: flex-start;
+    padding-left: 0.2rem;
+  }
+
+  .tower-actions--bar {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tower-actions--bar .tower-floor-nav,
+  .tower-actions--bar .tower-actions__buttons {
+    justify-content: center;
+  }
+
+  .tower-target__main {
+    justify-items: center;
+    text-align: center;
+  }
+
   .tower-boss-card {
     grid-template-columns: 1fr;
     text-align: center;
@@ -2024,8 +2381,10 @@ body:has(.app-bg--game) {
   border-image: var(--ui-panel-square) 48 / 7px stretch;
   background-color: #0a0812;
   background-position: center;
-  background-size: cover;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
+  background-origin: border-box;
+  background-clip: border-box;
   overflow: hidden;
   image-rendering: pixelated;
 }
@@ -2294,8 +2653,8 @@ body:has(.app-bg--game) {
   left: 50%;
   top: 46%;
   transform: translate(-50%, -50%);
-  width: 64%;
-  height: 64%;
+  width: 78%;
+  height: 78%;
   object-fit: contain;
   object-position: center;
   image-rendering: pixelated;
@@ -2325,8 +2684,8 @@ body:has(.app-bg--game) {
 
 .mob-icon-frame--boss .mob-icon-frame__portrait {
   top: 48%;
-  width: 68%;
-  height: 68%;
+  width: 80%;
+  height: 80%;
 }
 
 .guardian-portrait {
@@ -2547,3 +2906,159 @@ body:has(.app-bg--game) {
   white-space: pre-wrap;
 }
 
+
+/* ---------- Status do personagem ---------- */
+
+.status-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 0;
+  height: 100%;
+  padding: 0.15rem;
+}
+
+.status-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.status-header__name {
+  margin: 0.15rem 0 0;
+  font-size: 1.05rem;
+  color: var(--gold-light);
+}
+
+.status-header__meta {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+  color: rgba(232, 220, 192, 0.75);
+}
+
+.status-header__progress {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem 0.75rem;
+  margin: 0;
+}
+
+.status-header__progress div {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.status-header__progress dt {
+  margin: 0;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(232, 220, 192, 0.55);
+}
+
+.status-header__progress dd {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.status-section {
+  min-width: 0;
+  min-height: 0;
+  padding: 0.65rem 0.7rem;
+  border-style: solid;
+  border-width: 14px;
+  border-image: var(--ui-panel-square) 48 / 7px stretch;
+  background: rgba(8, 6, 18, 0.35);
+  overflow: auto;
+}
+
+.status-section__title {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.status-table th,
+.status-table td {
+  padding: 0.35rem 0.4rem;
+  border-bottom: 1px solid rgba(201, 150, 47, 0.18);
+  text-align: left;
+}
+
+.status-table thead th {
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(232, 220, 192, 0.55);
+  font-weight: 600;
+}
+
+.status-table tbody th {
+  color: rgba(232, 220, 192, 0.88);
+  font-weight: 600;
+  text-align: left;
+}
+
+.status-table td {
+  color: rgba(232, 220, 192, 0.82);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.status-table__bonus {
+  color: #9fe39f;
+}
+
+.status-stat-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+
+.status-stat-list__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(201, 150, 47, 0.16);
+}
+
+.status-stat-list__row dt {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(232, 220, 192, 0.82);
+}
+
+.status-stat-list__row dd {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 991.98px) {
+  .status-header,
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+}

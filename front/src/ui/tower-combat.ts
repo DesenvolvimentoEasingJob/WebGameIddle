@@ -41,13 +41,27 @@ function resolveCombatStages(arena: HTMLElement): {
   };
 }
 
-function playAnimation(
+/**
+ * Dispara a animação sem travar o combate: o pacing usa relógio (setTimeout).
+ * RAF pode falhar/atrasar (aba em background, sheet ausente, etc.).
+ */
+function triggerAttackAnimation(
   animator: SpriteAnimator,
   kind: "attack" | "critical",
-): Promise<void> {
-  return new Promise((resolve) => {
-    animator.play(kind, { onEnd: () => resolve() });
-  });
+): void {
+  const safetyMs = (kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS) + 400;
+  let settled = false;
+  const settle = (): void => {
+    if (settled) return;
+    settled = true;
+  };
+
+  window.setTimeout(settle, safetyMs);
+  try {
+    animator.play(kind, { onEnd: settle });
+  } catch {
+    settle();
+  }
 }
 
 function updateCombatHpBar(
@@ -100,17 +114,27 @@ function showDamageFloater(
   window.setTimeout(() => floater.remove(), 1100);
 }
 
+export interface PlayTowerCombatReplayOptions {
+  /** Quando false, só atualiza HP/dano no tempo certo (sem sprites). */
+  animate?: boolean;
+}
+
 /** Reproduz animações e números de dano com base no log assinado pelo backend. */
 export async function playTowerCombatReplay(
   arena: HTMLElement,
   combat: TowerCombatResult,
   animators?: { player: SpriteAnimator | null; enemy: SpriteAnimator | null },
+  options?: PlayTowerCombatReplayOptions,
 ): Promise<void> {
   if (!arena.isConnected) return;
 
-  await waitForTowerAnimatorsReady();
-  const resolvedAnimators = animators ?? getTowerAnimators();
+  const animate = options?.animate !== false && !document.hidden;
 
+  if (animate) {
+    await waitForTowerAnimatorsReady();
+  }
+
+  const resolvedAnimators = animators ?? getTowerAnimators();
   const { playerStage, enemyStage, playerHpBar, enemyHpBar } = resolveCombatStages(arena);
   updateCombatHpBar(playerHpBar, combat.playerMaxHp, combat.playerMaxHp);
   updateCombatHpBar(enemyHpBar, combat.enemyMaxHp, combat.enemyMaxHp);
@@ -118,22 +142,23 @@ export async function playTowerCombatReplay(
   arena.classList.add("tower-arena--combat");
 
   for (const turn of combat.turns) {
-    // Só aborta se a arena sumir de verdade; torre "parked" continua conectada.
+    // Só aborta se a arena sumir; HP continua mesmo com aba em background.
     if (!arena.isConnected) break;
-    if (document.hidden) break;
 
     const isPlayer = turn.actor === "player";
     const animator = isPlayer ? resolvedAnimators.player : resolvedAnimators.enemy;
     const targetStage = isPlayer ? enemyStage : playerStage;
     const kind = turn.kind === "critical" ? "critical" : "attack";
+    const swingMs = kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS;
 
-    if (animator) {
-      await playAnimation(animator, kind);
-    } else {
-      await delay(kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS);
+    // Animação é best-effort; o relógio controla HP e pacing.
+    if (animate && animator && !document.hidden) {
+      triggerAttackAnimation(animator, kind);
     }
 
-    if (!arena.isConnected || document.hidden) break;
+    await delay(swingMs);
+
+    if (!arena.isConnected) break;
 
     if (targetStage) {
       showDamageFloater(targetStage, turn.damage, {
@@ -148,8 +173,10 @@ export async function playTowerCombatReplay(
     await delay(TURN_GAP_MS);
   }
 
-  resolvedAnimators.player?.play("idle");
-  resolvedAnimators.enemy?.play("idle");
+  if (animate) {
+    resolvedAnimators.player?.play("idle");
+    resolvedAnimators.enemy?.play("idle");
+  }
   arena.classList.remove("tower-arena--combat");
 }
 

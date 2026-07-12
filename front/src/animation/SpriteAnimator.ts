@@ -90,18 +90,29 @@ export class SpriteAnimator {
   }
 
   play(animationName: string, options?: PlayOptions): void {
-    if (!this.animations[animationName]) {
+    const resolvedName = this.animations[animationName]
+      ? animationName
+      : this.animations.attack
+        ? "attack"
+        : null;
+
+    if (!resolvedName) {
       console.warn(`[SpriteAnimator] Animação desconhecida: ${animationName}`);
+      options?.onEnd?.();
       return;
     }
 
     if (!this.ready) {
-      this.pendingAnimation = { name: animationName, options };
+      this.pendingAnimation = { name: resolvedName, options };
       return;
     }
 
+    // Interromper animação anterior não pode deixar awaiters (ex.: combate) pendurados.
+    const previousEnd = this.playOptions?.onEnd;
     this.stopLoop();
-    this.currentAnimation = animationName;
+    previousEnd?.();
+
+    this.currentAnimation = resolvedName;
     this.currentFrame = 0;
     this.elapsedTime = 0;
     this.lastTimestamp = 0;
@@ -116,9 +127,11 @@ export class SpriteAnimator {
   }
 
   stop(): void {
+    const pendingEnd = this.playOptions?.onEnd;
     this.stopLoop();
     this.isPlaying = false;
     this.playOptions = null;
+    pendingEnd?.();
   }
 
   destroy(): void {

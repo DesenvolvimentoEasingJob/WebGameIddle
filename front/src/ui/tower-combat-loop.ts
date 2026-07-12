@@ -84,12 +84,7 @@ function getLiveArena(panelEl: HTMLElement): HTMLElement | null {
   return arena?.isConnected ? arena : null;
 }
 
-/** Anima só com a torre visível e a aba em foco; caso contrário o farm segue headless. */
-function shouldPlayCombatVisuals(panelEl: HTMLElement): boolean {
-  return !document.hidden && getLiveArena(panelEl) != null;
-}
-
-/** Replay visual ou espera equivalente — mesma duração em qualquer tela. */
+/** Replay na arena (HP sempre) ou só espera quando não há dock. */
 async function paceCombatReplay(
   panelEl: HTMLElement,
   combat: Parameters<typeof playTowerCombatReplay>[1],
@@ -98,22 +93,25 @@ async function paceCombatReplay(
 ): Promise<void> {
   const expectedMs = estimateTowerCombatDurationMs(combat);
   const startedAt = performance.now();
+  const arena = getLiveArena(panelEl);
 
-  if (shouldPlayCombatVisuals(panelEl)) {
-    const arena = getLiveArena(panelEl);
-    if (arena) {
-      onStatus(`Reproduzindo combate ${fightCount}…`);
-      await playTowerCombatReplay(arena, combat, getTowerAnimators());
-    } else {
-      onStatus(`Combate ${fightCount} em andamento…`);
-      await awaitTowerCombatTiming(combat);
-    }
+  if (arena) {
+    // Com arena montada, sempre atualiza HP no tempo certo.
+    // Sprites só com a aba visível (em background o RAF fica throttled).
+    onStatus(
+      document.hidden
+        ? `Combate ${fightCount} em andamento…`
+        : `Reproduzindo combate ${fightCount}…`,
+    );
+    await playTowerCombatReplay(arena, combat, getTowerAnimators(), {
+      animate: !document.hidden,
+    });
   } else {
     onStatus(`Combate ${fightCount} em andamento…`);
     await awaitTowerCombatTiming(combat);
   }
 
-  // Se o replay visual abortou cedo (troca de aba / blur), completa o tempo restante.
+  // Se o replay abortou cedo (arena desmontada), completa o tempo restante.
   const remaining = expectedMs - (performance.now() - startedAt);
   if (remaining > 16) {
     await delay(remaining);
@@ -168,7 +166,7 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
       if (!state?.characterJson.tower.continuousAttack) break;
       if (!canStartTowerCombat(state)) break;
 
-      if (shouldPlayCombatVisuals(panelEl)) {
+      if (getLiveArena(panelEl) && !document.hidden) {
         await waitForTowerAnimatorsReady();
       }
 
@@ -268,8 +266,10 @@ export async function runSingleTowerCombat(options: {
     onStatus("Reproduzindo combate…");
 
     const liveArena = getLiveArena(panelEl);
-    if (liveArena && !document.hidden) {
-      await playTowerCombatReplay(liveArena, combat, getTowerAnimators());
+    if (liveArena) {
+      await playTowerCombatReplay(liveArena, combat, getTowerAnimators(), {
+        animate: !document.hidden,
+      });
     } else {
       await awaitTowerCombatTiming(combat);
     }
