@@ -1,6 +1,6 @@
 import { repeatTowerFloor, startTowerCombat, type GameStateResponse } from "../api/gameplay";
 import { applyGamePatch } from "../state/game-cache";
-import { formatCombatRewardMessage } from "./combat-rewards";
+import { publishCombatRewardEvents } from "./combat-rewards";
 import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 import {
   awaitTowerCombatTiming,
@@ -176,11 +176,11 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
       }
 
       const reward = combat.rewards;
-      onStatus(
-        reward
-          ? `Vitória! ${formatCombatRewardMessage(reward, gameState.lootConfig)}`
-          : `Vitória!`,
-      );
+      if (reward) {
+        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
+      } else {
+        onStatus("Vitória!");
+      }
 
       if (!getState()?.characterJson.tower.continuousAttack) break;
       if (!canStartTowerCombat({ characterJson: gameState.characterJson })) break;
@@ -232,11 +232,11 @@ export async function runSingleTowerCombat(options: {
 
     if (combat.outcome === "player_win") {
       const reward = combat.rewards;
-      onStatus(
-        reward
-          ? `Vitória! ${formatCombatRewardMessage(reward, gameState.lootConfig)}`
-          : "Vitória!",
-      );
+      if (reward) {
+        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
+      } else {
+        onStatus("Vitória!");
+      }
       return "win";
     }
 
