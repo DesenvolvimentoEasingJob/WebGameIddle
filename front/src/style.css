@@ -2959,6 +2959,7 @@ body:has(.app-bg--game) {
 .status-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-size: 0.78rem;
 }
 
@@ -2966,7 +2967,6 @@ body:has(.app-bg--game) {
 .status-table td {
   padding: 0.35rem 0.4rem;
   border-bottom: 1px solid rgba(201, 150, 47, 0.18);
-  text-align: left;
 }
 
 .status-table thead th {
@@ -2977,16 +2977,27 @@ body:has(.app-bg--game) {
   font-weight: 600;
 }
 
+.status-table thead th:first-child {
+  width: 38%;
+  text-align: left;
+}
+
 .status-table tbody th {
+  width: 38%;
+  text-align: left;
   color: rgba(232, 220, 192, 0.88);
   font-weight: 600;
-  text-align: left;
+}
+
+.status-table thead th:not(:first-child),
+.status-table td {
+  width: 20.66%;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .status-table td {
   color: rgba(232, 220, 192, 0.82);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }
 
 .status-table__bonus {
