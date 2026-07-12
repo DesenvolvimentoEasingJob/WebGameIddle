@@ -1359,6 +1359,17 @@ body:has(.app-bg--game) {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 150, 47, 0.45) transparent;
+}
+
+.combat-events__list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.combat-events__list::-webkit-scrollbar-thumb {
+  background: rgba(201, 150, 47, 0.45);
+  border-radius: 3px;
 }
 
 .combat-events__item {
