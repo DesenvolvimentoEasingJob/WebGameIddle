@@ -24,11 +24,11 @@ public class ItemInstanceBuilder(ItemIntegrityService integrityService, ItemAffi
             return integrityService.SignInstance(instance);
 
         var level = Math.Max(1, floorLevel);
-        var totalMultiplier = LootScaling.CombinedStatMultiplier(rarity.Order, level);
+        var statMultiplier = level / 2.0 * LootScaling.RarityStatMultiplier(rarity.Order);
 
         instance["level"] = level;
         instance["rarity"] = rarityId;
-        instance["rolledCategories"] = ScaleCategories(itemDef.Categories, totalMultiplier);
+        instance["rolledCategories"] = ScaleCategories(itemDef.Categories, statMultiplier);
 
         var affixCount = RollAffixCount(rarity, rng);
         var rolledAffixes = affixRoller.RollAffixes(

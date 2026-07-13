@@ -2,12 +2,11 @@ namespace SkySpire.Api.Services;
 
 public static class LootScaling
 {
-    public const double LevelMultiplierPerLevel = 0.01;
     public const double StatMultiplierCap = 50.0;
     public const int AffixCountCap = 12;
 
     public static double LevelMultiplier(int level) =>
-        1 + Math.Max(0, level) * LevelMultiplierPerLevel;
+        Math.Max(0, level) / 2.0;
 
     public static double RarityStatMultiplier(int order)
     {

@@ -10,16 +10,28 @@ namespace SkySpire.Api.Tests;
 public class LootScalingTests
 {
     [Fact]
-    public void LevelMultiplier_Level10_IsOnePointOne()
+    public void LevelMultiplier_Level1_IsHalf()
     {
-        Assert.Equal(1.10, LootScaling.LevelMultiplier(10), 2);
+        Assert.Equal(0.5, LootScaling.LevelMultiplier(1), 2);
+    }
+
+    [Fact]
+    public void LevelMultiplier_Level10_IsFiveTimes()
+    {
+        Assert.Equal(5.0, LootScaling.LevelMultiplier(10), 2);
+    }
+
+    [Fact]
+    public void LevelMultiplier_Level60_IsThirtyTimes()
+    {
+        Assert.Equal(30.0, LootScaling.LevelMultiplier(60), 2);
     }
 
     [Fact]
     public void CombinedStatMultiplier_AppliesLevelAndRarity()
     {
         var mult = LootScaling.CombinedStatMultiplier(order: 2, level: 10);
-        Assert.True(mult > 1.35);
+        Assert.True(mult > 5.0);
     }
 
     [Fact]
@@ -72,7 +84,7 @@ public class ItemInstanceBuilderTests
         var instance = builder.Build(itemDef, rarity, "common", floorLevel: 10, new Random(42));
 
         var strength = instance["rolledCategories"]?["attributes"]?["strength"]?["base"]?.GetValue<int>();
-        Assert.Equal(11, strength);
+        Assert.Equal(50, strength);
         Assert.Equal(10, instance["level"]?.GetValue<int>());
         Assert.NotNull(instance["integrity"]);
     }
