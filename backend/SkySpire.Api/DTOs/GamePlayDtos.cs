@@ -7,6 +7,21 @@ public record ItemDropMetaDto(
     int RollIndex,
     string? RolledAt);
 
+public record TowerCombatSessionDto(
+    string SessionId,
+    string StartedAt,
+    string EndsAt,
+    int DurationMs,
+    int RemainingMs,
+    string Mode,
+    int FightsResolved,
+    int Floor,
+    int MobIndex,
+    string EnemyId,
+    string EnemyName,
+    bool IsBoss,
+    int EnemyMaxHp);
+
 public record ItemIntegrityDto(
     string Hash,
     string Signature);
@@ -79,11 +94,19 @@ public record DroppedItemDto(
     ItemDropMetaDto? DropMeta = null,
     ItemIntegrityDto? Integrity = null);
 
+public record CombatRewardItemDto(
+    string InstanceId,
+    string ItemId,
+    string Name,
+    string Rarity,
+    int Level,
+    int Quantity);
+
 public record TowerCombatRewardsDto(
     int Xp,
     int Gold,
-    IReadOnlyList<DroppedItemDto> Items,
-    IReadOnlyList<DroppedItemDto> LostItems);
+    IReadOnlyList<CombatRewardItemDto> Items,
+    IReadOnlyList<CombatRewardItemDto> LostItems);
 
 public record TowerCombatResultDto(
     string Outcome,
@@ -102,9 +125,24 @@ public record GamePatchResponse(
     object? CurrentFloor = null,
     object? EffectiveCategories = null);
 
+public record InventoryQuantityPatchDto(
+    string InstanceId,
+    int Quantity);
+
+/// <summary>Minimal combat patch — only changed progression, tower, and inventory deltas.</summary>
+public record TowerCombatPatchDto(
+    object? Progression = null,
+    object? Tower = null,
+    object? NewInventoryItems = null,
+    IReadOnlyList<InventoryQuantityPatchDto>? InventoryUpdates = null,
+    IReadOnlyDictionary<string, ItemSummaryDto>? NewCatalogEntries = null,
+    object? CurrentFloor = null,
+    string? UpdatedAt = null);
+
 public record StartTowerCombatResponse(
     TowerCombatResultDto Combat,
-    GamePatchResponse Patch);
+    TowerCombatPatchDto Patch,
+    TowerCombatSessionDto Session);
 
 public record TowerCombatBatchRequest
 {
@@ -117,14 +155,15 @@ public record TowerCombatBatchResultDto(
     int Defeats,
     int TotalXp,
     int TotalGold,
-    IReadOnlyList<DroppedItemDto> Items,
-    IReadOnlyList<DroppedItemDto> LostItems,
+    IReadOnlyList<CombatRewardItemDto> Items,
+    IReadOnlyList<CombatRewardItemDto> LostItems,
     string BatchSeed,
     IReadOnlyList<TowerCombatResultDto> Combats);
 
 public record StartTowerCombatBatchResponse(
     TowerCombatBatchResultDto Batch,
-    GamePatchResponse Patch);
+    TowerCombatPatchDto Patch,
+    TowerCombatSessionDto Session);
 
 public record TradeItemRequest
 {

@@ -6,7 +6,7 @@ import {
 import { resolveCharacterSprite, resolveFloorBackground, resolveMobSprite } from "./game-assets";
 import { resolveMobSpriteSheet, resolvePlayerSpriteSheet } from "../animation/sprite-registry";
 import { computeDisplayStats } from "./inventory-panel";
-import { getCurrentTowerEnemy } from "./tower-panel";
+import { resolveDockEnemy } from "./tower-panel";
 
 export interface CombatDockOptions {
   state: GameStateResponse;
@@ -28,8 +28,9 @@ export function renderCombatDock(options: CombatDockOptions): string {
     `;
   }
 
-  const currentEnemy = getCurrentTowerEnemy(floor, tower);
-  const facingBoss = !tower.bossDefeated && tower.mobsKilledThisFloor >= floor.mobCount;
+  const currentEnemy = resolveDockEnemy(floor, tower);
+  const facingBoss = tower.combatSession?.isBoss
+    ?? (!tower.bossDefeated && tower.mobsKilledThisFloor >= floor.mobCount);
   const playerHasSheet = Boolean(resolvePlayerSpriteSheet(char.raceId, char.classId));
   const enemyHasSheet = Boolean(resolveMobSpriteSheet(currentEnemy.id));
   const playerSprite = resolveCharacterSprite(char.assets);
@@ -73,7 +74,7 @@ export function renderCombatDock(options: CombatDockOptions): string {
         </figcaption>
       </figure>
 
-      <figure class="tower-fighter tower-fighter--enemy${facingBoss || tower.bossDefeated ? " tower-fighter--boss" : ""}">
+      <figure class="tower-fighter tower-fighter--enemy${facingBoss ? " tower-fighter--boss" : ""}">
         <div
           class="tower-combat-hp tower-combat-hp--enemy"
           data-combat-hp="enemy"
@@ -112,6 +113,34 @@ export function renderCombatDock(options: CombatDockOptions): string {
       </div>
     </div>
   `;
+}
+
+export function renderCombatDockWaiting(options: {
+  enemyName: string;
+  isBoss: boolean;
+  remainingMs: number;
+}): string {
+  const seconds = Math.max(1, Math.ceil(options.remainingMs / 1000));
+  const label = options.isBoss ? "chefe" : "inimigo";
+
+  return `
+    <div class="combat-dock__waiting" role="status" aria-live="polite">
+      <div class="combat-dock__waiting-spinner" aria-hidden="true"></div>
+      <p class="combat-dock__waiting-title">Combate em andamento</p>
+      <p class="combat-dock__waiting-enemy">
+        Aguardando o servidor finalizar o combate contra
+        <strong>${options.enemyName}</strong> (${label})
+      </p>
+      <p class="combat-dock__waiting-timer" data-combat-wait-seconds>${seconds}s restantes</p>
+    </div>
+  `;
+}
+
+export function updateCombatDockWaitingTimer(remainingMs: number): void {
+  const el = document.querySelector<HTMLElement>("[data-combat-wait-seconds]");
+  if (!el) return;
+  const seconds = Math.max(1, Math.ceil(remainingMs / 1000));
+  el.textContent = `${seconds}s restantes`;
 }
 
 export function renderCombatEventsShell(): string {

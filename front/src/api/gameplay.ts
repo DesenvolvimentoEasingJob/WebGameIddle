@@ -65,6 +65,22 @@ export interface CharacterProgression {
   gold: number;
 }
 
+export interface TowerCombatSession {
+  sessionId: string;
+  startedAt: string;
+  endsAt: string;
+  durationMs: number;
+  remainingMs?: number;
+  mode: "single" | "batch";
+  fightsResolved: number;
+  floor: number;
+  mobIndex: number;
+  enemyId: string;
+  enemyName: string;
+  isBoss: boolean;
+  enemyMaxHp: number;
+}
+
 export interface TowerState {
   currentFloor: number;
   unlockedFloor: number;
@@ -74,6 +90,7 @@ export interface TowerState {
   bossDefeated: boolean;
   totalMobsKilled?: number;
   totalBossesKilled?: number;
+  combatSession?: TowerCombatSession | null;
 }
 
 export interface CharacterGameJson {
@@ -168,11 +185,20 @@ export interface DroppedItem {
   integrity?: InventoryEntry["integrity"];
 }
 
+export interface CombatRewardItem {
+  instanceId: string;
+  itemId: string;
+  name: string;
+  rarity: string;
+  level: number;
+  quantity: number;
+}
+
 export interface TowerCombatRewards {
   xp: number;
   gold: number;
-  items: DroppedItem[];
-  lostItems: DroppedItem[];
+  items: CombatRewardItem[];
+  lostItems: CombatRewardItem[];
 }
 
 export interface TowerCombatResult {
@@ -188,7 +214,18 @@ export interface TowerCombatResult {
 
 export interface StartTowerCombatResponse {
   combat: TowerCombatResult;
-  patch: GamePatchResponse;
+  patch: TowerCombatPatchResponse;
+  session: TowerCombatSession;
+}
+
+export interface TowerCombatPatchResponse {
+  progression?: CharacterProgression;
+  tower?: TowerState;
+  newInventoryItems?: InventoryEntry[];
+  inventoryUpdates?: Array<{ instanceId: string; quantity: number }>;
+  newCatalogEntries?: Record<string, ItemSummary> | null;
+  currentFloor?: TowerFloorDetail | null;
+  updatedAt?: string;
 }
 
 export interface TowerCombatBatchResult {
@@ -205,7 +242,8 @@ export interface TowerCombatBatchResult {
 
 export interface StartTowerCombatBatchResponse {
   batch: TowerCombatBatchResult;
-  patch: GamePatchResponse;
+  patch: TowerCombatPatchResponse;
+  session: TowerCombatSession;
 }
 
 function authHeaders(): HeadersInit {
@@ -239,8 +277,20 @@ export async function fetchLootConfig(): Promise<GameLootConfig> {
 }
 
 function normalizeGameState(state: GameStateResponse): GameStateResponse {
+  const tower = state.characterJson.tower;
+  const normalizedTower = tower.combatSession
+    ? {
+        ...tower,
+        combatSession: normalizeCombatSession(tower.combatSession as Parameters<typeof normalizeCombatSession>[0]),
+      }
+    : tower;
+
   return {
     ...state,
+    characterJson: {
+      ...state.characterJson,
+      tower: normalizedTower,
+    },
     lootConfig: normalizeLootConfig(state.lootConfig),
   };
 }
@@ -388,6 +438,79 @@ export async function navigateTowerFloor(
   return normalizeGamePatch((await response.json()) as GamePatchResponse);
 }
 
+function normalizeCombatSession(session: {
+  sessionId: string;
+  startedAt: string;
+  endsAt: string;
+  durationMs: number;
+  remainingMs?: number;
+  mode: string;
+  fightsResolved: number;
+  floor?: number;
+  mobIndex?: number;
+  enemyId?: string;
+  enemyName?: string;
+  isBoss?: boolean;
+  enemyMaxHp?: number;
+}): TowerCombatSession {
+  const remainingMs = session.remainingMs
+    ?? Math.max(0, new Date(session.endsAt).getTime() - Date.now());
+
+  return {
+    sessionId: session.sessionId,
+    startedAt: session.startedAt,
+    endsAt: session.endsAt,
+    durationMs: session.durationMs,
+    remainingMs,
+    mode: session.mode === "batch" ? "batch" : "single",
+    fightsResolved: session.fightsResolved,
+    floor: session.floor ?? 1,
+    mobIndex: session.mobIndex ?? 0,
+    enemyId: session.enemyId ?? "",
+    enemyName: session.enemyName ?? "",
+    isBoss: session.isBoss ?? false,
+    enemyMaxHp: session.enemyMaxHp ?? 0,
+  };
+}
+
+function normalizeCombatRewardItem(item: {
+  instanceId: string;
+  itemId: string;
+  name: string;
+  rarity: string;
+  level?: number;
+  quantity: number;
+}): CombatRewardItem {
+  return {
+    instanceId: item.instanceId,
+    itemId: item.itemId,
+    name: item.name,
+    rarity: item.rarity,
+    level: item.level ?? 1,
+    quantity: item.quantity,
+  };
+}
+
+function normalizeTowerCombatPatch(patch: TowerCombatPatchResponse): TowerCombatPatchResponse {
+  const tower = patch.tower;
+  return {
+    progression: patch.progression,
+    tower: tower?.combatSession
+      ? {
+          ...tower,
+          combatSession: normalizeCombatSession(
+            tower.combatSession as Parameters<typeof normalizeCombatSession>[0],
+          ),
+        }
+      : tower,
+    newInventoryItems: patch.newInventoryItems,
+    inventoryUpdates: patch.inventoryUpdates,
+    newCatalogEntries: patch.newCatalogEntries,
+    currentFloor: patch.currentFloor,
+    updatedAt: patch.updatedAt,
+  };
+}
+
 export async function startTowerCombat(
   slotIndex: number,
 ): Promise<StartTowerCombatResponse> {
@@ -424,22 +547,21 @@ export async function startTowerCombat(
           itemId: string;
           name: string;
           rarity: string;
+          level?: number;
           quantity: number;
-          rolledCategories?: Record<string, unknown>;
-          assets?: { icon?: string };
         }>;
         lostItems?: Array<{
           instanceId: string;
           itemId: string;
           name: string;
           rarity: string;
+          level?: number;
           quantity: number;
-          rolledCategories?: Record<string, unknown>;
-          assets?: { icon?: string };
         }>;
       } | null;
     };
-    patch: GamePatchResponse;
+    patch: TowerCombatPatchResponse;
+    session: Parameters<typeof normalizeCombatSession>[0];
   };
 
   return {
@@ -462,40 +584,13 @@ export async function startTowerCombat(
         ? {
             xp: raw.combat.rewards.xp,
             gold: raw.combat.rewards.gold,
-            items: (raw.combat.rewards.items ?? []).map(normalizeDroppedItem),
-            lostItems: (raw.combat.rewards.lostItems ?? []).map(normalizeDroppedItem),
+            items: (raw.combat.rewards.items ?? []).map(normalizeCombatRewardItem),
+            lostItems: (raw.combat.rewards.lostItems ?? []).map(normalizeCombatRewardItem),
           }
         : null,
     },
-    patch: normalizeGamePatch(raw.patch),
-  };
-}
-
-function normalizeDroppedItem(item: {
-  instanceId: string;
-  itemId: string;
-  name: string;
-  rarity: string;
-  level?: number;
-  quantity: number;
-  rolledCategories?: Record<string, unknown>;
-  rolledAffixes?: RolledAffix[];
-  assets?: { icon?: string };
-  dropMeta?: InventoryEntry["dropMeta"];
-  integrity?: InventoryEntry["integrity"];
-}): DroppedItem {
-  return {
-    instanceId: item.instanceId,
-    itemId: item.itemId,
-    name: item.name,
-    rarity: item.rarity,
-    level: item.level ?? 1,
-    quantity: item.quantity,
-    rolledCategories: item.rolledCategories,
-    rolledAffixes: item.rolledAffixes,
-    assets: item.assets,
-    dropMeta: item.dropMeta,
-    integrity: item.integrity,
+    patch: normalizeTowerCombatPatch(raw.patch),
+    session: normalizeCombatSession(raw.session),
   };
 }
 
@@ -503,6 +598,7 @@ export async function startTowerCombatBatch(
   slotIndex: number,
   killCount = 5,
 ): Promise<StartTowerCombatBatchResponse> {
+  // Mantido no client para ferramentas/debug; o loop de farm usa combates unitários.
   const response = await fetch(`${API_BASE}/characters/${slotIndex}/game/tower/combat-batch`, {
     method: "POST",
     headers: authHeaders(),
@@ -520,8 +616,8 @@ export async function startTowerCombatBatch(
       defeats: number;
       totalXp: number;
       totalGold: number;
-      items: Parameters<typeof normalizeDroppedItem>[0][];
-      lostItems: Parameters<typeof normalizeDroppedItem>[0][];
+      items: Parameters<typeof normalizeCombatRewardItem>[0][];
+      lostItems: Parameters<typeof normalizeCombatRewardItem>[0][];
       batchSeed: string;
       combats: Array<{
         outcome: string;
@@ -534,7 +630,8 @@ export async function startTowerCombatBatch(
         rewards: TowerCombatRewards | null;
       }>;
     };
-    patch: GamePatchResponse;
+    patch: TowerCombatPatchResponse;
+    session: Parameters<typeof normalizeCombatSession>[0];
   };
 
   return {
@@ -544,8 +641,8 @@ export async function startTowerCombatBatch(
       defeats: raw.batch.defeats,
       totalXp: raw.batch.totalXp,
       totalGold: raw.batch.totalGold,
-      items: raw.batch.items.map(normalizeDroppedItem),
-      lostItems: raw.batch.lostItems.map(normalizeDroppedItem),
+      items: raw.batch.items.map(normalizeCombatRewardItem),
+      lostItems: raw.batch.lostItems.map(normalizeCombatRewardItem),
       batchSeed: raw.batch.batchSeed,
       combats: raw.batch.combats.map((c) => ({
         outcome: c.outcome as TowerCombatResult["outcome"],
@@ -558,7 +655,8 @@ export async function startTowerCombatBatch(
         rewards: c.rewards,
       })),
     },
-    patch: normalizeGamePatch(raw.patch),
+    patch: normalizeTowerCombatPatch(raw.patch),
+    session: normalizeCombatSession(raw.session),
   };
 }
 

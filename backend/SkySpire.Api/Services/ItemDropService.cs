@@ -63,7 +63,7 @@ public class ItemDropService(
         return new ItemDropResult(instance, itemDef, rarityId);
     }
 
-    public InventoryAddResult TryAddToInventory(JsonObject document, ItemDropResult drop)
+    public InventoryAddOutcome TryAddToInventory(JsonObject document, ItemDropResult drop)
     {
         var inventory = document["inventory"]?.AsObject()
             ?? throw new InvalidOperationException("Inventário inválido.");
@@ -81,16 +81,21 @@ public class ItemDropService(
             if (existing is not null)
             {
                 var qty = existing["quantity"]?.GetValue<int>() ?? 1;
-                existing["quantity"] = qty + 1;
-                return InventoryAddResult.Added;
+                var nextQty = qty + 1;
+                existing["quantity"] = nextQty;
+                return new InventoryAddOutcome(
+                    InventoryAddResult.Added,
+                    UpdatedInstanceId: existing["instanceId"]?.GetValue<string>(),
+                    UpdatedQuantity: nextQty);
             }
         }
 
         if (items.Count >= capacity)
-            return InventoryAddResult.InventoryFull;
+            return new InventoryAddOutcome(InventoryAddResult.InventoryFull);
 
-        items.Add(drop.Instance.DeepClone());
-        return InventoryAddResult.Added;
+        var added = drop.Instance.DeepClone().AsObject();
+        items.Add(added);
+        return new InventoryAddOutcome(InventoryAddResult.Added, AddedEntry: added);
     }
 
     private string? RollRarity(MobLootProfile loot, Random rng)
@@ -225,5 +230,11 @@ public enum InventoryAddResult
     Added,
     InventoryFull,
 }
+
+public record InventoryAddOutcome(
+    InventoryAddResult Result,
+    JsonObject? AddedEntry = null,
+    string? UpdatedInstanceId = null,
+    int? UpdatedQuantity = null);
 
 public record ItemDropResult(JsonObject Instance, ItemDefinition ItemDef, string RarityId);

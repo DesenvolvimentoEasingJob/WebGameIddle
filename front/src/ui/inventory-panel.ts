@@ -19,6 +19,7 @@ export interface InventoryPanelOptions {
   onSelect: (instanceId: string | null) => void;
   onToggleBulkMode: () => void;
   onBulkSelect: (instanceId: string) => void;
+  onBulkSelectAll: () => void;
   onBulkDiscard: () => void;
   onEquip: (instanceId: string) => void;
   onUnequip: (equipSlot: string) => void;
@@ -40,22 +41,6 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
   return `
     <div class="inventory-layout">
       <div class="inventory-equip-column">
-        <div class="inventory-mode-bar">
-          <button
-            type="button"
-            class="ui-btn ui-btn--sm${bulkMode ? " ui-btn--active" : ""}"
-            data-action="toggle-bulk-mode"
-            aria-pressed="${bulkMode}"
-            ${busy ? "disabled" : ""}
-          >
-            Inventário
-          </button>
-          ${
-            bulkMode
-              ? `<span class="inventory-mode-bar__hint">${bulkSelectedIds.length} selecionado(s)</span>`
-              : ""
-          }
-        </div>
         <section class="inventory-equip" aria-label="Equipamento">
           <h2 class="game-panel__title">Equipamento</h2>
           <div class="equip-grid">
@@ -74,9 +59,33 @@ export function renderInventoryPanel(options: InventoryPanelOptions): string {
               .join("")}
           </div>
         </section>
+        <div class="inventory-mode-bar">
+          <button
+            type="button"
+            class="ui-btn ui-btn--sm${bulkMode ? " ui-btn--active" : ""}"
+            data-action="toggle-bulk-mode"
+            aria-pressed="${bulkMode}"
+            ${busy ? "disabled" : ""}
+          >
+            Inventário
+          </button>
+          ${
+            bulkMode
+              ? `<span class="inventory-mode-bar__hint">${bulkSelectedIds.length} selecionado(s)</span>`
+              : ""
+          }
+        </div>
         ${
           bulkMode
             ? `<div class="inventory-bulk-actions">
+                <button
+                  type="button"
+                  class="ui-btn ui-btn--sm"
+                  data-action="bulk-select-all"
+                  ${busy || char.inventory.items.length === 0 ? "disabled" : ""}
+                >
+                  Limpar inventário
+                </button>
                 <button
                   type="button"
                   class="ui-btn ui-btn--sm ui-btn--discard"
@@ -467,6 +476,12 @@ function findSelectedItem(
 export function bindInventoryPanel(root: HTMLElement, options: InventoryPanelOptions): void {
   root.querySelector<HTMLButtonElement>('[data-action="toggle-bulk-mode"]')?.addEventListener("click", () => {
     options.onToggleBulkMode();
+  });
+
+  root.querySelectorAll<HTMLButtonElement>('[data-action="bulk-select-all"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      options.onBulkSelectAll();
+    });
   });
 
   root.querySelectorAll<HTMLButtonElement>('[data-action="bulk-discard"]').forEach((btn) => {

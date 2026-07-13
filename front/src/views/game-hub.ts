@@ -14,6 +14,7 @@ import {
 } from "../api/gameplay";
 import { getActiveCharacterMeta, getActiveSlot, getStoredUser, navigate, setActiveCharacterMeta } from "../router";
 import { applyGamePatch, initGameCacheFromBootstrap, resetGameCache } from "../state/game-cache";
+import { resetCombatCache } from "../state/combat-cache";
 import {
   pushCombatEvent,
   renderCombatDock,
@@ -33,12 +34,14 @@ import { renderStatusPanel } from "../ui/status-panel";
 import { bindTowerFloorNav } from "../ui/tower-navigation";
 import {
   isTowerCombatLoopRunning,
+  prepareCombatResumeFromStorage,
+  resumePendingCombatSession,
   runSingleTowerCombat,
   runTowerCombatLoop,
   stopTowerCombatLoop,
 } from "../ui/tower-combat-loop";
 import { bindTowerSprites, destroyTowerSprites, waitForTowerAnimatorsReady } from "../ui/tower-sprites";
-import { canStartTowerCombat } from "../ui/tower-combat";
+import { canStartTowerCombat, clearCombatSession, hasActiveCombatSession } from "../ui/tower-combat";
 
 let cachedState: GameStateResponse | null = null;
 let activeTab: GameTab = "inventory";
@@ -182,6 +185,7 @@ export function renderGameHub(root: HTMLElement): void {
     destroyTowerSprites();
     busy = false;
     resetGameCache();
+    resetCombatCache();
     document.getElementById("game-title")?.removeAttribute("hidden");
     document.querySelector(".app-main")?.classList.remove("app-main--game");
     document.querySelector(".col-12")?.classList.remove("col-game-full");
@@ -239,10 +243,11 @@ async function loadGame(
 
   try {
     cachedState = initGameCacheFromBootstrap(await fetchGameState(slotIndex));
+    prepareCombatResumeFromStorage(cachedState.characterJson.id, slotIndex);
     updateSidebar(root, cachedState);
     mountCombatDock({ force: true });
     renderActivePanel();
-    maybeResumeContinuousCombat();
+    void maybeResumePendingCombat();
   } catch (err) {
     getTabPanel().innerHTML = "";
     errorEl.textContent = formatApiError(err, "Não foi possível entrar no jogo.");
@@ -320,9 +325,12 @@ function updateVitalBar(
   bar.setAttribute("aria-valuetext", valueText);
 }
 
-function publishCombatStatus(message: string): void {
+function setCombatStatus(message: string): void {
   const statusEl = document.querySelector<HTMLElement>("#tower-combat-status");
   if (statusEl) statusEl.textContent = message;
+}
+
+function publishCombatEvent(message: string): void {
   pushCombatEvent(message);
 }
 
@@ -372,6 +380,7 @@ function renderActivePanel(options?: { forceTowerRemount?: boolean; forceDockRem
       onSelect: () => {},
       onToggleBulkMode: () => {},
       onBulkSelect: () => {},
+      onBulkSelectAll: () => {},
       onBulkDiscard: () => {},
       onEquip: () => {},
       onUnequip: () => {},
@@ -400,6 +409,14 @@ function renderActivePanel(options?: { forceTowerRemount?: boolean; forceDockRem
         } else {
           bulkSelectedIds = [...bulkSelectedIds, instanceId];
         }
+        renderActivePanel();
+      },
+      onBulkSelectAll: () => {
+        if (!cachedState) return;
+        const allIds = cachedState.characterJson.inventory.items.map((entry) => entry.instanceId);
+        const alreadyAllSelected =
+          allIds.length > 0 && allIds.every((id) => bulkSelectedIds.includes(id));
+        bulkSelectedIds = alreadyAllSelected ? [] : allIds;
         renderActivePanel();
       },
       onBulkDiscard: () => {
@@ -570,7 +587,8 @@ async function handleStartCombat(): Promise<void> {
       const root = document.querySelector(".game-hub");
       if (root) updateSidebar(root as HTMLElement, state);
     },
-    onStatus: publishCombatStatus,
+    onStatus: setCombatStatus,
+    onEvent: publishCombatEvent,
   });
 
   if (outcome !== "error") {
@@ -582,11 +600,41 @@ async function handleStartCombat(): Promise<void> {
   renderActivePanel({ forceTowerRemount: true, forceDockRemount: true });
 }
 
-function maybeResumeContinuousCombat(): void {
-  if (!cachedState?.characterJson.tower.continuousAttack) return;
-  if (!canStartTowerCombat(cachedState)) return;
-  if (isTowerCombatLoopRunning()) return;
-  startContinuousCombat();
+function maybeResumePendingCombat(): void {
+  if (!cachedState) return;
+
+  const tower = cachedState.characterJson.tower;
+  if (!hasActiveCombatSession(tower)) return;
+
+  mountCombatDock({ force: true });
+  setCombatStatus(
+    tower.combatSession?.enemyName
+      ? `Retomando combate contra ${tower.combatSession.enemyName}…`
+      : "Retomando combate em andamento…",
+  );
+
+  void resumePendingCombatSession(
+    cachedState,
+    getActiveSlot(),
+    getCombatRoot(),
+    { onStatus: setCombatStatus, onEvent: publishCombatEvent },
+  ).then(() => {
+    if (!cachedState) return;
+
+    clearCombatSession(cachedState.characterJson.tower);
+
+    if (cachedState.characterJson.tower.continuousAttack) {
+      if (canStartTowerCombat(cachedState)) {
+        if (!isTowerCombatLoopRunning()) startContinuousCombat();
+      } else if (hasActiveCombatSession(cachedState.characterJson.tower)) {
+        void maybeResumePendingCombat();
+      }
+      return;
+    }
+
+    setCombatStatus("Combate concluído.");
+    renderActivePanel({ forceDockRemount: true });
+  });
 }
 
 function startContinuousCombat(): void {
@@ -621,7 +669,8 @@ function startContinuousCombat(): void {
         setTowerControlsDisabled(getTabPanel(), true);
       }
     },
-    onStatus: publishCombatStatus,
+    onStatus: setCombatStatus,
+    onEvent: publishCombatEvent,
     onError: (message) => {
       showGameError(message);
       if (cachedState) {
@@ -689,6 +738,7 @@ async function handleNavigateFloor(
   if (busy || !cachedState) return;
 
   stopTowerCombatLoop();
+  clearCombatSession(cachedState.characterJson.tower);
   busy = true;
 
   try {
@@ -708,6 +758,7 @@ async function handleRepeatFloor(): Promise<void> {
   if (busy || !cachedState) return;
 
   stopTowerCombatLoop();
+  clearCombatSession(cachedState.characterJson.tower);
   busy = true;
   const errorEl = document.querySelector<HTMLParagraphElement>("#game-error");
 

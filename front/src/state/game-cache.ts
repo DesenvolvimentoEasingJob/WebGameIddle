@@ -3,6 +3,7 @@ import type {
   GameLootConfig,
   GameStateResponse,
   ItemSummary,
+  TowerCombatPatchResponse,
   TowerFloorDetail,
 } from "../api/gameplay";
 
@@ -17,6 +18,8 @@ export interface GamePatchResponse {
   currentFloor?: TowerFloorDetail | null;
   effectiveCategories?: Record<string, unknown> | null;
 }
+
+export type { TowerCombatPatchResponse } from "../api/gameplay";
 
 export function initGameCacheFromBootstrap(state: GameStateResponse): GameStateResponse {
   staticLootConfig = state.lootConfig;
@@ -53,6 +56,49 @@ export function applyGamePatch(
   }
 
   return assembleGameState(patch.characterJson, prev);
+}
+
+/** Aplica apenas o delta do combate sobre o estado em cache. */
+export function applyTowerCombatPatch(
+  prev: GameStateResponse,
+  patch: TowerCombatPatchResponse,
+): GameStateResponse {
+  const characterJson = structuredClone(prev.characterJson);
+
+  if (patch.progression) {
+    characterJson.progression = patch.progression;
+  }
+
+  if (patch.tower) {
+    characterJson.tower = patch.tower;
+  }
+
+  if (patch.updatedAt) {
+    (characterJson as CharacterGameJson & { updatedAt?: string }).updatedAt = patch.updatedAt;
+  }
+
+  if (patch.newInventoryItems?.length) {
+    characterJson.inventory.items.push(...patch.newInventoryItems);
+  }
+
+  if (patch.inventoryUpdates?.length) {
+    for (const update of patch.inventoryUpdates) {
+      const entry = characterJson.inventory.items.find(
+        (item) => item.instanceId === update.instanceId,
+      );
+      if (entry) {
+        entry.quantity = update.quantity;
+      }
+    }
+  }
+
+  mergeCatalogEntries(patch.newCatalogEntries);
+
+  if (patch.currentFloor !== undefined && patch.currentFloor !== null) {
+    currentFloorCache = patch.currentFloor;
+  }
+
+  return assembleGameState(characterJson, prev);
 }
 
 export function assembleGameState(

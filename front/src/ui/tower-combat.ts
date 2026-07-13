@@ -1,12 +1,10 @@
 import type { SpriteAnimator } from "../animation/SpriteAnimator";
-import type { TowerCombatResult } from "../api/gameplay";
+import type { TowerCombatResult, TowerCombatSession, TowerState } from "../api/gameplay";
 import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 
-/** Duração aproximada de um swing (6 frames @ 12fps + folga do fallback sem sheet). */
 const ATTACK_SWING_MS = 520;
 const CRITICAL_SWING_MS = 650;
 const TURN_GAP_MS = 320;
-
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => window.setTimeout(resolve, ms));
 }
@@ -19,6 +17,92 @@ export function estimateTowerCombatDurationMs(combat: TowerCombatResult): number
     total += TURN_GAP_MS;
   }
   return total;
+}
+
+export function estimateCombatsDurationMs(combats: TowerCombatResult[]): number {
+  return combats.reduce((sum, combat) => sum + estimateTowerCombatDurationMs(combat), 0);
+}
+
+function turnDurationMs(kind: TowerCombatResult["turns"][number]["kind"]): number {  return (kind === "critical" ? CRITICAL_SWING_MS : ATTACK_SWING_MS) + TURN_GAP_MS;
+}
+
+export interface ReplayResumePoint {
+  turnIndex: number;
+  playerHp: number;
+  enemyHp: number;
+  elapsedMs: number;
+}
+
+/** Calcula de qual turno retomar o replay após refresh no meio do combate. */
+export function computeReplayResumePoint(
+  combat: TowerCombatResult,
+  elapsedMs: number,
+): ReplayResumePoint {
+  let consumed = 0;
+  let turnIndex = 0;
+  let playerHp = combat.playerMaxHp;
+  let enemyHp = combat.enemyMaxHp;
+
+  for (let i = 0; i < combat.turns.length; i++) {
+    const turn = combat.turns[i]!;
+    const stepMs = turnDurationMs(turn.kind);
+    if (consumed + stepMs > elapsedMs) {
+      turnIndex = i;
+      break;
+    }
+    consumed += stepMs;
+    playerHp = turn.playerHpRemaining;
+    enemyHp = turn.enemyHpRemaining;
+    turnIndex = i + 1;
+  }
+
+  if (turnIndex > 0 && turnIndex <= combat.turns.length) {
+    const prev = combat.turns[turnIndex - 1];
+    if (prev) {
+      playerHp = prev.playerHpRemaining;
+      enemyHp = prev.enemyHpRemaining;
+    }
+  }
+
+  return { turnIndex, playerHp, enemyHp, elapsedMs };
+}
+
+export function getCombatElapsedMs(session: TowerCombatSession): number {
+  const remainingMs = Math.max(0, new Date(session.endsAt).getTime() - Date.now());
+  return Math.max(0, session.durationMs - remainingMs);
+}
+
+export function getCombatSessionRemainingMs(tower: TowerState): number {
+  const endsAt = tower.combatSession?.endsAt;
+  if (!endsAt) return 0;
+  return Math.max(0, new Date(endsAt).getTime() - Date.now());
+}
+
+export function hasActiveCombatSession(tower: TowerState): boolean {
+  return getCombatSessionRemainingMs(tower) > 0;
+}
+
+export function clearCombatSession(tower: TowerState): void {
+  delete tower.combatSession;
+}
+
+export async function awaitCombatSessionEnd(
+  tower: TowerState,
+  onTick?: (remainingMs: number) => void,
+): Promise<void> {
+  let remaining = getCombatSessionRemainingMs(tower);
+  if (remaining <= 0) return;
+
+  onTick?.(remaining);
+
+  while (remaining > 0) {
+    const waitMs = Math.min(remaining, 500);
+    await delay(waitMs);
+    remaining = getCombatSessionRemainingMs(tower);
+    if (remaining > 0) {
+      onTick?.(remaining);
+    }
+  }
 }
 
 /** Espera o mesmo tempo do combate animado, sem precisar da arena. */
@@ -115,10 +199,11 @@ function showDamageFloater(
 }
 
 export interface PlayTowerCombatReplayOptions {
-  /** Quando false, só atualiza HP/dano no tempo certo (sem sprites). */
   animate?: boolean;
+  startTurnIndex?: number;
+  initialPlayerHp?: number;
+  initialEnemyHp?: number;
 }
-
 /** Reproduz animações e números de dano com base no log assinado pelo backend. */
 export async function playTowerCombatReplay(
   arena: HTMLElement,
@@ -136,13 +221,17 @@ export async function playTowerCombatReplay(
 
   const resolvedAnimators = animators ?? getTowerAnimators();
   const { playerStage, enemyStage, playerHpBar, enemyHpBar } = resolveCombatStages(arena);
-  updateCombatHpBar(playerHpBar, combat.playerMaxHp, combat.playerMaxHp);
-  updateCombatHpBar(enemyHpBar, combat.enemyMaxHp, combat.enemyMaxHp);
+  const startTurnIndex = Math.max(0, options?.startTurnIndex ?? 0);
+  const initialPlayerHp = options?.initialPlayerHp ?? combat.playerMaxHp;
+  const initialEnemyHp = options?.initialEnemyHp ?? combat.enemyMaxHp;
+
+  updateCombatHpBar(playerHpBar, initialPlayerHp, combat.playerMaxHp);
+  updateCombatHpBar(enemyHpBar, initialEnemyHp, combat.enemyMaxHp);
 
   arena.classList.add("tower-arena--combat");
 
-  for (const turn of combat.turns) {
-    // Só aborta se a arena sumir; HP continua mesmo com aba em background.
+  for (let i = startTurnIndex; i < combat.turns.length; i++) {
+    const turn = combat.turns[i]!;    // Só aborta se a arena sumir; HP continua mesmo com aba em background.
     if (!arena.isConnected) break;
 
     const isPlayer = turn.actor === "player";
@@ -181,7 +270,8 @@ export async function playTowerCombatReplay(
 }
 
 export function canStartTowerCombat(state: {
-  characterJson: { tower: { bossDefeated: boolean } };
+  characterJson: { tower: TowerState };
 }): boolean {
-  return !state.characterJson.tower.bossDefeated;
+  return !state.characterJson.tower.bossDefeated
+    && !hasActiveCombatSession(state.characterJson.tower);
 }

@@ -1,16 +1,37 @@
-import { repeatTowerFloor, startTowerCombat, startTowerCombatBatch, type GameStateResponse } from "../api/gameplay";
-import { applyGamePatch } from "../state/game-cache";
-import { publishCombatRewardEvents } from "./combat-rewards";
-import { formatSimulatedDrop, simulateDropPreview } from "./drop-simulator";
-import { getTowerAnimators, waitForTowerAnimatorsReady } from "./tower-sprites";
 import {
+  repeatTowerFloor,
+  startTowerCombat,
+  type GameStateResponse,
+  type StartTowerCombatResponse,
+  type TowerCombatResult,
+} from "../api/gameplay";
+import {
+  clearPersistedCombatCache,
+  findCachedRoundForSession,
+  getLastCachedRound,
+  hydrateCombatCacheFromStorage,
+  rememberCombatRound,
+  replayCachedEventMessages,
+} from "../state/combat-cache";
+import { applyGamePatch, applyTowerCombatPatch } from "../state/game-cache";
+import {
+  renderCombatDockWaiting,
+  updateCombatDockWaitingTimer,
+} from "./combat-dock";
+import { getTowerAnimators, rebindEnemySprite, waitForTowerAnimatorsReady } from "./tower-sprites";
+import {
+  awaitCombatSessionEnd,
   awaitTowerCombatTiming,
   canStartTowerCombat,
+  computeReplayResumePoint,
   estimateTowerCombatDurationMs,
+  getCombatElapsedMs,
+  getCombatSessionRemainingMs,
+  hasActiveCombatSession,
   playTowerCombatReplay,
 } from "./tower-combat";
 import { updateTowerPanelAfterCombat } from "./tower-incremental";
-import { getCurrentTowerEnemy } from "./tower-panel";
+import { resolveDockEnemy } from "./tower-panel";
 
 const LOOP_PAUSE_MS = 480;
 
@@ -36,36 +57,14 @@ function tryAcquireLoop(): number | null {
   return generation;
 }
 
-async function requestTowerCombat(slotIndex: number, useBatch: boolean) {
+async function requestSingleCombat(slotIndex: number): Promise<StartTowerCombatResponse> {
   if (combatRequestInFlight) {
     throw new Error("Combat request already in flight.");
   }
 
   combatRequestInFlight = true;
   try {
-    if (useBatch) {
-      const batch = await startTowerCombatBatch(slotIndex, 5);
-      const lastCombat = batch.batch.combats[batch.batch.combats.length - 1];
-      if (!lastCombat) {
-        throw new Error("Batch de combate vazio.");
-      }
-      return {
-        combat: {
-          ...lastCombat,
-          rewards: {
-            xp: batch.batch.totalXp,
-            gold: batch.batch.totalGold,
-            items: batch.batch.items,
-            lostItems: batch.batch.lostItems,
-          },
-        },
-        patch: batch.patch,
-        batchSeed: batch.batch.batchSeed,
-      };
-    }
-
-    const single = await startTowerCombat(slotIndex);
-    return { ...single, batchSeed: null };
+    return await startTowerCombat(slotIndex);
   } finally {
     combatRequestInFlight = false;
   }
@@ -84,27 +83,84 @@ function getLiveArena(panelEl: HTMLElement): HTMLElement | null {
   return arena?.isConnected ? arena : null;
 }
 
-/** Replay na arena (HP sempre) ou só espera quando não há dock. */
+function formatSessionWaitMessage(remainingMs: number, enemyName?: string): string {
+  const seconds = Math.max(1, Math.ceil(remainingMs / 1000));
+  return enemyName
+    ? `Aguardando combate contra ${enemyName}… ${seconds}s`
+    : `Combate em andamento… ${seconds}s`;
+}
+
+function showCombatDockLoading(
+  dock: HTMLElement,
+  enemyName: string,
+  isBoss: boolean,
+  remainingMs: number,
+): void {
+  const arena = dock.querySelector<HTMLElement>(".tower-arena");
+  if (!arena) return;
+
+  let overlay = arena.querySelector<HTMLElement>(".combat-dock__waiting-layer");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "combat-dock__waiting-layer";
+    arena.appendChild(overlay);
+  }
+
+  overlay.innerHTML = renderCombatDockWaiting({ enemyName, isBoss, remainingMs });
+}
+
+function hideCombatDockLoading(dock: HTMLElement): void {
+  dock.querySelector(".combat-dock__waiting-layer")?.remove();
+}
+
+async function waitForTowerSession(
+  tower: GameStateResponse["characterJson"]["tower"],
+  onStatus?: (message: string) => void,
+  dock?: HTMLElement,
+): Promise<void> {
+  if (!hasActiveCombatSession(tower)) return;
+
+  const session = tower.combatSession;
+  let lastSecond = -1;
+
+  await awaitCombatSessionEnd(tower, (remainingMs) => {
+    const seconds = Math.max(1, Math.ceil(remainingMs / 1000));
+    if (session?.enemyName) {
+      if (dock) {
+        showCombatDockLoading(dock, session.enemyName, session.isBoss, remainingMs);
+        updateCombatDockWaitingTimer(remainingMs);
+      }
+    }
+    if (seconds === lastSecond) return;
+    lastSecond = seconds;
+    onStatus?.(formatSessionWaitMessage(remainingMs, session?.enemyName));
+  });
+
+  if (dock) hideCombatDockLoading(dock);
+}
+
 async function paceCombatReplay(
   panelEl: HTMLElement,
-  combat: Parameters<typeof playTowerCombatReplay>[1],
+  combat: TowerCombatResult,
+  expectedMs?: number,
+  resumeFrom?: ReturnType<typeof computeReplayResumePoint>,
 ): Promise<void> {
-  const expectedMs = estimateTowerCombatDurationMs(combat);
+  const targetMs = expectedMs ?? estimateTowerCombatDurationMs(combat);
   const startedAt = performance.now();
   const arena = getLiveArena(panelEl);
 
   if (arena) {
-    // Com arena montada, sempre atualiza HP no tempo certo.
-    // Sprites só com a aba visível (em background o RAF fica throttled).
     await playTowerCombatReplay(arena, combat, getTowerAnimators(), {
       animate: !document.hidden,
+      startTurnIndex: resumeFrom?.turnIndex,
+      initialPlayerHp: resumeFrom?.playerHp,
+      initialEnemyHp: resumeFrom?.enemyHp,
     });
   } else {
     await awaitTowerCombatTiming(combat);
   }
 
-  // Se o replay abortou cedo (arena desmontada), completa o tempo restante.
-  const remaining = expectedMs - (performance.now() - startedAt);
+  const remaining = targetMs - (performance.now() - startedAt);
   if (remaining > 16) {
     await delay(remaining);
   }
@@ -118,6 +174,7 @@ export interface TowerCombatLoopOptions {
   onSidebarUpdate: (state: GameStateResponse) => void;
   onPanelRefresh: () => void;
   onStatus: (message: string) => void;
+  onEvent: (message: string) => void;
   onError: (message: string) => void;
   onFinished: () => void;
 }
@@ -137,11 +194,10 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
     onSidebarUpdate,
     onPanelRefresh,
     onStatus,
+    onEvent,
     onError,
     onFinished,
   } = options;
-
-  let fightCount = 0;
 
   try {
     let state = getState();
@@ -152,6 +208,8 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
     state = await ensureFloorReadyForCombat(slotIndex, state);
     setState(state);
     onSidebarUpdate(state);
+
+    await waitForTowerSession(state.characterJson.tower, onStatus, getLiveArena(panelEl)?.parentElement ?? undefined);
 
     while (generation === activeLoopGeneration) {
       state = getState();
@@ -164,39 +222,27 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
 
       const previousEnemyId =
         state.currentFloor != null
-          ? getCurrentTowerEnemy(state.currentFloor, state.characterJson.tower).id
+          ? resolveDockEnemy(state.currentFloor, state.characterJson.tower).id
           : undefined;
 
-      fightCount += 1;
-
-      const useBatch = Boolean(state?.characterJson.tower.continuousAttack);
-      const preview = useBatch && state?.lootConfig
-        ? simulateDropPreview(state.lootConfig, `pending-${fightCount}`, fightCount)
-        : null;
-      if (preview) {
-        onStatus(`Farmando… ${formatSimulatedDrop(preview, state?.lootConfig)}`);
-      }
-
-      const { combat, patch, batchSeed } = await requestTowerCombat(slotIndex, useBatch);
-      if (batchSeed && state?.lootConfig) {
-        const confirmed = simulateDropPreview(state.lootConfig, batchSeed, fightCount);
-        if (confirmed) {
-          onStatus(`Seed ${batchSeed.slice(0, 8)}… ${formatSimulatedDrop(confirmed, state.lootConfig)}`);
-        }
-      }
-
+      const response = await requestSingleCombat(slotIndex);
       if (generation !== activeLoopGeneration) break;
 
-      await paceCombatReplay(panelEl, combat);
-
+      const cachedRound = rememberCombatRound(
+        state.characterJson.id,
+        slotIndex,
+        response,
+        state.lootConfig,
+      );
+      await paceCombatReplay(panelEl, response.combat, response.session.durationMs);
       if (generation !== activeLoopGeneration) break;
 
-      const gameState = applyGamePatch(state, patch);
+      const gameState = applyTowerCombatPatch(state, response.patch);
       setState(gameState);
       onSidebarUpdate(gameState);
 
       if (getLiveArena(panelEl)) {
-        const floorChanged = patch.currentFloor != null;
+        const floorChanged = response.patch.currentFloor != null;
         const needsFullRefresh = updateTowerPanelAfterCombat(panelEl, gameState, {
           floorChanged,
           previousEnemyId,
@@ -206,21 +252,23 @@ export async function runTowerCombatLoop(options: TowerCombatLoopOptions): Promi
         }
       }
 
-      if (combat.outcome !== "player_win") {
+      replayCachedEventMessages(cachedRound, onEvent);
+
+      if (response.combat.outcome !== "player_win") {
         onStatus("Derrota — ataque contínuo pausado. Equipe-se melhor e tente de novo.");
         onError("Derrota no combate. Ataque contínuo foi interrompido.");
         break;
       }
 
-      const reward = combat.rewards;
-      if (reward) {
-        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
-      } else {
-        onStatus("Vitória!");
-      }
+      await waitForTowerSession(
+        gameState.characterJson.tower,
+        onStatus,
+        getLiveArena(panelEl)?.parentElement ?? undefined,
+      );
 
       if (!getState()?.characterJson.tower.continuousAttack) break;
-      if (!canStartTowerCombat({ characterJson: gameState.characterJson })) break;
+      const latest = getState();
+      if (!latest || !canStartTowerCombat(latest)) break;
 
       await delay(LOOP_PAUSE_MS);
     }
@@ -242,8 +290,9 @@ export async function runSingleTowerCombat(options: {
   setState: (state: GameStateResponse) => void;
   onSidebarUpdate: (state: GameStateResponse) => void;
   onStatus: (message: string) => void;
+  onEvent: (message: string) => void;
 }): Promise<"win" | "defeat" | "error"> {
-  const { slotIndex, panelEl, getState, setState, onSidebarUpdate, onStatus } = options;
+  const { slotIndex, panelEl, getState, setState, onSidebarUpdate, onStatus, onEvent } = options;
 
   const arena = getLiveArena(panelEl);
   if (!arena) return "error";
@@ -252,35 +301,102 @@ export async function runSingleTowerCombat(options: {
   if (!state) return "error";
 
   try {
-    const { combat, patch } = await requestTowerCombat(slotIndex, false);
+    await waitForTowerSession(
+      state.characterJson.tower,
+      onStatus,
+      arena.parentElement ?? undefined,
+    );
 
-    const liveArena = getLiveArena(panelEl);
-    if (liveArena) {
-      await playTowerCombatReplay(liveArena, combat, getTowerAnimators(), {
-        animate: !document.hidden,
-      });
-    } else {
-      await awaitTowerCombatTiming(combat);
-    }
+    const response = await requestSingleCombat(slotIndex);
+    const cachedRound = rememberCombatRound(
+      state.characterJson.id,
+      slotIndex,
+      response,
+      state.lootConfig,
+    );
 
-    const gameState = applyGamePatch(state, patch);
+    await paceCombatReplay(panelEl, response.combat, response.session.durationMs);
+
+    const gameState = applyTowerCombatPatch(state, response.patch);
     setState(gameState);
     onSidebarUpdate(gameState);
 
-    if (combat.outcome === "player_win") {
-      const reward = combat.rewards;
-      if (reward) {
-        publishCombatRewardEvents(reward, gameState.lootConfig, onStatus);
-      } else {
-        onStatus("Vitória!");
-      }
-      return "win";
+    replayCachedEventMessages(cachedRound, onEvent);
+
+    await waitForTowerSession(
+      { ...gameState.characterJson.tower, combatSession: response.session },
+      onStatus,
+      arena.parentElement ?? undefined,
+    );
+
+    clearPersistedCombatCache(state.characterJson.id);
+
+    if (response.combat.outcome !== "player_win") {
+      onStatus("Derrota — tente novamente após se equipar melhor.");
+      return "defeat";
     }
 
-    onStatus("Derrota — tente novamente após se equipar melhor.");
-    return "defeat";
+    return "win";
   } catch {
     onStatus("O servidor calcula o combate; o front apenas anima o resultado.");
     return "error";
   }
+}
+
+export async function resumePendingCombatSession(
+  state: GameStateResponse,
+  slotIndex: number,
+  panelEl: HTMLElement,
+  options?: {
+    onStatus?: (message: string) => void;
+    onEvent?: (message: string) => void;
+  },
+): Promise<void> {
+  const onStatus = options?.onStatus;
+  const onEvent = options?.onEvent;
+  const tower = state.characterJson.tower;
+  const session = tower.combatSession;
+
+  if (!session || !hasActiveCombatSession(tower)) return;
+
+  const dock = getLiveArena(panelEl)?.parentElement ?? getLiveArena(panelEl);
+  const enemyName = session.enemyName || "inimigo";
+
+  const cached =
+    findCachedRoundForSession(slotIndex, session.sessionId)
+    ?? getLastCachedRound(slotIndex);
+
+  const remainingMs = getCombatSessionRemainingMs(tower);
+
+  if (
+    cached
+    && cached.session.sessionId === session.sessionId
+    && remainingMs > 0
+  ) {
+    onStatus?.(`Retomando combate contra ${cached.combat.enemyName} (andar ${cached.encounter.floor})…`);
+    rebindEnemySprite(panelEl, state);
+
+    const elapsedMs = getCombatElapsedMs(session);
+    const resumeFrom = computeReplayResumePoint(cached.combat, elapsedMs);
+
+    await paceCombatReplay(panelEl, cached.combat, session.durationMs, resumeFrom);
+    if (onEvent) replayCachedEventMessages(cached, onEvent);
+  } else {
+    onStatus?.(`Aguardando servidor finalizar combate contra ${enemyName}…`);
+    if (dock) {
+      showCombatDockLoading(dock, enemyName, session.isBoss, remainingMs);
+    }
+    await waitForTowerSession(tower, onStatus, dock ?? undefined);
+  }
+
+  await waitForTowerSession(tower, onStatus, dock ?? undefined);
+  clearPersistedCombatCache(state.characterJson.id);
+  if (dock) hideCombatDockLoading(dock);
+}
+
+export function prepareCombatResumeFromStorage(
+  characterId: string,
+  slotIndex: number,
+): void {
+  hydrateCombatCacheFromStorage(characterId, slotIndex);
 }

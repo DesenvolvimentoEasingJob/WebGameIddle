@@ -1,14 +1,13 @@
-import type { GameStateResponse, TowerMobSummary } from "../api/gameplay";
+import type { GameStateResponse, TowerMobSummary, TowerState } from "../api/gameplay";
+import {
+  findCachedRoundBySessionId,
+  type CombatEncounterContext,
+} from "../state/combat-cache";
 import { resolveMobIcon } from "./game-assets";
 import { renderTowerFloorNav } from "./tower-navigation";
-import { canStartTowerCombat } from "./tower-combat";
+import { canStartTowerCombat, hasActiveCombatSession } from "./tower-combat";
 
-export interface TowerPanelOptions {
-  state: GameStateResponse;
-  username: string;
-}
-
-function getEnemyAtIndex(
+export function getTowerEnemyAtIndex(
   floor: NonNullable<GameStateResponse["currentFloor"]>,
   index: number,
 ): TowerMobSummary {
@@ -23,7 +22,7 @@ function getCurrentEnemy(
   tower: GameStateResponse["characterJson"]["tower"],
 ): TowerMobSummary {
   if (tower.bossDefeated) return floor.boss;
-  return getEnemyAtIndex(floor, tower.mobsKilledThisFloor);
+  return getTowerEnemyAtIndex(floor, tower.mobsKilledThisFloor);
 }
 
 /** Inimigo seguinte na rota do andar (após o alvo atual), se houver. */
@@ -34,7 +33,7 @@ export function getNextTowerEnemy(
   if (tower.bossDefeated) return null;
   const nextIndex = tower.mobsKilledThisFloor + 1;
   if (nextIndex > floor.mobCount) return null;
-  return getEnemyAtIndex(floor, nextIndex);
+  return getTowerEnemyAtIndex(floor, nextIndex);
 }
 
 export function getCurrentTowerEnemy(
@@ -42,6 +41,115 @@ export function getCurrentTowerEnemy(
   tower: GameStateResponse["characterJson"]["tower"],
 ): TowerMobSummary {
   return getCurrentEnemy(floor, tower);
+}
+
+export function getEffectiveMobIndex(tower: TowerState): number {
+  const session = tower.combatSession;
+  if (session && hasActiveCombatSession(tower) && session.mobIndex >= 0) {
+    return session.mobIndex;
+  }
+  return tower.mobsKilledThisFloor;
+}
+
+function resolveEncounterOverride(
+  tower: TowerState,
+): CombatEncounterContext | null {
+  const session = tower.combatSession;
+  if (!session || !hasActiveCombatSession(tower)) return null;
+
+  if (session.enemyMaxHp > 0) {
+    return {
+      floor: session.floor,
+      mobIndex: session.mobIndex,
+      enemyId: session.enemyId,
+      enemyName: session.enemyName,
+      isBoss: session.isBoss,
+      enemyMaxHp: session.enemyMaxHp,
+    };
+  }
+
+  const cached = findCachedRoundBySessionId(session.sessionId);
+  return cached?.encounter ?? null;
+}
+
+export function resolveEncounterTowerEnemy(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  encounter: CombatEncounterContext,
+): TowerMobSummary {
+  const base = getTowerEnemyAtIndex(floor, encounter.mobIndex);
+
+  if (encounter.enemyId && base.id !== encounter.enemyId) {
+    const fromPool = floor.mobPool.find((mob) => mob.id === encounter.enemyId);
+    if (fromPool) {
+      return applyEncounterHp(fromPool, encounter);
+    }
+    if (floor.boss.id === encounter.enemyId) {
+      return applyEncounterHp(floor.boss, encounter);
+    }
+  }
+
+  return applyEncounterHp(
+    {
+      ...base,
+      id: encounter.enemyId || base.id,
+      name: encounter.enemyName || base.name,
+    },
+    encounter,
+  );
+}
+
+function applyEncounterHp(
+  mob: TowerMobSummary,
+  encounter: CombatEncounterContext,
+): TowerMobSummary {
+  if (encounter.enemyMaxHp > 0) {
+    return { ...mob, hp: encounter.enemyMaxHp };
+  }
+  return mob;
+}
+
+export function resolveSessionTowerEnemy(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  session: {
+    floor?: number;
+    mobIndex?: number;
+    enemyId: string;
+    enemyName: string;
+    isBoss: boolean;
+    enemyMaxHp?: number;
+  },
+): TowerMobSummary {
+  return resolveEncounterTowerEnemy(floor, {
+    floor: session.floor ?? floor.floor,
+    mobIndex: session.mobIndex ?? (session.isBoss ? floor.mobCount : 0),
+    enemyId: session.enemyId,
+    enemyName: session.enemyName,
+    isBoss: session.isBoss,
+    enemyMaxHp: session.enemyMaxHp ?? 0,
+  });
+}
+
+/** Inimigo exibido no dock — prioriza sessão/cache sobre progresso já avançado no servidor. */
+export function resolveDockEnemy(
+  floor: NonNullable<GameStateResponse["currentFloor"]>,
+  tower: GameStateResponse["characterJson"]["tower"],
+  encounterOverride?: CombatEncounterContext | null,
+): TowerMobSummary {
+  if (encounterOverride) {
+    return resolveEncounterTowerEnemy(floor, encounterOverride);
+  }
+
+  const encounter = resolveEncounterOverride(tower);
+  if (encounter) {
+    return resolveEncounterTowerEnemy(floor, encounter);
+  }
+
+  return getCurrentTowerEnemy(floor, tower);
+}
+
+export interface TowerPanelOptions {
+  state: GameStateResponse;
+  username: string;
 }
 
 function progressPhaseLabel(
@@ -121,16 +229,22 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
   }
 
   const mobCount = floor.mobCount;
+  const activeMobIndex = getEffectiveMobIndex(tower);
   const killed = tower.mobsKilledThisFloor;
-  const facingBoss = !tower.bossDefeated && killed >= mobCount;
+  const facingBoss = !tower.bossDefeated && activeMobIndex >= mobCount;
   const bossIcon = resolveMobIcon(floor.boss.id, floor.boss.assets);
   const ownerLabel = floor.ownerName?.trim() || "Sem dono";
   const canCombat = canStartTowerCombat(state);
   const canRepeat = tower.bossDefeated;
   const combatLabel = facingBoss ? "Enfrentar chefe" : "Iniciar combate";
-  const currentEnemy = getCurrentEnemy(floor, tower);
-  const nextEnemy = getNextTowerEnemy(floor, tower);
-  const currentIsBoss = facingBoss || tower.bossDefeated || killed >= mobCount;
+  const currentEnemy = resolveDockEnemy(floor, tower);
+  const nextEnemy =
+    hasActiveCombatSession(tower)
+      ? (activeMobIndex + 1 > mobCount
+          ? null
+          : getTowerEnemyAtIndex(floor, activeMobIndex + 1))
+      : getNextTowerEnemy(floor, tower);
+  const currentIsBoss = facingBoss || tower.bossDefeated || activeMobIndex >= mobCount;
   const nextIsBoss = nextEnemy != null && nextEnemy.id === floor.boss.id;
   const phase = progressPhaseLabel(tower, facingBoss);
   const progressPct = Math.min(
@@ -204,8 +318,8 @@ export function renderTowerPanel(options: TowerPanelOptions): string {
                 const mobId = mob?.id ?? "unknown";
                 const iconUrl = resolveMobIcon(mobId, mob?.assets);
                 let stateClass = "tower-track__entry--pending";
-                if (index < killed) stateClass = "tower-track__entry--done";
-                else if (index === killed && !facingBoss && !tower.bossDefeated) {
+                if (index < activeMobIndex) stateClass = "tower-track__entry--done";
+                else if (index === activeMobIndex && !facingBoss && !tower.bossDefeated) {
                   stateClass = "tower-track__entry--current";
                 }
 

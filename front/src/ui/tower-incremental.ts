@@ -1,8 +1,13 @@
 import type { GameStateResponse, TowerMobSummary } from "../api/gameplay";
 import { resolveMobIcon } from "./game-assets";
 import { getTowerFloorNavState } from "./tower-navigation";
-import { canStartTowerCombat } from "./tower-combat";
-import { getCurrentTowerEnemy, getNextTowerEnemy } from "./tower-panel";
+import { canStartTowerCombat, hasActiveCombatSession } from "./tower-combat";
+import {
+  getEffectiveMobIndex,
+  getNextTowerEnemy,
+  getTowerEnemyAtIndex,
+  resolveDockEnemy,
+} from "./tower-panel";
 import { rebindEnemySprite } from "./tower-sprites";
 
 export function updateTowerPanelAfterCombat(
@@ -17,11 +22,17 @@ export function updateTowerPanelAfterCombat(
 
   const tower = state.characterJson.tower;
   const mobCount = floor.mobCount;
+  const activeMobIndex = getEffectiveMobIndex(tower);
   const killed = tower.mobsKilledThisFloor;
-  const facingBoss = !tower.bossDefeated && killed >= mobCount;
+  const facingBoss = !tower.bossDefeated && activeMobIndex >= mobCount;
   const bossDefeated = tower.bossDefeated;
-  const currentEnemy = getCurrentTowerEnemy(floor, tower);
-  const nextEnemy = getNextTowerEnemy(floor, tower);
+  const currentEnemy = resolveDockEnemy(floor, tower);
+  const nextEnemy =
+    hasActiveCombatSession(tower)
+      ? (activeMobIndex + 1 > mobCount
+          ? null
+          : getTowerEnemyAtIndex(floor, activeMobIndex + 1))
+      : getNextTowerEnemy(floor, tower);
   const currentIsBoss = facingBoss || bossDefeated || killed >= mobCount;
   const nextIsBoss = nextEnemy != null && nextEnemy.id === floor.boss.id;
 
@@ -45,7 +56,7 @@ export function updateTowerPanelAfterCombat(
   if (fillEl) fillEl.style.width = `${progressPct}%`;
   if (pctEl) pctEl.textContent = `${progressPct}%`;
 
-  updateTowerTrack(panelEl, tower, killed, facingBoss);
+  updateTowerTrack(panelEl, tower, activeMobIndex, facingBoss);
   updateTowerTargetCard(panelEl, "current", currentEnemy, currentIsBoss);
   updateTowerTargetCard(
     panelEl,

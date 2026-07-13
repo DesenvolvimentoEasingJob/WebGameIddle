@@ -5,10 +5,17 @@ import {
   createPlayerSprite,
   type SpriteAnimator,
 } from "../animation/SpriteAnimator";
+import { resolveDockEnemy } from "./tower-panel";
 
 let activeAnimators: SpriteAnimator[] = [];
 let playerAnimator: SpriteAnimator | null = null;
 let enemyAnimator: SpriteAnimator | null = null;
+
+function resolveEnemyForSprites(state: GameStateResponse) {
+  const floor = state.currentFloor;
+  if (!floor) return null;
+  return resolveDockEnemy(floor, state.characterJson.tower);
+}
 
 export function rebindEnemySprite(root: HTMLElement, state: GameStateResponse): void {
   if (enemyAnimator) {
@@ -17,15 +24,8 @@ export function rebindEnemySprite(root: HTMLElement, state: GameStateResponse): 
     enemyAnimator = null;
   }
 
-  const floor = state.currentFloor;
-  if (!floor) return;
-
-  const tower = state.characterJson.tower;
-  const killed = tower.mobsKilledThisFloor;
-  const currentEnemy =
-    tower.bossDefeated || killed >= floor.mobCount
-      ? floor.boss
-      : (floor.mobPool[killed % Math.max(1, floor.mobPool.length)] ?? floor.boss);
+  const currentEnemy = resolveEnemyForSprites(state);
+  if (!currentEnemy) return;
 
   const enemyEl = root.querySelector<HTMLElement>("[data-tower-enemy-sprite]");
   const enemyMap = resolveMobAnimMap(currentEnemy.id);
@@ -55,13 +55,7 @@ export function bindTowerSprites(root: HTMLElement, state: GameStateResponse): v
   const floor = state.currentFloor;
   if (!floor) return;
 
-  const tower = char.tower;
-  const killed = tower.mobsKilledThisFloor;
-
-  const currentEnemy =
-    tower.bossDefeated || killed >= floor.mobCount
-      ? floor.boss
-      : floor.mobPool[killed % Math.max(1, floor.mobPool.length)] ?? floor.boss;
+  const currentEnemy = resolveDockEnemy(floor, char.tower);
 
   const playerEl = root.querySelector<HTMLElement>("[data-tower-player-sprite]");
   const enemyEl = root.querySelector<HTMLElement>("[data-tower-enemy-sprite]");
