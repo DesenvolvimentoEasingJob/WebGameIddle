@@ -1,0 +1,48 @@
+---
+description: Requests previsíveis e orientados a evento (evitar polling por tick)
+globs: frontend/**/*
+alwaysApply: false
+---
+
+# Requests orientados a evento
+
+O front só deve chamar a API quando o dado realmente pode ter mudado. Antes de
+adicionar uma chamada, pergunte: **qual evento a torna necessária?**
+
+## Regras
+
+- Nunca ligue um `fetch` a um estado que muda a cada tick (ex.: `xp`, `skyCoin`,
+  timers de combate). Isso gera requests por segundo sem mudança real de dado.
+- Busque uma vez ao montar e **revalide sob demanda**, disparado pelo evento que
+  altera o dado (level up, treino, equipar/desequipar, compra, etc.).
+- Centralize dados compartilhados num contexto/hook único (ex.: `GameSessionContext`)
+  em vez de cada componente buscar o mesmo recurso. Exponha um `refreshX()` e
+  chame-o no ponto do evento.
+- Dado que já chega numa resposta (ex.: `state`/`skyCoin` no `BattleResult`) deve
+  ser reaproveitado — não refazer GET só para reler o que já veio.
+- Prefira `deps` de `useEffect` que representem o evento (ex.: `[state?.level]`),
+  não o valor que muda continuamente.
+
+## Mapa dado → gatilho (SkySpire)
+
+| Recurso | Revalida quando |
+|---------|-----------------|
+| `GET /api/characters/me` (resumo, `baseStats`) | level up, treino |
+| `GET /api/characters/me/stats` (stats calculados) | level up, treino, equipar/desequipar |
+| saldo / `skyCoin` | já vem no `BattleResult`; senão em compra/venda/treino |
+| inventário | equipar, desequipar, descartar, drop de loot |
+
+## Anti-padrão
+
+```tsx
+// ❌ refaz GET a cada batalha (xp/skyCoin mudam sempre)
+useEffect(() => {
+  Promise.all([fetchMyCharacter(), fetchMyStats()]).then(/* ... */)
+}, [state?.level, state?.xp, skyCoin])
+```
+
+```tsx
+// ✅ busca uma vez + revalida no evento certo
+useEffect(() => { void refreshCharacter() }, [refreshCharacter])
+useEffect(() => { if (leveledUp) void refreshCharacter() }, [state?.level])
+```

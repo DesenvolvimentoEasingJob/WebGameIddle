@@ -1,0 +1,51 @@
+{
+  "id": "iron-colossus",
+  "name": "Iron Colossus",
+  "description": "Colosso de ferro maciÃ§o, silhueta imponente de boss blindado com punhos pesados.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 16,
+  "hp": 260,
+  "baseStats": {
+    "dmgBase": 35,
+    "defBase": 17
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    32,
+    46
+  ],
+  "rarityLuck": 3.25,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "leather-helm",
+      "chance": 0.15,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "rusty-dagger",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/iron-colossus.png",
+    "width": 112,
+    "height": 112
+  }
+}

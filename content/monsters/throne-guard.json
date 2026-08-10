@@ -1,0 +1,58 @@
+{
+  "id": "throne-guard",
+  "name": "throne guard",
+  "description": "Guarda de trono em armadura pesada dourada-escura, escudo e lanÃ§a, postura firme.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    8,
+    14
+  ],
+  "rarityLuck": 1,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "cloth-vest",
+      "chance": 0.06,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/throne-guard.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/throne-guard-idle-0.png",
+          "/assets/monsters/throne-guard-idle-1.png",
+          "/assets/monsters/throne-guard-idle-2.png",
+          "/assets/monsters/throne-guard-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

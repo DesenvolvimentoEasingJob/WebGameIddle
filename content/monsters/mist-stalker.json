@@ -1,0 +1,51 @@
+{
+  "id": "mist-stalker",
+  "name": "mist stalker",
+  "description": "Predador esguio envolto em nÃ©voa cinza, olhos brilhantes e garras alongadas.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    6,
+    12
+  ],
+  "rarityLuck": 0.75,
+  "loot": [
+    {
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ],
+      "itemId": "scrap"
+    },
+    {
+      "itemId": "bone-focus",
+      "chance": 0.05,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.08,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/mist-stalker.png",
+    "width": 56,
+    "height": 56
+  }
+}

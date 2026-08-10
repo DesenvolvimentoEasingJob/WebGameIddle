@@ -1,0 +1,91 @@
+{
+  "id": "floor-10",
+  "number": 10,
+  "name": "Trono Rachado",
+  "description": "Sala do trono rachado no topo da torre: trono de pedra partida ao meio, tapeçarias rasgadas, vitrais quebrados deixando entrar luz dramática. Rachaduras no chão com brilho fraco, colunas tombadas. Paleta: púrpura real desbotado, ouro opaco, pedra cinza e vermelho-escuro; majestade arruinada e ameaçadora.",
+  "theme": "throne",
+  "difficulty": 512,
+  "itemLevel": 10,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "throne-guard"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "wraith"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "throne-guard",
+        "throne-guard"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "wraith"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "throne-guard"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "wraith",
+        "wraith",
+        "wraith"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "throne-guard"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "wraith"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "throne-guard",
+        "throne-guard",
+        "throne-guard",
+        "throne-guard"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "fractured-monarch",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/10.png"
+  }
+}

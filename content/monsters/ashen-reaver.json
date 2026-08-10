@@ -1,0 +1,57 @@
+{
+  "id": "ashen-reaver",
+  "name": "Ashen Reaver",
+  "description": "Guerreiro queimado envolto em fuligem e armadura rachada, lÃ¢mina negra e postura agressiva.",
+  "level": 4,
+  "hp": 80,
+  "baseStats": {
+    "dmgBase": 11,
+    "defBase": 5
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    17,
+    25
+  ],
+  "rarityLuck": 1.75,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [1, 2]
+    },
+    {
+      "itemId": "reaver-cleaver",
+      "chance": 0.18,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "char-wrap",
+      "chance": 0.12,
+      "qty": [1, 1]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/ashen-reaver.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/ashen-reaver-idle-0.png",
+          "/assets/monsters/ashen-reaver-idle-1.png",
+          "/assets/monsters/ashen-reaver-idle-2.png",
+          "/assets/monsters/ashen-reaver-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

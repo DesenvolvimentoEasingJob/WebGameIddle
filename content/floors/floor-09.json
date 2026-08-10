@@ -1,0 +1,91 @@
+{
+  "id": "floor-09",
+  "number": 9,
+  "name": "Nevoa Alta",
+  "description": "Terraço alto envolto em névoa densa branco-azulada. Pontes estreitas e pináculos quase ocultos pela bruma, silhuetas distantes, pingos de umidade no ar. Luz difusa sem sol claro, profundidade atmosférica forte. Paleta: cinza-azulado, branco névoa, pedra úmida e toques de prata; misterioso e suspenso.",
+  "theme": "mist",
+  "difficulty": 256,
+  "itemLevel": 9,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "mist-stalker"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "wolf"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "mist-stalker",
+        "mist-stalker"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "wolf"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "mist-stalker"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "wolf",
+        "wolf",
+        "wolf"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "mist-stalker"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "wolf"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "mist-stalker",
+        "mist-stalker",
+        "mist-stalker",
+        "mist-stalker"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "veil-sovereign",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/09.png"
+  }
+}

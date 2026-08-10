@@ -1,0 +1,14 @@
+{
+  "id": "copper-ring",
+  "name": "Anel de Cobre",
+  "description": "Anel simples com leve reforco fisico.",
+  "type": "ring",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "strength": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/copper-ring.png"
+  }
+}

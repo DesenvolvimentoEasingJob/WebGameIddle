@@ -1,0 +1,15 @@
+---
+description: Convenções do frontend React + TypeScript
+globs: frontend/**/*
+alwaysApply: false
+---
+
+# Frontend React + TS
+
+- Vite + React + TypeScript; tipagem estrita
+- Estrutura: `src/pages`, `src/components`, `src/api`, `src/types`
+- `VITE_API_URL` para a API Docker — sem secrets de jogo no front
+- Client tipado; páginas finas; lógica de regra de negócio no backend
+- Combate: apenas reproduzir timeline de eventos do server
+- UI simples e manutenível; pixel-art via assets/URLs do JSON
+- Evitar state global pesado até ser necessário (context/hook leve ok)

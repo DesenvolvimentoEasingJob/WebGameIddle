@@ -1,0 +1,11 @@
+{
+  "id": "mage",
+  "name": "Mago",
+  "description": "Canaliza inteligência em magias devastadoras.",
+  "allowedRaces": ["*"],
+  "statFocus": ["intelligence"],
+  "levelGain": { "intelligence": 1 },
+  "startingSkills": ["firebolt"],
+  "hpRegenBonus": 0,
+  "assets": { "icon": "/assets/classes/mage.png" }
+}

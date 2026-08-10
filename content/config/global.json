@@ -1,0 +1,26 @@
+{
+  "id": "global",
+  "generative": {
+    "monsterImageComplement": "pixel art, transparent background, side view, monster facing left (west), clean silhouette, no text, no UI chrome",
+    "floorImageComplement": "pixel art, ultrawide 21:9 combat arena strip, side view, solid walkable ground along the bottom third edge-to-edge, depth behind the ground plane, no characters, no monsters, no UI, no text, no floating island, no letterboxing, fill the entire frame"
+  },
+  "balance": {
+    "xpBase": 100,
+    "xpScale": 1.2,
+    "xpScaleStepEvery": 10,
+    "xpScaleStep": 0.1,
+    "floorDifficultyMult": 2.0,
+    "floorRewardMult": 1.5,
+    "bossChallengeAttrMult": 10,
+    "bossChallengeFee": 50,
+    "floorOwnerFeeShare": 0.1,
+    "deathXpPenalty": 0.1,
+    "trainingCostBase": 10,
+    "trainingGoldScale": 1.3,
+    "battleCoinRewardBase": 2,
+    "hpRegenGlobalMult": 1.0,
+    "hpDefeatRevivePct": 0.5,
+    "combatTurnSeconds": 1.0,
+    "combatDamageNoise": 0
+  }
+}

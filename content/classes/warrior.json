@@ -1,0 +1,11 @@
+{
+  "id": "warrior",
+  "name": "Guerreiro",
+  "description": "Foco em força e combate corpo a corpo.",
+  "allowedRaces": ["*"],
+  "statFocus": ["strength"],
+  "levelGain": { "strength": 1 },
+  "startingSkills": ["slash"],
+  "hpRegenBonus": 1,
+  "assets": { "icon": "/assets/classes/warrior.png" }
+}

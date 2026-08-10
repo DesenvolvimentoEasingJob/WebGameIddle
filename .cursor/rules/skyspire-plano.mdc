@@ -1,0 +1,17 @@
+---
+description: Continuar desenvolvimento SkySpire pelos todos numerados do plano
+alwaysApply: true
+---
+
+# Plano sequencial
+
+Desenvolvimento segue `plano-desenvolvimento/`.
+
+1. Ler `plano-desenvolvimento/PROXIMO.md` e `00-INDEX.md`
+2. Abrir o todo em **Arquivo atual**
+3. Executar **somente** esse todo até os critérios de aceite
+4. Atualizar `STATUS`, `00-INDEX.md` e `PROXIMO.md`
+
+Não pular todos sem pedido explícito. Não implementar o jogo inteiro de uma vez.
+
+Triggers: "continue o plano", "próximo todo", "execute o todo N".

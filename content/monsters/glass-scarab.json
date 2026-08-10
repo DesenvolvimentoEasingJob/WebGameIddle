@@ -1,0 +1,43 @@
+{
+  "id": "glass-scarab",
+  "name": "glass scarab",
+  "description": "Escaravelho de carapaÃ§a vÃ­trea translÃºcida, reflexos prismÃ¡ticos e patas finas afiadas.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    4,
+    8
+  ],
+  "rarityLuck": 0.35,
+  "loot": [
+    {
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ],
+      "itemId": "scrap"
+    },
+    {
+      "itemId": "cloth-vest",
+      "chance": 0.06,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/glass-scarab.png",
+    "width": 56,
+    "height": 56
+  }
+}

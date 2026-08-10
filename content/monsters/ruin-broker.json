@@ -1,0 +1,58 @@
+{
+  "id": "ruin-broker",
+  "name": "Ruin Broker",
+  "description": "Mercador das ruÃ­nas em trapos elegantes, mÃ¡scara e bolsa de moedas, ar dÃºbio de boss.",
+  "level": 12,
+  "hp": 200,
+  "baseStats": {
+    "dmgBase": 27,
+    "defBase": 13
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    25,
+    38
+  ],
+  "rarityLuck": 2.75,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/ruin-broker.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/ruin-broker-idle-0.png",
+          "/assets/monsters/ruin-broker-idle-1.png",
+          "/assets/monsters/ruin-broker-idle-2.png",
+          "/assets/monsters/ruin-broker-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

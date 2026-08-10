@@ -1,0 +1,57 @@
+{
+  "id": "skeleton",
+  "name": "skeleton",
+  "description": "Esqueleto humano animado com ossos amarelados, olhos vazios e espada quebrada.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    1,
+    3
+  ],
+  "rarityLuck": 0,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [1, 2]
+    },
+    {
+      "itemId": "cinder-blade",
+      "chance": 0.06,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "soot-buckler",
+      "chance": 0.05,
+      "qty": [1, 1]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/skeleton.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/skeleton-idle-0.png",
+          "/assets/monsters/skeleton-idle-1.png",
+          "/assets/monsters/skeleton-idle-2.png",
+          "/assets/monsters/skeleton-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  }
+}

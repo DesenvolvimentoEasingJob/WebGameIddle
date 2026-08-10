@@ -1,0 +1,15 @@
+{
+  "id": "silver-echo-ring",
+  "name": "Anel do Eco Prateado",
+  "description": "Anel de prata que vibra com o proprio portador.",
+  "type": "ring",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "intelligence": 2,
+    "agility": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/silver-echo-ring.png"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "resonant-veil",
+  "name": "Veu Ressonante",
+  "description": "Manto translucido que vibra com as ondas sonoras do salao.",
+  "type": "armor",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "defBase": 6,
+    "mpBase": 8
+  },
+  "assets": {
+    "icon": "/api/assets/items/resonant-veil.png"
+  }
+}

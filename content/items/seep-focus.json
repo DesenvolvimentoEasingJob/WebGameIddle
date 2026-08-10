@@ -1,0 +1,16 @@
+{
+  "id": "seep-focus",
+  "name": "Foco de Seiva",
+  "description": "Orbe de seiva brilhante que pulsa como um coracao vegetal.",
+  "type": "focus",
+  "grip": "oneHand",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 4,
+    "mpBase": 12
+  },
+  "assets": {
+    "icon": "/api/assets/items/seep-focus.png"
+  }
+}

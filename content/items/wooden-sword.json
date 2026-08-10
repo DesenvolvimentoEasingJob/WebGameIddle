@@ -1,0 +1,15 @@
+{
+  "id": "wooden-sword",
+  "name": "Espada de Madeira",
+  "description": "Uma arma simples para o inicio da torre.",
+  "type": "weapon",
+  "grip": "oneHand",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 3
+  },
+  "assets": {
+    "icon": "/api/assets/items/wooden-sword.png"
+  }
+}

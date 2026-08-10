@@ -1,0 +1,57 @@
+{
+  "id": "wolf",
+  "name": "wolf",
+  "description": "Lobo cinza magro de florestas ruins, pelagem eriÃ§ada, dentes Ã  mostra e olhar feroz.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    2,
+    5
+  ],
+  "rarityLuck": 0.15,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [1, 2]
+    },
+    {
+      "itemId": "briar-spear",
+      "chance": 0.06,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "wolf-fang-ring",
+      "chance": 0.05,
+      "qty": [1, 1]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/wolf.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/wolf-idle-0.png",
+          "/assets/monsters/wolf-idle-1.png",
+          "/assets/monsters/wolf-idle-2.png",
+          "/assets/monsters/wolf-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

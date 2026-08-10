@@ -1,0 +1,697 @@
+{
+  "rarities": [
+    {
+      "id": 1,
+      "name": "Comum",
+      "chance": 0,
+      "multiplier": 1,
+      "attributeCount": 0
+    },
+    {
+      "id": 2,
+      "name": "Incomum",
+      "chance": 0.2,
+      "multiplier": 2,
+      "attributeCount": 1
+    },
+    {
+      "id": 3,
+      "name": "Diferenciado",
+      "chance": 0.12,
+      "multiplier": 3,
+      "attributeCount": 1
+    },
+    {
+      "id": 4,
+      "name": "Raro",
+      "chance": 0.08,
+      "multiplier": 4,
+      "attributeCount": 1
+    },
+    {
+      "id": 5,
+      "name": "Superior",
+      "chance": 0.05,
+      "multiplier": 5,
+      "attributeCount": 1
+    },
+    {
+      "id": 6,
+      "name": "Excepcional",
+      "chance": 0.02,
+      "multiplier": 6,
+      "attributeCount": 1
+    },
+    {
+      "id": 7,
+      "name": "Heroico",
+      "chance": 0.01,
+      "multiplier": 7,
+      "attributeCount": 2
+    },
+    {
+      "id": 8,
+      "name": "Elite",
+      "chance": 0.005,
+      "multiplier": 8,
+      "attributeCount": 2
+    },
+    {
+      "id": 9,
+      "name": "Épico",
+      "chance": 0.002,
+      "multiplier": 9,
+      "attributeCount": 2
+    },
+    {
+      "id": 10,
+      "name": "Magistral",
+      "chance": 0.001,
+      "multiplier": 10,
+      "attributeCount": 2
+    },
+    {
+      "id": 11,
+      "name": "Lendário",
+      "chance": 0.0008,
+      "multiplier": 11,
+      "attributeCount": 3
+    },
+    {
+      "id": 12,
+      "name": "Relicário",
+      "chance": 0.0005,
+      "multiplier": 12,
+      "attributeCount": 3
+    },
+    {
+      "id": 13,
+      "name": "Mítico",
+      "chance": 0.0002,
+      "multiplier": 13,
+      "attributeCount": 3
+    },
+    {
+      "id": 14,
+      "name": "Sagrado",
+      "chance": 0.00008,
+      "multiplier": 14,
+      "attributeCount": 3
+    },
+    {
+      "id": 15,
+      "name": "Divino",
+      "chance": 0.00005,
+      "multiplier": 15,
+      "attributeCount": 3
+    },
+    {
+      "id": 16,
+      "name": "Celestial",
+      "chance": 0.00002,
+      "multiplier": 16,
+      "attributeCount": 3
+    },
+    {
+      "id": 17,
+      "name": "Angelical",
+      "chance": 0.0000177505,
+      "multiplier": 17,
+      "attributeCount": 4
+    },
+    {
+      "id": 18,
+      "name": "Arcano",
+      "chance": 0.000015754,
+      "multiplier": 18,
+      "attributeCount": 4
+    },
+    {
+      "id": 19,
+      "name": "Profético",
+      "chance": 0.0000139821,
+      "multiplier": 19,
+      "attributeCount": 4
+    },
+    {
+      "id": 20,
+      "name": "Ancestral",
+      "chance": 0.0000124094,
+      "multiplier": 20,
+      "attributeCount": 4
+    },
+    {
+      "id": 21,
+      "name": "Primordial",
+      "chance": 0.0000110137,
+      "multiplier": 21,
+      "attributeCount": 4
+    },
+    {
+      "id": 22,
+      "name": "Titânico",
+      "chance": 0.0000097749,
+      "multiplier": 22,
+      "attributeCount": 5
+    },
+    {
+      "id": 23,
+      "name": "Colossal",
+      "chance": 0.00000867546,
+      "multiplier": 23,
+      "attributeCount": 5
+    },
+    {
+      "id": 24,
+      "name": "Transcendente",
+      "chance": 0.00000769968,
+      "multiplier": 24,
+      "attributeCount": 5
+    },
+    {
+      "id": 25,
+      "name": "Supremo",
+      "chance": 0.00000683366,
+      "multiplier": 25,
+      "attributeCount": 5
+    },
+    {
+      "id": 26,
+      "name": "Absoluto",
+      "chance": 0.00000606504,
+      "multiplier": 26,
+      "attributeCount": 5
+    },
+    {
+      "id": 27,
+      "name": "Eterno",
+      "chance": 0.00000538287,
+      "multiplier": 27,
+      "attributeCount": 6
+    },
+    {
+      "id": 28,
+      "name": "Infinito",
+      "chance": 0.00000477743,
+      "multiplier": 28,
+      "attributeCount": 6
+    },
+    {
+      "id": 29,
+      "name": "Cósmico",
+      "chance": 0.00000424009,
+      "multiplier": 29,
+      "attributeCount": 6
+    },
+    {
+      "id": 30,
+      "name": "Estelar",
+      "chance": 0.00000376318,
+      "multiplier": 30,
+      "attributeCount": 6
+    },
+    {
+      "id": 31,
+      "name": "Galáctico",
+      "chance": 0.00000333992,
+      "multiplier": 31,
+      "attributeCount": 6
+    },
+    {
+      "id": 32,
+      "name": "Universal",
+      "chance": 0.00000296426,
+      "multiplier": 32,
+      "attributeCount": 7
+    },
+    {
+      "id": 33,
+      "name": "Dimensional",
+      "chance": 0.00000263085,
+      "multiplier": 33,
+      "attributeCount": 7
+    },
+    {
+      "id": 34,
+      "name": "Interdimensional",
+      "chance": 0.00000233494,
+      "multiplier": 34,
+      "attributeCount": 7
+    },
+    {
+      "id": 35,
+      "name": "Multiversal",
+      "chance": 0.00000207232,
+      "multiplier": 35,
+      "attributeCount": 7
+    },
+    {
+      "id": 36,
+      "name": "Hiperversal",
+      "chance": 0.00000183924,
+      "multiplier": 36,
+      "attributeCount": 7
+    },
+    {
+      "id": 37,
+      "name": "Omniversal",
+      "chance": 0.00000163237,
+      "multiplier": 37,
+      "attributeCount": 8
+    },
+    {
+      "id": 38,
+      "name": "Singularidade",
+      "chance": 0.00000144877,
+      "multiplier": 38,
+      "attributeCount": 8
+    },
+    {
+      "id": 39,
+      "name": "Paradoxal",
+      "chance": 0.00000128581,
+      "multiplier": 39,
+      "attributeCount": 8
+    },
+    {
+      "id": 40,
+      "name": "Temporal",
+      "chance": 0.00000114119,
+      "multiplier": 40,
+      "attributeCount": 8
+    },
+    {
+      "id": 41,
+      "name": "Origem",
+      "chance": 0.00000101284,
+      "multiplier": 41,
+      "attributeCount": 8
+    },
+    {
+      "id": 42,
+      "name": "Alfa",
+      "chance": 8.98917e-7,
+      "multiplier": 42,
+      "attributeCount": 8
+    },
+    {
+      "id": 43,
+      "name": "Ômega",
+      "chance": 7.97811e-7,
+      "multiplier": 43,
+      "attributeCount": 9
+    },
+    {
+      "id": 44,
+      "name": "Deus Ancião",
+      "chance": 7.08076e-7,
+      "multiplier": 44,
+      "attributeCount": 9
+    },
+    {
+      "id": 45,
+      "name": "Criador",
+      "chance": 6.28435e-7,
+      "multiplier": 45,
+      "attributeCount": 9
+    },
+    {
+      "id": 46,
+      "name": "Arquiteto da Realidade",
+      "chance": 5.57752e-7,
+      "multiplier": 46,
+      "attributeCount": 9
+    },
+    {
+      "id": 47,
+      "name": "Existencial",
+      "chance": 4.95018e-7,
+      "multiplier": 47,
+      "attributeCount": 9
+    },
+    {
+      "id": 48,
+      "name": "Conceitual",
+      "chance": 4.39341e-7,
+      "multiplier": 48,
+      "attributeCount": 10
+    },
+    {
+      "id": 49,
+      "name": "Fundamental",
+      "chance": 3.89926e-7,
+      "multiplier": 49,
+      "attributeCount": 10
+    },
+    {
+      "id": 50,
+      "name": "Primus",
+      "chance": 3.46069e-7,
+      "multiplier": 50,
+      "attributeCount": 10
+    },
+    {
+      "id": 51,
+      "name": "Primus Ascendido",
+      "chance": 3.07144e-7,
+      "multiplier": 51,
+      "attributeCount": 10
+    },
+    {
+      "id": 52,
+      "name": "Primus Supremo",
+      "chance": 2.72598e-7,
+      "multiplier": 52,
+      "attributeCount": 10
+    },
+    {
+      "id": 53,
+      "name": "Primus Absoluto",
+      "chance": 2.41938e-7,
+      "multiplier": 53,
+      "attributeCount": 11
+    },
+    {
+      "id": 54,
+      "name": "Nexus",
+      "chance": 2.14726e-7,
+      "multiplier": 54,
+      "attributeCount": 11
+    },
+    {
+      "id": 55,
+      "name": "Nexus Ascendido",
+      "chance": 1.90574e-7,
+      "multiplier": 55,
+      "attributeCount": 11
+    },
+    {
+      "id": 56,
+      "name": "Nexus Supremo",
+      "chance": 1.69139e-7,
+      "multiplier": 56,
+      "attributeCount": 11
+    },
+    {
+      "id": 57,
+      "name": "Nexus Absoluto",
+      "chance": 1.50115e-7,
+      "multiplier": 57,
+      "attributeCount": 11
+    },
+    {
+      "id": 58,
+      "name": "Eclipse",
+      "chance": 1.33231e-7,
+      "multiplier": 58,
+      "attributeCount": 12
+    },
+    {
+      "id": 59,
+      "name": "Eclipse Ascendido",
+      "chance": 1.18246e-7,
+      "multiplier": 59,
+      "attributeCount": 12
+    },
+    {
+      "id": 60,
+      "name": "Eclipse Supremo",
+      "chance": 1.04946e-7,
+      "multiplier": 60,
+      "attributeCount": 12
+    },
+    {
+      "id": 61,
+      "name": "Eclipse Absoluto",
+      "chance": 9.31422e-8,
+      "multiplier": 61,
+      "attributeCount": 12
+    },
+    {
+      "id": 62,
+      "name": "Zenith",
+      "chance": 8.26659e-8,
+      "multiplier": 62,
+      "attributeCount": 12
+    },
+    {
+      "id": 63,
+      "name": "Zenith Ascendido",
+      "chance": 7.33681e-8,
+      "multiplier": 63,
+      "attributeCount": 13
+    },
+    {
+      "id": 64,
+      "name": "Zenith Supremo",
+      "chance": 6.51159e-8,
+      "multiplier": 64,
+      "attributeCount": 13
+    },
+    {
+      "id": 65,
+      "name": "Zenith Absoluto",
+      "chance": 5.7792e-8,
+      "multiplier": 65,
+      "attributeCount": 13
+    },
+    {
+      "id": 66,
+      "name": "Genesis",
+      "chance": 5.12918e-8,
+      "multiplier": 66,
+      "attributeCount": 13
+    },
+    {
+      "id": 67,
+      "name": "Genesis Ascendido",
+      "chance": 4.55227e-8,
+      "multiplier": 67,
+      "attributeCount": 13
+    },
+    {
+      "id": 68,
+      "name": "Genesis Supremo",
+      "chance": 4.04026e-8,
+      "multiplier": 68,
+      "attributeCount": 14
+    },
+    {
+      "id": 69,
+      "name": "Genesis Absoluto",
+      "chance": 3.58583e-8,
+      "multiplier": 69,
+      "attributeCount": 14
+    },
+    {
+      "id": 70,
+      "name": "Eternium",
+      "chance": 3.18251e-8,
+      "multiplier": 70,
+      "attributeCount": 14
+    },
+    {
+      "id": 71,
+      "name": "Eternium Ascendido",
+      "chance": 2.82455e-8,
+      "multiplier": 71,
+      "attributeCount": 14
+    },
+    {
+      "id": 72,
+      "name": "Eternium Supremo",
+      "chance": 2.50686e-8,
+      "multiplier": 72,
+      "attributeCount": 14
+    },
+    {
+      "id": 73,
+      "name": "Eternium Absoluto",
+      "chance": 2.2249e-8,
+      "multiplier": 73,
+      "attributeCount": 14
+    },
+    {
+      "id": 74,
+      "name": "Exódio",
+      "chance": 1.97465e-8,
+      "multiplier": 74,
+      "attributeCount": 15
+    },
+    {
+      "id": 75,
+      "name": "Exódio Ascendido",
+      "chance": 1.75255e-8,
+      "multiplier": 75,
+      "attributeCount": 15
+    },
+    {
+      "id": 76,
+      "name": "Exódio Supremo",
+      "chance": 1.55543e-8,
+      "multiplier": 76,
+      "attributeCount": 15
+    },
+    {
+      "id": 77,
+      "name": "Exódio Absoluto",
+      "chance": 1.38049e-8,
+      "multiplier": 77,
+      "attributeCount": 15
+    },
+    {
+      "id": 78,
+      "name": "Apocalipse",
+      "chance": 1.22522e-8,
+      "multiplier": 78,
+      "attributeCount": 15
+    },
+    {
+      "id": 79,
+      "name": "Apocalipse Ascendido",
+      "chance": 1.08741e-8,
+      "multiplier": 79,
+      "attributeCount": 16
+    },
+    {
+      "id": 80,
+      "name": "Apocalipse Supremo",
+      "chance": 9.65102e-9,
+      "multiplier": 80,
+      "attributeCount": 16
+    },
+    {
+      "id": 81,
+      "name": "Apocalipse Absoluto",
+      "chance": 8.56552e-9,
+      "multiplier": 81,
+      "attributeCount": 16
+    },
+    {
+      "id": 82,
+      "name": "Nexus Prime",
+      "chance": 7.6021e-9,
+      "multiplier": 82,
+      "attributeCount": 16
+    },
+    {
+      "id": 83,
+      "name": "Omega Prime",
+      "chance": 6.74705e-9,
+      "multiplier": 83,
+      "attributeCount": 16
+    },
+    {
+      "id": 84,
+      "name": "Alpha Prime",
+      "chance": 5.98818e-9,
+      "multiplier": 84,
+      "attributeCount": 17
+    },
+    {
+      "id": 85,
+      "name": "Void",
+      "chance": 5.31465e-9,
+      "multiplier": 85,
+      "attributeCount": 17
+    },
+    {
+      "id": 86,
+      "name": "Void Ascendido",
+      "chance": 4.71689e-9,
+      "multiplier": 86,
+      "attributeCount": 17
+    },
+    {
+      "id": 87,
+      "name": "Void Supremo",
+      "chance": 4.18635e-9,
+      "multiplier": 87,
+      "attributeCount": 17
+    },
+    {
+      "id": 88,
+      "name": "Void Absoluto",
+      "chance": 3.71549e-9,
+      "multiplier": 88,
+      "attributeCount": 17
+    },
+    {
+      "id": 89,
+      "name": "Infinity Prime",
+      "chance": 3.29759e-9,
+      "multiplier": 89,
+      "attributeCount": 18
+    },
+    {
+      "id": 90,
+      "name": "Reality Prime",
+      "chance": 2.92669e-9,
+      "multiplier": 90,
+      "attributeCount": 18
+    },
+    {
+      "id": 91,
+      "name": "Omnissência",
+      "chance": 2.59751e-9,
+      "multiplier": 91,
+      "attributeCount": 18
+    },
+    {
+      "id": 92,
+      "name": "Omnipotência",
+      "chance": 2.30535e-9,
+      "multiplier": 92,
+      "attributeCount": 18
+    },
+    {
+      "id": 93,
+      "name": "Omnipresença",
+      "chance": 2.04606e-9,
+      "multiplier": 93,
+      "attributeCount": 18
+    },
+    {
+      "id": 94,
+      "name": "Entropia Zero",
+      "chance": 1.81593e-9,
+      "multiplier": 94,
+      "attributeCount": 19
+    },
+    {
+      "id": 95,
+      "name": "Singularidade Prime",
+      "chance": 1.61168e-9,
+      "multiplier": 95,
+      "attributeCount": 19
+    },
+    {
+      "id": 96,
+      "name": "Fonte da Criação",
+      "chance": 1.4304e-9,
+      "multiplier": 96,
+      "attributeCount": 19
+    },
+    {
+      "id": 97,
+      "name": "Primeiro Conceito",
+      "chance": 1.26952e-9,
+      "multiplier": 97,
+      "attributeCount": 19
+    },
+    {
+      "id": 98,
+      "name": "Última Existência",
+      "chance": 1.12673e-9,
+      "multiplier": 98,
+      "attributeCount": 19
+    },
+    {
+      "id": 99,
+      "name": "O Um Acima de Tudo",
+      "chance": 1e-9,
+      "multiplier": 99,
+      "attributeCount": 20
+    }
+  ]
+}

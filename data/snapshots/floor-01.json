@@ -1,0 +1,269 @@
+{
+  "id": "3e212972-10b0-4c09-976f-73a292af3ae9",
+  "name": "DarkSuker",
+  "raceId": "elf",
+  "classId": "mage",
+  "level": 27,
+  "xp": 57004,
+  "baseStats": {
+    "strength": 19,
+    "intelligence": 80,
+    "agility": 48,
+    "hpBase": 132,
+    "mpBase": 132,
+    "dmgBase": 9,
+    "capBase": 30,
+    "hpRegenPerSec": 1,
+    "magicianCastTime": 1,
+    "attackSpeed": 1
+  },
+  "equipmentSlots": [
+    {
+      "name": "head",
+      "itemType": [
+        "helmet"
+      ],
+      "boxSize": 2
+    },
+    {
+      "name": "chest",
+      "itemType": [
+        "armor"
+      ],
+      "boxSize": 1
+    },
+    {
+      "name": "mainHand",
+      "itemType": [
+        "weapon"
+      ],
+      "boxSize": 1
+    },
+    {
+      "name": "offHand",
+      "itemType": [
+        "weapon",
+        "focus"
+      ],
+      "boxSize": 1
+    },
+    {
+      "name": "ring1",
+      "itemType": [
+        "ring"
+      ],
+      "boxSize": 3
+    },
+    {
+      "name": "amulet",
+      "itemType": [
+        "amulet"
+      ],
+      "boxSize": 2
+    }
+  ],
+  "equipment": {
+    "chest": {
+      "templateId": "cloth-vest",
+      "name": "Colete de Pano",
+      "description": "Armadura leve de tecido reforcado.",
+      "type": "armor",
+      "assets": {
+        "icon": "/assets/items/cloth-vest.png"
+      },
+      "stackable": false,
+      "qty": 1,
+      "instanceId": "737e1c59-740a-4f4a-9563-57e7787f1708",
+      "rarityId": 1,
+      "rarityName": "Comum",
+      "stars": 5,
+      "itemLevel": 3,
+      "qualityName": "Lend\u00E1rio",
+      "colorStart": {
+        "r": 255,
+        "g": 128,
+        "b": 0
+      },
+      "colorEnd": {
+        "r": 255,
+        "g": 215,
+        "b": 60
+      },
+      "baseStats": {
+        "defBase": 3
+      },
+      "stats": {
+        "defBase": 23.400000000000002
+      }
+    },
+    "ring1": {
+      "templateId": "wolf-fang-ring",
+      "name": "Anel de Presa",
+      "description": "Presa de lobo engastada em raiz negra retorcida.",
+      "type": "ring",
+      "assets": {
+        "icon": "/api/assets/items/wolf-fang-ring.png"
+      },
+      "stackable": false,
+      "qty": 1,
+      "instanceId": "4191ede2-5b42-4361-9936-4414319c917b",
+      "rarityId": 3,
+      "rarityName": "Diferenciado",
+      "stars": 4,
+      "itemLevel": 3,
+      "qualityName": "\u00C9pico",
+      "colorStart": {
+        "r": 163,
+        "g": 53,
+        "b": 238
+      },
+      "colorEnd": {
+        "r": 210,
+        "g": 130,
+        "b": 255
+      },
+      "baseStats": {
+        "agility": 2,
+        "dmgBase": 1
+      },
+      "stats": {
+        "agility": 18.2,
+        "dmgBase": 9.1,
+        "critChance": 0.08
+      },
+      "itemAttributes": [
+        {
+          "id": "critChance",
+          "value": 0.08
+        }
+      ]
+    },
+    "head": {
+      "templateId": "petal-helm",
+      "name": "Elmo de Petalas",
+      "description": "Capacete de folhas duras e petalas murchas vermelho-escuro.",
+      "type": "helmet",
+      "assets": {
+        "icon": "/api/assets/items/petal-helm.png"
+      },
+      "stackable": false,
+      "qty": 1,
+      "instanceId": "e67c6e67-1e75-4f90-a75d-3df097dc1bb6",
+      "rarityId": 3,
+      "rarityName": "Diferenciado",
+      "stars": 2,
+      "itemLevel": 3,
+      "qualityName": "Refinado",
+      "colorStart": {
+        "r": 30,
+        "g": 178,
+        "b": 0
+      },
+      "colorEnd": {
+        "r": 120,
+        "g": 255,
+        "b": 90
+      },
+      "baseStats": {
+        "defBase": 3,
+        "hpBase": 5
+      },
+      "stats": {
+        "defBase": 19.5,
+        "hpBase": 32.5,
+        "guardBonus": 2
+      },
+      "itemAttributes": [
+        {
+          "id": "guardBonus",
+          "value": 2
+        }
+      ]
+    },
+    "mainHand": {
+      "templateId": "rusty-dagger",
+      "name": "Adaga Enferrujada",
+      "description": "Lamina curta encontrada nas salas baixas.",
+      "type": "weapon",
+      "grip": "oneHand",
+      "assets": {
+        "icon": "/api/assets/items/rusty-dagger.png"
+      },
+      "stackable": false,
+      "qty": 1,
+      "instanceId": "b9492a10-566f-44de-a43f-72d01512379f",
+      "rarityId": 2,
+      "rarityName": "Incomum",
+      "stars": 5,
+      "itemLevel": 4,
+      "qualityName": "Lend\u00E1rio",
+      "colorStart": {
+        "r": 255,
+        "g": 128,
+        "b": 0
+      },
+      "colorEnd": {
+        "r": 255,
+        "g": 215,
+        "b": 60
+      },
+      "baseStats": {
+        "dmgBase": 4
+      },
+      "stats": {
+        "dmgBase": 39.199999999999996,
+        "swiftStrike": 5
+      },
+      "itemAttributes": [
+        {
+          "id": "swiftStrike",
+          "value": 5
+        }
+      ]
+    },
+    "offHand": {
+      "templateId": "rusty-dagger",
+      "name": "Adaga Enferrujada",
+      "description": "Lamina curta encontrada nas salas baixas.",
+      "type": "weapon",
+      "grip": "oneHand",
+      "assets": {
+        "icon": "/api/assets/items/rusty-dagger.png"
+      },
+      "stackable": false,
+      "qty": 1,
+      "instanceId": "9c3e6613-995f-4cdf-903e-a76d86f718e7",
+      "rarityId": 3,
+      "rarityName": "Diferenciado",
+      "stars": 4,
+      "itemLevel": 4,
+      "qualityName": "\u00C9pico",
+      "colorStart": {
+        "r": 163,
+        "g": 53,
+        "b": 238
+      },
+      "colorEnd": {
+        "r": 210,
+        "g": 130,
+        "b": 255
+      },
+      "baseStats": {
+        "dmgBase": 4
+      },
+      "stats": {
+        "dmgBase": 39.199999999999996,
+        "critChance": 0.08
+      },
+      "itemAttributes": [
+        {
+          "id": "critChance",
+          "value": 0.08
+        }
+      ]
+    }
+  },
+  "ownerUsername": "darksuker",
+  "floor": 1,
+  "createdAt": "2026-08-10T18:41:22.6319476\u002B00:00"
+}

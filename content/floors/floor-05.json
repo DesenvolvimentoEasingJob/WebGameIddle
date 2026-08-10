@@ -1,0 +1,91 @@
+{
+  "id": "floor-05",
+  "number": 5,
+  "name": "Salao do Eco",
+  "description": "Salão amplo de pedra azul-acinzentada onde ecos visuais se repetem: arcos simétricos, reflexos fantasma em paredes lisas, luz fria que vibra como ondas sonoras. Fragmentos de cristal flutuam levemente. Paleta: azul-gelo, prata, lilás pálido e névoa translúcida; atmosfera etérea e ressonante.",
+  "theme": "echo",
+  "difficulty": 16,
+  "itemLevel": 5,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "echo-wraith"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "bat"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "echo-wraith",
+        "echo-wraith"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "bat"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "echo-wraith"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "bat",
+        "bat",
+        "bat"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "echo-wraith"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "bat"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "echo-wraith",
+        "echo-wraith",
+        "echo-wraith",
+        "echo-wraith"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "echo-sovereign",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/05.png"
+  }
+}

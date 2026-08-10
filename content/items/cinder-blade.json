@@ -1,0 +1,15 @@
+{
+  "id": "cinder-blade",
+  "name": "Lamina de Brasa",
+  "description": "Espada curta com fio escurecido e residual de brasa nos Corredores de Cinza.",
+  "type": "weapon",
+  "grip": "oneHand",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 5
+  },
+  "assets": {
+    "icon": "/api/assets/items/cinder-blade.png"
+  }
+}

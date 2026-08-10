@@ -1,0 +1,10 @@
+{
+  "id": "cord-amulet",
+  "name": "Amuleto de Corda",
+  "description": "Pingente improvisado com um pouco de vigor.",
+  "type": "amulet",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": { "hpBase": 5 },
+  "assets": { "icon": "/assets/items/cord-amulet.png" }
+}

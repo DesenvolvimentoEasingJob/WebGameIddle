@@ -1,0 +1,51 @@
+{
+  "id": "fractured-monarch",
+  "name": "Fractured Monarch",
+  "description": "Monarca quebrado de pedra e cristal rachado, manto real em farrapos e coroa partida.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 20,
+  "hp": 320,
+  "baseStats": {
+    "dmgBase": 43,
+    "defBase": 21
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    40,
+    55
+  ],
+  "rarityLuck": 4,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "rusty-dagger",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/fractured-monarch.png",
+    "width": 112,
+    "height": 112
+  }
+}

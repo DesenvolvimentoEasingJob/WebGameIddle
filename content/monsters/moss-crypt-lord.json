@@ -1,0 +1,66 @@
+{
+  "id": "moss-crypt-lord",
+  "name": "Moss Crypt Lord",
+  "description": "Senhor de cripta coberto de musgo e ossos antigos, coroa de raÃ­zes e presenÃ§a de boss.",
+  "level": 2,
+  "hp": 1000,
+  "baseStats": {
+    "dmgBase": 1,
+    "defBase": 3
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    15,
+    22
+  ],
+  "rarityLuck": 1.5,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "leather-helm",
+      "chance": 0.15,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/moss-crypt-lord.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/moss-crypt-lord-idle-0.png",
+          "/assets/monsters/moss-crypt-lord-idle-1.png",
+          "/assets/monsters/moss-crypt-lord-idle-2.png",
+          "/assets/monsters/moss-crypt-lord-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

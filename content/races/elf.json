@@ -1,0 +1,33 @@
+{
+  "id": "elf",
+  "name": "Elfo",
+  "description": "Ágeis e sintonizados com magia. Mais mana, menos capacidade de carga.",
+  "baseStats": {
+    "strength": 8,
+    "intelligence": 14,
+    "agility": 14,
+    "hpBase": 80,
+    "mpBase": 80,
+    "dmgBase": 9,
+    "capBase": 30,
+    "hpRegenPerSec": 1,
+    "defBase": 1
+  },
+  "levelGain": {
+    "intelligence": 1,
+    "agility": 1,
+    "hpBase": 2,
+    "mpBase": 2
+  },
+  "equipmentSlots": [
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
+    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1 },
+    { "name": "offHand", "itemType": ["weapon", "focus"], "boxSize": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
+    { "name": "amulet", "itemType": ["amulet"], "boxSize": 2 }
+  ],
+  "blessings": ["mpRegen"],
+  "limitations": ["lowCap"],
+  "assets": { "portrait": "/assets/races/elf.png" }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "ranger",
+  "name": "Ranger",
+  "description": "Agilidade e precisão à distância.",
+  "allowedRaces": ["human", "elf"],
+  "statFocus": ["agility"],
+  "levelGain": { "agility": 1 },
+  "startingSkills": ["aimedShot"],
+  "hpRegenBonus": 0.5,
+  "assets": { "icon": "/assets/classes/ranger.png" }
+}

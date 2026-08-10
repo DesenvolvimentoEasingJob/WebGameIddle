@@ -1,0 +1,15 @@
+{
+  "id": "rusty-dagger",
+  "name": "Adaga Enferrujada",
+  "description": "Lamina curta encontrada nas salas baixas.",
+  "type": "weapon",
+  "grip": "oneHand",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 4
+  },
+  "assets": {
+    "icon": "/api/assets/items/rusty-dagger.png"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "wolf-fang-ring",
+  "name": "Anel de Presa",
+  "description": "Presa de lobo engastada em raiz negra retorcida.",
+  "type": "ring",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "agility": 2,
+    "dmgBase": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/wolf-fang-ring.png"
+  }
+}

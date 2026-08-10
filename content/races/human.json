@@ -1,0 +1,33 @@
+{
+  "id": "human",
+  "name": "Humano",
+  "description": "Adaptáveis e equilibrados. Sem grandes bênçãos, sem grandes limitações.",
+  "baseStats": {
+    "strength": 10,
+    "intelligence": 10,
+    "agility": 10,
+    "hpBase": 100,
+    "mpBase": 50,
+    "dmgBase": 10,
+    "capBase": 40,
+    "hpRegenPerSec": 1,
+    "defBase": 2
+  },
+  "levelGain": {
+    "strength": 1,
+    "intelligence": 1,
+    "agility": 1,
+    "hpBase": 3
+  },
+  "equipmentSlots": [
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
+    { "name": "mainHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
+    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
+    { "name": "ring2", "itemType": ["ring"], "boxSize": 4 }
+  ],
+  "blessings": [],
+  "limitations": [],
+  "assets": { "portrait": "/assets/races/human.png" }
+}

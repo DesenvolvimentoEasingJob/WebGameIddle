@@ -1,0 +1,91 @@
+{
+  "id": "floor-08",
+  "number": 8,
+  "name": "Fossos de Ferro",
+  "description": "Fossos e passagens de ferro fundido: grades pesadas, correntes, poços profundos e plataformas metálicas rivetadas. Ferrugem laranja sobre aço escuro, vapor saindo de fendas, luz vermelha industrial. Paleta: ferro preto, ferrugem, cinza metálico e vermelho-sangue apagado; opressivo e mecânico.",
+  "theme": "iron",
+  "difficulty": 128,
+  "itemLevel": 8,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "iron-hound"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "iron-hound",
+        "iron-hound"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "iron-hound"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton",
+        "skeleton",
+        "skeleton"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "iron-hound"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "iron-hound",
+        "iron-hound",
+        "iron-hound",
+        "iron-hound"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "iron-colossus",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/08.png"
+  }
+}

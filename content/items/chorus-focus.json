@@ -1,0 +1,16 @@
+{
+  "id": "chorus-focus",
+  "name": "Foco do Coro",
+  "description": "Fragmento flutuante de cristal que ecoa magias em harmonia.",
+  "type": "focus",
+  "grip": "oneHand",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 6,
+    "mpBase": 20
+  },
+  "assets": {
+    "icon": "/api/assets/items/chorus-focus.png"
+  }
+}

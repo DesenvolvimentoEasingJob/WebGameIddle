@@ -1,0 +1,15 @@
+{
+  "id": "soot-buckler",
+  "name": "Broquel de Fuligem",
+  "description": "Escudo redondo coberto de cinza fina; ainda quente ao toque.",
+  "type": "shield",
+  "grip": "oneHand",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "defBase": 4
+  },
+  "assets": {
+    "icon": "/api/assets/items/soot-buckler.png"
+  }
+}

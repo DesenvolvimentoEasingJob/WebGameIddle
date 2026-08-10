@@ -1,0 +1,78 @@
+{
+  "id": "slag-forgemaster",
+  "name": "Slag Forgemaster",
+  "description": "Mestre forjador de escÃ³ria e lava, bigorna nas costas, martelo incandescente e peito fumegante.",
+  "level": 8,
+  "hp": 140,
+  "baseStats": {
+    "dmgBase": 19,
+    "defBase": 9
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    21,
+    30
+  ],
+  "rarityLuck": 2.25,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "copper-ring",
+      "chance": 0.1,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/slag-forgemaster.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/slag-forgemaster-idle-0.png",
+          "/assets/monsters/slag-forgemaster-idle-1.png",
+          "/assets/monsters/slag-forgemaster-idle-2.png",
+          "/assets/monsters/slag-forgemaster-idle-3.png",
+          "/assets/monsters/slag-forgemaster-idle-4.png",
+          "/assets/monsters/slag-forgemaster-idle-5.png",
+          "/assets/monsters/slag-forgemaster-idle-6.png",
+          "/assets/monsters/slag-forgemaster-idle-7.png",
+          "/assets/monsters/slag-forgemaster-idle-8.png",
+          "/assets/monsters/slag-forgemaster-idle-9.png",
+          "/assets/monsters/slag-forgemaster-idle-10.png",
+          "/assets/monsters/slag-forgemaster-idle-11.png",
+          "/assets/monsters/slag-forgemaster-idle-12.png",
+          "/assets/monsters/slag-forgemaster-idle-13.png",
+          "/assets/monsters/slag-forgemaster-idle-14.png",
+          "/assets/monsters/slag-forgemaster-idle-15.png"
+        ],
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frameCount": 16,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "prismarch",
+  "name": "Prismarch",
+  "description": "Entidade cristalina prismÃ¡tica, corpo facetado que refrata luz colorida, porte majestoso.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 14,
+  "hp": 230,
+  "baseStats": {
+    "dmgBase": 31,
+    "defBase": 15
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    28,
+    42
+  ],
+  "rarityLuck": 3,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "rusty-dagger",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/prismarch.png",
+    "width": 112,
+    "height": 112
+  }
+}

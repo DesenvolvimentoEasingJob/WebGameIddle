@@ -1,0 +1,16 @@
+{
+  "id": "bone-focus",
+  "name": "Foco de Osso",
+  "description": "Catalisador tosco para magias basicas.",
+  "type": "focus",
+  "grip": "oneHand",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 2,
+    "mpBase": 5
+  },
+  "assets": {
+    "icon": "/api/assets/items/bone-focus.png"
+  }
+}

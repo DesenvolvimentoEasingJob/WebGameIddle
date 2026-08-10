@@ -1,0 +1,15 @@
+{
+  "id": "ember-cord",
+  "name": "Cordao de Brasa",
+  "description": "Cordao com pedacos de carvao ainda quentes das brasas apagadas.",
+  "type": "amulet",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "hpBase": 8,
+    "hpRegenPerSec": 0.2
+  },
+  "assets": {
+    "icon": "/api/assets/items/ember-cord.png"
+  }
+}

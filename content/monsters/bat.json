@@ -1,0 +1,57 @@
+{
+  "id": "bat",
+  "name": "bat",
+  "description": "Morcego marrom clÃ¡ssico de caverna, asas esticadas e orelhas grandes, silhueta leve.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    1,
+    2
+  ],
+  "rarityLuck": 0,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [1, 2]
+    },
+    {
+      "itemId": "echo-shard-blade",
+      "chance": 0.06,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "silver-echo-ring",
+      "chance": 0.05,
+      "qty": [1, 1]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/bat.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/bat-idle-0.png",
+          "/assets/monsters/bat-idle-1.png",
+          "/assets/monsters/bat-idle-2.png",
+          "/assets/monsters/bat-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda`"
+}

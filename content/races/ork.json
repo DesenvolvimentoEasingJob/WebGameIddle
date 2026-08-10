@@ -1,0 +1,34 @@
+{
+  "id": "ork",
+  "name": "Ork",
+  "description": "Força bruta e resistência. Quatro anéis — um em cada dedo da mão dominante.",
+  "baseStats": {
+    "strength": 16,
+    "intelligence": 8,
+    "agility": 10,
+    "hpBase": 140,
+    "mpBase": 20,
+    "dmgBase": 14,
+    "capBase": 55,
+    "hpRegenPerSec": 2,
+    "defBase": 4
+  },
+  "levelGain": {
+    "strength": 1,
+    "hpBase": 5,
+    "dmgBase": 1
+  },
+  "equipmentSlots": [
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
+    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1 },
+    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
+    { "name": "ring2", "itemType": ["ring"], "boxSize": 4 },
+    { "name": "ring3", "itemType": ["ring"], "boxSize": 4 },
+    { "name": "ring4", "itemType": ["ring"], "boxSize": 4 }
+  ],
+  "blessings": ["extraRings", "highHpRegen"],
+  "limitations": ["lowMp"],
+  "assets": { "portrait": "/assets/races/ork.png" }
+}

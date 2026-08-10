@@ -1,0 +1,74 @@
+{
+  "id": "echo-wraith",
+  "name": "echo wraith",
+  "description": "Fantasma translucido azulado que vibra como um eco, contornos fluidos e olhar vazio.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    3,
+    6
+  ],
+  "rarityLuck": 0.25,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "resonant-veil",
+      "chance": 0.05,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "chorus-focus",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "phantom-circlet",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/echo-wraith.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/echo-wraith-idle-0.png",
+          "/assets/monsters/echo-wraith-idle-1.png",
+          "/assets/monsters/echo-wraith-idle-2.png",
+          "/assets/monsters/echo-wraith-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

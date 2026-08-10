@@ -1,0 +1,91 @@
+{
+  "id": "floor-07",
+  "number": 7,
+  "name": "Torre de Vidro",
+  "description": "Interior de torre de vidro e cristal prismático: pisos translúcidos, paredes facetadas que quebram a luz em reflexos coloridos, estilhaços suspensos no ar. Horizonte externo borrado além do vidro. Paleta: ciano, magenta suave, branco brilhante e sombras de vidro; frio, brilhante e frágil.",
+  "theme": "glass",
+  "difficulty": 64,
+  "itemLevel": 7,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "glass-scarab"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "mage-apprentice"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "glass-scarab",
+        "glass-scarab"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "mage-apprentice"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "glass-scarab"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "mage-apprentice",
+        "mage-apprentice",
+        "mage-apprentice"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "glass-scarab"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "mage-apprentice"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "glass-scarab",
+        "glass-scarab",
+        "glass-scarab",
+        "glass-scarab"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "prismarch",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/07.png"
+  }
+}

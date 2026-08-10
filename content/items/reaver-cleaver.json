@@ -1,0 +1,15 @@
+{
+  "id": "reaver-cleaver",
+  "name": "Cutelo do Ceifador",
+  "description": "Lamina larga de carnificina do Ashen Reaver; pesada e manchada de fuligem.",
+  "type": "weapon",
+  "grip": "twoHand",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 7
+  },
+  "assets": {
+    "icon": "/api/assets/items/reaver-cleaver.png"
+  }
+}

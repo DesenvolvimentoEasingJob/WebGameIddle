@@ -1,0 +1,91 @@
+{
+  "id": "floor-01",
+  "number": 1,
+  "name": "Cripta Umida",
+  "description": "Cripta úmida subterrânea coberta de musgo luminoso verde-azulado. Arcos de pedra rachada pingando água, poças refletindo fungos bioluminescentes, névoa baixa esverdeada, raízes pendentes e ossos semi-enterrados. Paleta: verde musgo, pedra cinza-úmida, brilhos teal frios; luz suave e úmida vinda do chão e das frestas.",
+  "theme": "dungeon-moss",
+  "difficulty": 1,
+  "itemLevel": 1,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "rat"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "slime",
+        "slime"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "rat"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "rat",
+        "rat",
+        "rat"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "rat"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "slime",
+        "slime",
+        "slime",
+        "slime"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "moss-crypt-lord",
+    "gateFee": 50,
+    "registryFee": 999,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/api/assets/floors/floor-01.png"
+  }
+}

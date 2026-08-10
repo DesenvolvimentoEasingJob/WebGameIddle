@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SkySpire.Api/SkySpire.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SkySpire.Api.Tests/SkySpire.Api.Tests.csproj" />
+  </Folder>
+</Solution>

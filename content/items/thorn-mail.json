@@ -1,0 +1,15 @@
+{
+  "id": "thorn-mail",
+  "name": "Cota de Espinhos",
+  "description": "Couro entrelacado com farpas e vinhas endurecidas.",
+  "type": "armor",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "defBase": 5,
+    "agility": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/thorn-mail.png"
+  }
+}

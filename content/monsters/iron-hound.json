@@ -1,0 +1,43 @@
+{
+  "id": "iron-hound",
+  "name": "iron hound",
+  "description": "CÃ£o de guerra metÃ¡lico, focinho de aÃ§o e corpo articulado, postura de caÃ§a.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    5,
+    10
+  ],
+  "rarityLuck": 0.4,
+  "loot": [
+    {
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ],
+      "itemId": "scrap"
+    },
+    {
+      "itemId": "cord-amulet",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/iron-hound.png",
+    "width": 56,
+    "height": 56
+  }
+}

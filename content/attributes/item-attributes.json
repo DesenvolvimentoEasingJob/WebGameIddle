@@ -1,0 +1,110 @@
+{
+  "id": "item-attributes",
+  "typeRoles": {
+    "weapon": ["offense"],
+    "focus": ["offense"],
+    "shield": ["defense"],
+    "armor": ["defense"],
+    "helmet": ["defense"],
+    "ring": ["utility", "offense"],
+    "amulet": ["utility"]
+  },
+  "critChance": {
+    "name": "Chance Crítica",
+    "description": "Chance de o golpe base se tornar crítico.",
+    "category": "chance",
+    "compatibility": ["offense"],
+    "minValue": 0.02,
+    "unit": "fraction",
+    "requires": ["critChance", "critDamage", "finalDamage"],
+    "chanceStat": "critChance",
+    "formulasOnSuccess": [
+      "finalDamage = finalDamage * critDamage",
+      "critApplied = 1"
+    ]
+  },
+  "critDamage": {
+    "name": "Dano Crítico",
+    "description": "Multiplicador aplicado quando um crítico acerta.",
+    "category": "chance",
+    "compatibility": ["offense"],
+    "minValue": 0.1,
+    "unit": "fraction",
+    "requires": ["critDamage"],
+    "formulas": []
+  },
+  "dodgeChance": {
+    "name": "Esquiva",
+    "description": "Chance de anular o golpe recebido.",
+    "category": "chance",
+    "compatibility": ["defense"],
+    "minValue": 0.02,
+    "unit": "fraction",
+    "requires": ["dodgeChance", "finalDamage"],
+    "chanceStat": "dodgeChance",
+    "formulasOnSuccess": [
+      "finalDamage = 0",
+      "dodgeApplied = 1"
+    ]
+  },
+  "lifeSteal": {
+    "name": "Roubo de Vida",
+    "description": "Recupera HP com base no dano causado.",
+    "category": "heal",
+    "compatibility": ["offense"],
+    "minValue": 1,
+    "unit": "percent",
+    "requires": ["dmgTotal", "hpBase"],
+    "formulas": [
+      "hpBase = hpBase + (dmgTotal / 100) * lifeSteal"
+    ]
+  },
+  "guardBonus": {
+    "name": "Guarda",
+    "description": "Reforço plano de defesa.",
+    "category": "defense",
+    "compatibility": ["defense"],
+    "minValue": 1,
+    "unit": "flat",
+    "requires": ["defBase"],
+    "formulas": [
+      "defBase = defBase + guardBonus"
+    ]
+  },
+  "swiftStrike": {
+    "name": "Golpe Ágil",
+    "description": "Pequeno bônus de dano base.",
+    "category": "damage",
+    "compatibility": ["offense"],
+    "minValue": 1,
+    "unit": "flat",
+    "requires": ["dmgBase"],
+    "formulas": [
+      "dmgBase = dmgBase + swiftStrike"
+    ]
+  },
+  "vitalWire": {
+    "name": "Fio Vital",
+    "description": "Regeneração passiva leve.",
+    "category": "heal",
+    "compatibility": ["utility"],
+    "minValue": 0.2,
+    "unit": "flat",
+    "requires": ["hpRegenPerSec"],
+    "formulas": [
+      "hpRegenPerSec = hpRegenPerSec + vitalWire"
+    ]
+  },
+  "fireBonusDMG": {
+    "name": "Chama Primordial",
+    "description": "Bônus percentual sobre dano de fogo (inerte sem fireDamage).",
+    "category": "damage",
+    "compatibility": ["offense"],
+    "minValue": 5,
+    "unit": "percent",
+    "requires": ["fireDamage", "finalDamage"],
+    "formulas": [
+      "finalDamage = finalDamage + (fireDamage / 100) * fireBonusDMG"
+    ]
+  }
+}

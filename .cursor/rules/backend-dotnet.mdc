@@ -1,0 +1,16 @@
+---
+description: Convenções da API .NET 10 containerizada
+globs: backend/**/*
+alwaysApply: false
+---
+
+# Backend .NET 10
+
+- Web API em containers; connection strings e secrets via env
+- Endpoints REST sob `/api/...`; `GET /health` obrigatório
+- Auth JWT; schema de users preparado para Firebase depois
+- Ler conteúdo de `content/` (não embutir dados de raça/classe no código)
+- Expressões de atributo: allowlist segura — sem `eval` arbitrário
+- Toda mutação de personagem/bag/moeda/combate no servidor
+- Ao salvar JSON de personagem/bag, manter assinatura (quando todo 30 existir)
+- CORS: liberar origem do Vite (`localhost:5173`) em Development

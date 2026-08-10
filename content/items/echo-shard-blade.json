@@ -1,0 +1,15 @@
+{
+  "id": "echo-shard-blade",
+  "name": "Lamina de Eco",
+  "description": "Cristal afiado do Salao do Eco; vibra com um tom metalico ao cortar.",
+  "type": "weapon",
+  "grip": "oneHand",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 8
+  },
+  "assets": {
+    "icon": "/api/assets/items/echo-shard-blade.png"
+  }
+}

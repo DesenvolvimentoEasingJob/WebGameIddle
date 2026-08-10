@@ -1,0 +1,16 @@
+{
+  "id": "matriarch-crown",
+  "name": "Coroa da Matriarca",
+  "description": "Coroa viva de roseira selvagem da Briar Matriarch; ainda espirra seiva.",
+  "type": "helmet",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "defBase": 4,
+    "hpBase": 12,
+    "intelligence": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/matriarch-crown.png"
+  }
+}

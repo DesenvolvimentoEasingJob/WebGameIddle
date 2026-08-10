@@ -1,0 +1,14 @@
+{
+  "id": "cloth-vest",
+  "name": "Colete de Pano",
+  "description": "Armadura leve de tecido reforcado.",
+  "type": "armor",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "defBase": 3
+  },
+  "assets": {
+    "icon": "/api/assets/items/cloth-vest.png"
+  }
+}

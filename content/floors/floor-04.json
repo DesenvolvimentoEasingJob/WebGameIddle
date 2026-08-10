@@ -1,0 +1,91 @@
+{
+  "id": "floor-04",
+  "number": 4,
+  "name": "Forja Esquecida",
+  "description": "Forja abandonada sob a torre: bigornas enferrujadas, fornalhas rachadas ainda com brasa fraca, correntes e moldes de metal espalhados. Fumaça laranja e cinza sobe por dutos partidos; chão de tijolo queimado e poças de escória. Paleta: ferro oxidado, carvão, laranja de forja e faíscas; calor residual e sombras duras.",
+  "theme": "forge",
+  "difficulty": 8,
+  "itemLevel": 4,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "ember-imp"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "golem-scrap"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "ember-imp",
+        "ember-imp"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "golem-scrap"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "ember-imp"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "golem-scrap",
+        "golem-scrap",
+        "golem-scrap"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "ember-imp"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "golem-scrap"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "ember-imp",
+        "ember-imp",
+        "ember-imp",
+        "ember-imp"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "slag-forgemaster",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/api/assets/floors/floor-04.png"
+  }
+}

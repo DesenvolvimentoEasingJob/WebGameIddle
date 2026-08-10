@@ -1,0 +1,15 @@
+{
+  "id": "briar-spear",
+  "name": "Lanca de Sarca",
+  "description": "Haste viva com ponta de espinho negro do Jardim de Espinhos.",
+  "type": "weapon",
+  "grip": "twoHand",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "dmgBase": 6
+  },
+  "assets": {
+    "icon": "/api/assets/items/briar-spear.png"
+  }
+}

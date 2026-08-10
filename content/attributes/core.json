@@ -1,0 +1,42 @@
+{
+  "id": "core",
+  "strength": {
+    "name": "Força",
+    "description": "Poder físico bruto da torre — ossos, músculo e vontade de avançar um andar a mais.",
+    "formulas": [
+      "hpBase * 0.2",
+      "dmgBase * 0.4",
+      "capBase * 0.3",
+      "hpRegenPerSec * 0.05"
+    ],
+    "assets": {
+      "card": "/api/assets/attributes/strength.png"
+    },
+    "artPrompt": "Um guereiro suado fazendo exercicio em sua academia medieval com feno e cavalo olhando espantado com o peso que ele levanta em pixel arte"
+  },
+  "intelligence": {
+    "name": "Inteligência",
+    "description": "Clareza arcana e cálculo frio — mana, foco e magia que dobra o combate.",
+    "formulas": [
+      "mpBase * 0.2",
+      "dmgBase * 0.4",
+      "magicianCastTime - 0.3"
+    ],
+    "assets": {
+      "card": "/api/assets/attributes/intelligence.png"
+    },
+    "artPrompt": "Um mago experiente em seu laboratorio pesquisando livros e invocando magias em pixel arte"
+  },
+  "agility": {
+    "name": "Agilidade",
+    "description": "Reflexo e ritmo — lâminas rápidas e a janela entre o golpe e a esquiva.",
+    "formulas": [
+      "dmgBase * 0.25",
+      "attackSpeed * 0.01"
+    ],
+    "assets": {
+      "card": "/api/assets/attributes/agility.png"
+    },
+    "artPrompt": "Um guerreiro medieval correndo em uma planice em seu cavalo em uma cena epica  com ao fundo varios cavalos celvagens em pixel arte"
+  }
+}

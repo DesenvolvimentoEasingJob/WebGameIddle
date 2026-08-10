@@ -1,0 +1,51 @@
+{
+  "id": "mage-apprentice",
+  "name": "mage apprentice",
+  "description": "Aprendiz de mago de robes simples, cajado curto e aura mÃ¡gica fraca ao redor das mÃ£os.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    4,
+    8
+  ],
+  "rarityLuck": 0.35,
+  "loot": [
+    {
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ],
+      "itemId": "scrap"
+    },
+    {
+      "itemId": "wooden-sword",
+      "chance": 0.08,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "cloth-vest",
+      "chance": 0.06,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/mage-apprentice.png",
+    "width": 56,
+    "height": 56
+  }
+}

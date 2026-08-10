@@ -1,0 +1,58 @@
+{
+  "id": "golem-scrap",
+  "name": "golem scrap",
+  "description": "Golem tosco feito de sucata e ferro enferrujado, corpo angular com placas soltas.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    3,
+    6
+  ],
+  "rarityLuck": 0.25,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "rusty-dagger",
+      "chance": 0.08,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/golem-scrap.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/golem-scrap-idle-0.png",
+          "/assets/monsters/golem-scrap-idle-1.png",
+          "/assets/monsters/golem-scrap-idle-2.png",
+          "/assets/monsters/golem-scrap-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

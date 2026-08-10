@@ -1,0 +1,357 @@
+# Base do jogo
+
+O projeto será um jogo de navegador com animações totalmente em pixel art, desenvolvido com tecnologias web.
+
+As artes utilizarão como referência a resolução de 256 × 256 pixels. O back-end será desenvolvido em PHP, enquanto o front-end utilizará JavaScript e bibliotecas voltadas para o desenvolvimento de jogos 2D na web.
+
+O jogo será totalmente integrado ao PixelLab, utilizando a ferramenta Animate With Text Pro para a geração de animações e itens para o jogo:
+
+https://www.pixellab.ai/docs/tools/animate-with-text-pro
+
+## Conceito principal
+
+O jogador começará escolhendo uma raça. Cada raça possuirá características próprias e poderá receber bênçãos específicas.
+
+Depois da escolha da raça, o jogador deverá escolher uma classe.
+
+O objetivo principal será subir uma torre infinita. Durante a exploração dos andares, o jogador enfrentará monstros, obterá itens, aumentará seu poder e poderá negociar equipamentos e recursos em um mercado entre jogadores.
+
+## Estrutura baseada em JSON
+
+Grande parte da estrutura do jogo será baseada em arquivos JSON, permitindo maior flexibilidade na criação e modificação de conteúdos.
+
+Na pasta de raças, por exemplo, haverá um arquivo JSON para cada raça, contendo suas propriedades, características, limitações, habilidades e possíveis bênçãos.
+
+A mesma estrutura será utilizada para as classes, monstros, itens e andares da torre.
+
+Cada jogador também possuirá sua própria estrutura de dados. O inventário ou bolsa do personagem poderá ser representado por outra estrutura JSON.
+
+Essa flexibilidade permitirá que alguns jogadores possuam propriedades que outros não tenham. Uma raça poderá, por exemplo, possuir quatro braços e, por consequência, utilizar mais equipamentos simultaneamente.
+
+## Torre infinita
+
+Inicialmente, o jogo terá dez andares criados manualmente.
+
+Depois desses primeiros andares, os próximos poderão ser gerados com o auxílio de inteligência artificial.
+
+Quando um jogador alcançar o último andar existente, o back-end iniciará a geração do próximo andar. Como cada andar será representado por um JSON, o sistema deverá criar um novo arquivo ou registro contendo:
+
+* Nome e descrição do andar;
+* Tema visual;
+* Tipos de salas;
+* Monstros disponíveis;
+* Chefe do andar;
+* Eventos;
+* Recursos;
+* Recompensas;
+* Regras especiais;
+* Dificuldade;
+* Nível dos itens.
+
+A inteligência artificial será responsável principalmente pela criação conceitual e textual do andar. Os valores numéricos deverão seguir regras definidas pelo próprio sistema para manter o equilíbrio do jogo.
+
+O jogo seguirá uma mecânica simples em que o sistema analisará o andar anterior e dobrará sua dificuldade. Porém, os bônus serão sempre multiplicados por 1,5.
+
+## Monstros
+
+Os monstros também serão baseados em estruturas JSON.
+
+Cada monstro poderá possuir propriedades únicas, como:
+
+* Raça ou espécie;
+* Nível;
+* Vida;
+* Ataque;
+* Defesa;
+* Resistências;
+* Fraquezas;
+* Habilidades;
+* Comportamento;
+* Aparência;
+* Itens que podem ser derrubados;
+* Probabilidades de recompensa.
+
+## Itens gerados por inteligência artificial
+
+Um dos diferenciais do jogo será a possibilidade de determinados itens terem sua identidade criada com o auxílio de inteligência artificial.
+
+Quando ocorrer um drop especial, o servidor poderá enviar uma solicitação para a API da OpenAI. Essa solicitação utilizará um modelo predefinido e algumas informações do contexto, como:
+
+* O andar em que o item foi encontrado;
+* O jogador que recebeu o item;
+* A raça e a classe do jogador;
+* O monstro que derrubou o item;
+* O tipo do item;
+* A raridade;
+* A qualidade;
+* Os atributos previamente calculados pelo sistema.
+
+A inteligência artificial deverá retornar um JSON contendo informações narrativas e visuais do item, como:
+
+* Nome;
+* Descrição;
+* Aparência;
+* Material;
+* História;
+* Origem;
+* Efeitos visuais;
+* Características especiais;
+* Relação com o monstro ou com o andar.
+
+A inteligência artificial não será responsável por definir diretamente o dano, a defesa ou os atributos numéricos do equipamento.
+
+Os valores do item serão calculados pelo sistema com base em regras como:
+
+* O nível do item será igual ao nível do andar;
+* Atributos básicos;
+* Atributos adicionais;
+* Raridade;
+* Qualidade;
+* Tipo de equipamento.
+
+Dessa forma, a inteligência artificial poderá criar itens únicos e interessantes sem comprometer o equilíbrio geral do jogo.
+
+## 1. Tipo de jogabilidade
+
+O jogo será baseado em eventos, ou seja, tudo ocorrerá no servidor, e o front-end poderá ou não animar esses eventos.
+
+Por exemplo, ao iniciar uma batalha, o servidor saberá rapidamente quem venceu ou perdeu. Ele enviará os eventos da batalha, e o jogador presenciará os acontecimentos na tela por meio de animações em pixel art, exibição de danos e lançamento de magias.
+
+O jogador não escolherá as ações durante a batalha. Ele apenas presenciará os acontecimentos.
+
+## 2. Estrutura de cada andar
+
+Cada andar terá uma imagem de fundo e um conjunto de monstros.
+
+Será como se existissem nove levas de monstros e um chefe final, totalizando dez salas por andar.
+
+O personagem ficará sempre no lado esquerdo da tela, enquanto o inimigo ficará sempre no lado direito.
+
+Ao enfrentar a primeira leva de monstros, o jogador liberará a segunda leva. Após derrotar os monstros da sala, ele seguirá para a próxima sala, caso a subida automática esteja ativada.
+
+Caso contrário, permanecerá parado, sem realizar nenhuma ação.
+
+O jogador poderá andar entre salas já completadas.
+
+O andar também poderá ser desafiado para que o jogador registre seu nome nele.
+
+Para tentar registrar seu nome em determinado andar, o jogador deverá desafiar o chefe daquele andar com todos os atributos multiplicados por dez.
+
+Ao registrar seu nome no andar, ele receberá o nome do jogador, e todos os outros jogadores que passarem por ele verão que aquele andar pertence ao jogador.
+
+Para desafiar o chefe final do andar, será necessário pagar uma taxa de 50 moedas.
+
+O jogador que possuir o andar registrado receberá 10% das moedas pagas sempre que outro jogador desafiar o chefe daquele andar.
+
+Caso outro jogador queira registrar o andar em seu nome, ele deverá desafiar o jogador que atualmente possui o andar.
+
+Porém, ele enfrentará um clone do jogador criado no dia em que o andar foi registrado. O JSON do personagem será salvo no andar.
+
+Se o proprietário for derrotado, o JSON do novo jogador será salvo com as configurações atuais dele. Por esse motivo, a bolsa será separada do JSON do personagem.
+
+## 3. Progressão do jogador
+
+O jogador ganhará experiência derrotando os monstros.
+
+No nível 1, serão necessários 100 pontos de experiência para alcançar o próximo nível.
+
+A experiência necessária aumentará em uma escala de 1,2. A cada dez níveis, o multiplicador aumentará em 0,1.
+
+Por exemplo, no nível 11, a experiência acumulada será multiplicada por 1,3, e assim sucessivamente.
+
+O nível será utilizado como multiplicador de atributos.
+
+No nível 1, o cálculo será:
+
+```text
+atributo × 0,001
+```
+
+No nível 2.000, o personagem terá seus atributos multiplicados por dois.
+
+O jogo será baseado em atributos dinâmicos de classe, que poderão ser treinados ou adquiridos.
+
+Também existirão atributos fundamentais, como:
+
+* Força;
+* Inteligência;
+* Agilidade.
+
+A vida será baseada na força, a mana será baseada na inteligência e a velocidade de ataque será baseada na agilidade.
+
+Poderão existir diversas variações, mas esses serão os atributos fundamentais do jogo.
+
+Todo o jogo será infinito. Tudo poderá ser aumentado indefinidamente, porém será cada vez mais difícil melhorar as estatísticas.
+
+As estatísticas poderão ser aumentadas em um campo de treinamento. O sistema verificará apenas os atributos próprios do personagem, desconsiderando os atributos fornecidos pelos itens, e permitirá que eles sejam aprimorados.
+
+Outro ponto será a mecânica dinâmica dos atributos. Como tudo será baseado em JSON, as coisas poderão funcionar de maneira flexível.
+
+Tudo no jogo terá uma função específica.
+
+HP será o valor de vitalidade. Se chegar a zero, o personagem morrerá. Esse valor poderá crescer infinitamente e não terá um limite predeterminado.
+
+MP será o valor numérico utilizado para representar a quantidade de magias que o personagem poderá lançar. Cada magia utilizará uma quantidade específica de MP.
+
+Também existirá o atributo de dano base. Cada raça poderá possuir um atributo de dano base único.
+
+CAP representará a capacidade de carga, e cada raça terá sua própria capacidade.
+
+Os demais status trabalharão sobre esses indicadores.
+
+Existirá um JSON chamado `atributos`, no qual será definido o que cada atributo fornece.
+
+O JSON do personagem terá variáveis dinâmicas. Dessa forma, será possível criar novos atributos que poderão ser melhorados posteriormente.
+
+Por exemplo, poderá existir o atributo `magicianCastTime`. Porém, se o JSON do personagem não possuir esse atributo, ele não terá efeito.
+
+```json
+{
+  "strength": [
+    "hpBase * 0.2",
+    "dmgBase * 0.4",
+    "capBase * 0.3"
+  ],
+  "intelligence": [
+    "mpBase * 0.2",
+    "dmgBase * 0.4",
+    "magicianCastTime - 0.3"
+  ]
+}
+```
+
+O dano do personagem será a somatória de todos os cálculos.
+
+Itens também poderão possuir atributos especiais com cálculos próprios.
+
+Para calcular o dano causado em um inimigo, será necessário verificar seus atributos e resistências por meio do JSON.
+
+Por exemplo, o personagem poderá possuir dano de fogo. Caso ataque uma criatura que não possua resistência a fogo, esse dano será adicionado.
+
+```json
+{
+  "fireDmg": {
+    "calculation": "dmgBase + (dmgBase * 0.10)"
+  }
+}
+```
+
+Dessa forma, o JSON do inimigo deverá possuir, dentro da propriedade de defesa, um atributo de resistência a fogo. Caso contrário, ele receberá 10% a mais de dano.
+
+## 5. Sistema de equipamentos
+
+O JSON do personagem possuirá um atributo que determinará quantos espaços de equipamentos ele possui e os nomes desses espaços.
+
+Cada item terá um tipo.
+
+Dentro de cada espaço de equipamento existirão propriedades como:
+
+* `name`;
+* `itemType`;
+* `boxSize`.
+
+A propriedade `itemType` será um array e poderá aceitar vários tipos de equipamento.
+
+Por exemplo, na mão, o personagem poderá carregar um escudo, uma lança ou outros tipos de itens compatíveis.
+
+Também existirá a propriedade `boxSize`. Dessa forma, será possível criar cinco espaços, um para cada dedo, permitindo que o personagem equipe um anel em cada um deles, ou utilizar qualquer outra configuração.
+
+## 6. Inventário
+
+O inventário básico terá 40 espaços para itens e poderá receber espaços adicionais por meio de bônus.
+
+## 7. Sistema de morte
+
+Só existirá penalidade de morte ao desafiar o chefe final de um andar.
+
+Nesse caso, o jogador perderá 10% da experiência do nível atual.
+
+## 8. Economia e mercado
+
+O jogo utilizará a SkyCoin como moeda principal.
+
+Será gratuito anunciar itens no mercado, e itens iguais poderão ser agrupados.
+
+O mercado utilizará um sistema de venda direta.
+
+Todos os itens que ocuparem um espaço no inventário poderão ser negociados.
+
+Tudo o que o personagem possuir ou receber será controlado pelo back-end. O front-end apenas ilustrará e direcionará os eventos, como entrar na torre ou iniciar um combate.
+
+Dessa forma, não deverá existir uma maneira direta de manipular os dados pelo front-end.
+
+Além disso, o JSON do personagem e o JSON da mochila serão assinados digitalmente.
+
+## 9. Geração infinita com inteligência artificial
+
+Por enquanto, essa funcionalidade será deixada para outro momento.
+
+## 11. Armazenamento
+
+O usuário, a senha e o mecanismo de login serão armazenados no banco de dados.
+
+Na tabela de usuários, também será salvo o endereço em que o JSON do personagem está localizado.
+
+A estrutura da tabela já será preparada para que, futuramente, os jogadores possam entrar utilizando contas Apple e Google, por meio do Firebase Authentication.
+
+Também existirão tabelas com estatísticas dos personagens, como:
+
+* Último andar visitado;
+* Informações gerais para consulta;
+* Dados utilizados em rankings;
+* Histórico de progresso.
+
+Porém, o jogo inteiro será baseado principalmente em JSON.
+
+Existirá uma pasta de raças contendo os JSONs das raças e suas propriedades.
+
+Também existirão:
+
+* JSONs dos itens;
+* JSONs dos monstros;
+* JSONs dos andares;
+* Pasta `bags`, contendo os JSONs das mochilas dos jogadores;
+* Pasta contendo os JSONs das propriedades possíveis;
+* Pasta com os JSONs das magias;
+* Pasta com os JSONs das raridades;
+* Pasta com os JSONs dos atributos adicionais.
+
+Com essa estrutura, o jogo poderá começar de forma simples e receber novas funcionalidades ao longo do desenvolvimento apenas com a inclusão de novos arquivos JSON.
+
+Os JSONs também terão os caminhos dos assets utilizados pelo front-end.
+
+Por exemplo, o JSON de um item poderá possuir a URL do asset correspondente. Essa URL poderá apontar até mesmo para uma imagem armazenada em outro servidor.
+
+## 12. Multiplayer
+
+O multiplayer será deixado para outro momento.
+
+Futuramente, poderão existir grupos de jogadores capazes de dominar os andares.
+
+A guilda que dominar um andar poderá receber seus recursos, e os jogadores da guilda poderão ajudar uns aos outros.
+
+## 13. Segurança
+
+O servidor calculará tudo, enquanto o front-end apenas animará os acontecimentos, como danos sendo exibidos e magias sendo lançadas.
+
+O jogador não utilizará itens durante uma batalha.
+
+O jogo não terá itens consumíveis, como poções, durante o combate.
+
+Futuramente, poderão existir itens consumíveis que forneçam atributos permanentes, mas não poderão ser utilizados durante as batalhas.
+
+## 14. Arte gerada para os novos conteúdos
+
+O jogo será integrado à ferramenta Animate With Text Pro do PixelLab:
+
+https://www.pixellab.ai/docs/tools/animate-with-text-pro
+
+A integração deverá utilizar uma variável de ambiente para armazenar a chave da API.
+
+Os assets da interface do sistema utilizarão image maps por meio de atlas de texturas.
+
+Para boa parte dos elementos visuais do jogo, será possível utilizar atlas, pois eles são eficientes e simples de trabalhar.
+
+
+as principais variaveis do game como xpmincrement dificult entre outras variaveis seria leval eu definir os multiplicadores tudo pelo env 
+

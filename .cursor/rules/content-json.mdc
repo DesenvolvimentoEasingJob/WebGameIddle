@@ -1,0 +1,16 @@
+---
+description: Schemas e pastas de conteúdo JSON do jogo
+globs: content/**/*
+alwaysApply: false
+---
+
+# Conteúdo JSON
+
+Pastas sob `content/`: `races/`, `classes/`, `monsters/`, `floors/`, `items/`, `attributes/`, `spells/`, `rarities/`.
+
+- Um arquivo por entidade; `id` estável e único
+- Incluir paths/URLs de assets para o front
+- Fórmulas de atributo como strings interpretáveis pelo motor (`hpBase * 0.2`)
+- Não colocar dados de jogador aqui — bags/characters em `data/` (runtime)
+- Validar JSON antes de considerar o todo concluído
+- Preferir estender schema a hardcodar exceções no C#

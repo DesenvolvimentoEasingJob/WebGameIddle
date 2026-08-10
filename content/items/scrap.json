@@ -1,0 +1,12 @@
+{
+  "id": "scrap",
+  "name": "Sucata",
+  "description": "Fragmento comum de equipamento quebrado.",
+  "type": "material",
+  "itemLevel": 1,
+  "stackable": true,
+  "stats": {},
+  "assets": {
+    "icon": "/api/assets/items/scrap.png"
+  }
+}

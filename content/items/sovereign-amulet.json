@@ -1,0 +1,16 @@
+{
+  "id": "sovereign-amulet",
+  "name": "Amuleto do Soberano",
+  "description": "Medalhao de cristal partido do Echo Sovereign; ressoa com a torre.",
+  "type": "amulet",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "hpBase": 20,
+    "mpBase": 15,
+    "hpRegenPerSec": 0.5
+  },
+  "assets": {
+    "icon": "/api/assets/items/sovereign-amulet.png"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "wraith",
+  "name": "wraith",
+  "description": "Espectro negro esfumaÃ§ado, manto fluido e mÃ£os alongadas, sem pernas definidas. rico em detalhes das trevas.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    6,
+    12
+  ],
+  "rarityLuck": 0.75,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "cord-amulet",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/wraith.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/wraith-idle-0.png",
+          "/assets/monsters/wraith-idle-1.png",
+          "/assets/monsters/wraith-idle-2.png",
+          "/assets/monsters/wraith-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

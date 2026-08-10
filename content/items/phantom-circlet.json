@@ -1,0 +1,15 @@
+{
+  "id": "phantom-circlet",
+  "name": "Diadema Fantasma",
+  "description": "Arco de prata envolto em nevoa azul-gelo.",
+  "type": "helmet",
+  "itemLevel": 5,
+  "stackable": false,
+  "stats": {
+    "defBase": 4,
+    "intelligence": 2
+  },
+  "assets": {
+    "icon": "/api/assets/items/phantom-circlet.png"
+  }
+}

@@ -1,0 +1,24 @@
+---
+description: Stack, arquitetura e regras de domínio SkySpire End
+alwaysApply: true
+---
+
+# SkySpire — stack e domínio
+
+- Front: React + TypeScript (Vite), **fora** do Docker
+- Back: .NET 10 Web API + PostgreSQL **no Docker Compose**
+- Conteúdo jogável: JSON em `content/`
+- Balance (XP, dificuldade, fees): `content/config/global.json` — sem hardcode; env só override opcional
+- Produto: `Game-base.txt` + `AGENTS.md`
+
+## Domínio
+
+- Combate por eventos: server resolve, front anima
+- 1 conta → 1 personagem (MVP)
+- Personagem JSON ≠ bag JSON (clone de andar sem inventário)
+- SkyCoin e itens só mudam no backend
+- Andares IA e multiplayer: fora do MVP
+
+## Secrets
+
+Nunca commitiar `.env`. Nunca colocar API keys no frontend.

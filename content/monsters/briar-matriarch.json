@@ -1,0 +1,66 @@
+{
+  "id": "briar-matriarch",
+  "name": "Briar Matriarch",
+  "description": "Matriarca de espinhos vivos, corpo vegetal armado de roseiras e raÃ­zes, presenÃ§a de boss.",
+  "level": 6,
+  "hp": 110,
+  "baseStats": {
+    "dmgBase": 15,
+    "defBase": 7
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    19,
+    28
+  ],
+  "rarityLuck": 2,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "matriarch-crown",
+      "chance": 0.15,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "thorn-mail",
+      "chance": 0.12,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/briar-matriarch.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/briar-matriarch-idle-0.png",
+          "/assets/monsters/briar-matriarch-idle-1.png",
+          "/assets/monsters/briar-matriarch-idle-2.png",
+          "/assets/monsters/briar-matriarch-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

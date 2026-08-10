@@ -1,0 +1,14 @@
+{
+  "id": "leather-helm",
+  "name": "Elmo de Couro",
+  "description": "Protecao simples para a cabeca.",
+  "type": "helmet",
+  "itemLevel": 1,
+  "stackable": false,
+  "stats": {
+    "defBase": 2
+  },
+  "assets": {
+    "icon": "/api/assets/items/leather-helm.png"
+  }
+}

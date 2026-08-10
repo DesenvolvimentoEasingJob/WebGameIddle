@@ -1,0 +1,58 @@
+{
+  "id": "bandit",
+  "name": "bandit",
+  "description": "Bandido humano de capa surrada e capuz, adaga enferrujada e olhar ameaÃ§ador.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    3,
+    7
+  ],
+  "rarityLuck": 0.25,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "cord-amulet",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/bandit.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/bandit-idle-0.png",
+          "/assets/monsters/bandit-idle-1.png",
+          "/assets/monsters/bandit-idle-2.png",
+          "/assets/monsters/bandit-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

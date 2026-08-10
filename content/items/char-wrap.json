@@ -1,0 +1,14 @@
+{
+  "id": "char-wrap",
+  "name": "Manto Carbonizado",
+  "description": "Tecido queimado reforcado com tiras de couro enegrecido.",
+  "type": "armor",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "defBase": 4
+  },
+  "assets": {
+    "icon": "/api/assets/items/char-wrap.png"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "id": "thorn-sprite",
+  "name": "thorn sprite",
+  "description": "EspÃ­rito vegetal minÃºsculo feito de folhas e espinhos, brilho verde-claro e asas frÃ¡geis.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    2,
+    4
+  ],
+  "rarityLuck": 0.1,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [1, 2]
+    },
+    {
+      "itemId": "thorn-mail",
+      "chance": 0.05,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "petal-helm",
+      "chance": 0.05,
+      "qty": [1, 1]
+    },
+    {
+      "itemId": "seep-focus",
+      "chance": 0.04,
+      "qty": [1, 1]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/thorn-sprite.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/thorn-sprite-idle-0.png",
+          "/assets/monsters/thorn-sprite-idle-1.png",
+          "/assets/monsters/thorn-sprite-idle-2.png",
+          "/assets/monsters/thorn-sprite-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

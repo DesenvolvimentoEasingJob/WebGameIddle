@@ -1,0 +1,15 @@
+{
+  "id": "ash-bone-ring",
+  "name": "Anel de Osso Cinza",
+  "description": "Osso de esqueleto polido com fuligem incrustada.",
+  "type": "ring",
+  "itemLevel": 2,
+  "stackable": false,
+  "stats": {
+    "strength": 1,
+    "dmgBase": 1
+  },
+  "assets": {
+    "icon": "/api/assets/items/ash-bone-ring.png"
+  }
+}

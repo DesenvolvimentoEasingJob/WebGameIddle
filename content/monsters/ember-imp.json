@@ -1,0 +1,60 @@
+{
+  "id": "ember-imp",
+  "name": "ember imp",
+  "description": "Diabrete pequeno de carvÃ£o e brasas, chifres curtos, olhos de fogo e cauda flamejante.",
+  "level": 1,
+  "hp": 35,
+  "baseStats": {
+    "dmgBase": 5,
+    "defBase": 2
+  },
+  "bonusDefense": {
+    "fireResistance": 10
+  },
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    2,
+    5
+  ],
+  "rarityLuck": 0.2,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "copper-ring",
+      "chance": 0.04,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/ember-imp.png",
+    "width": 56,
+    "height": 56,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/ember-imp-idle-0.png",
+          "/assets/monsters/ember-imp-idle-1.png",
+          "/assets/monsters/ember-imp-idle-2.png",
+          "/assets/monsters/ember-imp-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

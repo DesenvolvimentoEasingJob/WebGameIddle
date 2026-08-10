@@ -1,0 +1,66 @@
+{
+  "id": "echo-sovereign",
+  "name": "Echo Sovereign",
+  "description": "Soberano espectral feito de ecos e nÃ©voa azul-prateada, coroa fantasmagÃ³rica e aura ressonante.",
+  "level": 10,
+  "hp": 170,
+  "baseStats": {
+    "dmgBase": 23,
+    "defBase": 11
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    23,
+    32
+  ],
+  "rarityLuck": 2.5,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "sovereign-amulet",
+      "chance": 0.15,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "echo-shard-blade",
+      "chance": 0.12,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/echo-sovereign.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/echo-sovereign-idle-0.png",
+          "/assets/monsters/echo-sovereign-idle-1.png",
+          "/assets/monsters/echo-sovereign-idle-2.png",
+          "/assets/monsters/echo-sovereign-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}

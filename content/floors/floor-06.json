@@ -1,0 +1,91 @@
+{
+  "id": "floor-06",
+  "number": 6,
+  "name": "Mercado Soterrado",
+  "description": "Mercado soterrado em ruínas: bancas desmoronadas, tecidos rasgados, moedas e baús abertos sob arcos de pedra. Tochas fracas e lanternas quebradas projetam luz âmbar irregular sobre poeira dourada. Paleta: ocre, marrom, bronze sujo e sombras profundas; sensação de comércio esquecido e perigo oculto.",
+  "theme": "ruins-market",
+  "difficulty": 32,
+  "itemLevel": 6,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "bandit"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "bandit",
+        "bandit"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "bandit"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "slime",
+        "slime",
+        "slime"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "bandit"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "slime"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "bandit",
+        "bandit",
+        "bandit",
+        "bandit"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "ruin-broker",
+    "gateFee": 50,
+    "registryFee": 50,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/assets/floors/06.png"
+  }
+}

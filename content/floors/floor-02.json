@@ -1,0 +1,91 @@
+{
+  "id": "floor-02",
+  "number": 2,
+  "name": "Corredores de Cinza",
+  "description": "Corredores longos cobertos de cinza fina e fuligem. Paredes de pedra queimada com marcas de brasas apagadas, arcos escuros, chão de pó cinza que levanta em nuvens. Brasas ocasionais no fundo, fumaça leve e luz âmbar fraca atravessando a poeira. Paleta: cinza carvão, preto, laranja-morto e ocres opacos; atmosfera sufocante e seca.",
+  "theme": "ash",
+  "difficulty": 2,
+  "itemLevel": 2,
+  "rooms": [
+    {
+      "number": 1,
+      "type": "wave",
+      "monsterIds": [
+        "ash-bat"
+      ]
+    },
+    {
+      "number": 2,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 3,
+      "type": "wave",
+      "monsterIds": [
+        "ash-bat",
+        "ash-bat"
+      ]
+    },
+    {
+      "number": 4,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 5,
+      "type": "wave",
+      "monsterIds": [
+        "ash-bat"
+      ]
+    },
+    {
+      "number": 6,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton",
+        "skeleton",
+        "skeleton"
+      ]
+    },
+    {
+      "number": 7,
+      "type": "wave",
+      "monsterIds": [
+        "ash-bat"
+      ]
+    },
+    {
+      "number": 8,
+      "type": "wave",
+      "monsterIds": [
+        "skeleton"
+      ]
+    },
+    {
+      "number": 9,
+      "type": "wave",
+      "monsterIds": [
+        "ash-bat",
+        "ash-bat",
+        "ash-bat",
+        "ash-bat"
+      ]
+    }
+  ],
+  "boss": {
+    "monsterId": "ashen-reaver",
+    "gateFee": 100,
+    "registryFee": 500,
+    "attrMult": 10
+  },
+  "ownerPlayerId": null,
+  "ownerSnapshotPath": null,
+  "assets": {
+    "background": "/api/assets/floors/floor-02.png"
+  }
+}

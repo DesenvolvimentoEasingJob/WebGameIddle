@@ -1,0 +1,15 @@
+{
+  "id": "petal-helm",
+  "name": "Elmo de Petalas",
+  "description": "Capacete de folhas duras e petalas murchas vermelho-escuro.",
+  "type": "helmet",
+  "itemLevel": 3,
+  "stackable": false,
+  "stats": {
+    "defBase": 3,
+    "hpBase": 5
+  },
+  "assets": {
+    "icon": "/api/assets/items/petal-helm.png"
+  }
+}

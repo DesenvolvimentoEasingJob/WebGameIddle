@@ -1,0 +1,66 @@
+{
+  "id": "veil-sovereign",
+  "name": "Veil Sovereign",
+  "description": "Soberano velado em vÃ©us negros e prata, rosto oculto e aura sombria de fim de torre.",
+  "level": 18,
+  "hp": 290,
+  "baseStats": {
+    "dmgBase": 39,
+    "defBase": 19
+  },
+  "bonusDefense": {},
+  "skills": [],
+  "behavior": "aggressive",
+  "skyCoinDrop": [
+    36,
+    50
+  ],
+  "rarityLuck": 3.5,
+  "loot": [
+    {
+      "itemId": "scrap",
+      "chance": 0.4,
+      "qty": [
+        1,
+        2
+      ]
+    },
+    {
+      "itemId": "cloth-vest",
+      "chance": 0.15,
+      "qty": [
+        1,
+        1
+      ]
+    },
+    {
+      "itemId": "rusty-dagger",
+      "chance": 0.2,
+      "qty": [
+        1,
+        1
+      ]
+    }
+  ],
+  "assets": {
+    "sprite": "/assets/monsters/veil-sovereign.png",
+    "width": 112,
+    "height": 112,
+    "animations": {
+      "idle": {
+        "frames": [
+          "/assets/monsters/veil-sovereign-idle-0.png",
+          "/assets/monsters/veil-sovereign-idle-1.png",
+          "/assets/monsters/veil-sovereign-idle-2.png",
+          "/assets/monsters/veil-sovereign-idle-3.png"
+        ],
+        "frameWidth": 128,
+        "frameHeight": 128,
+        "frameCount": 4,
+        "fps": 6,
+        "direction": "east"
+      }
+    }
+  },
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+}
