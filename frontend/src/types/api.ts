@@ -20,6 +20,7 @@ export type Race = {
   id: string
   name: string
   description: string
+  assets?: { portrait?: string }
 }
 
 export type GameClass = {
@@ -137,6 +138,8 @@ export type BattleEvent = {
   maxHp?: number | null
   /** Índice do inimigo no grupo (0–3); ausente em eventos só do player */
   slot?: number | null
+  /** Tempo simulado da luta (ms) — fonte de verdade do playback */
+  atMs?: number
 }
 
 export type CombatEnemy = {
@@ -158,4 +161,20 @@ export type BattleResult = {
   state: TowerState | null
   coinsGained: number
   skyCoin: number | null
+  /** Itens únicos desta luta — modal de anúncio; não entram no battle log. */
+  uniqueDrops?: UniqueDropPreview[] | null
+}
+
+/** Preview enviado pelo backend para anunciar drop único. */
+export type UniqueDropPreview = {
+  name: string
+  description?: string | null
+  lore?: string | null
+  icon?: string | null
+  type?: string | null
+  stars?: number | null
+  rarityName?: string | null
+  rarityId?: number | null
+  itemLevel?: number | null
+  stats?: Record<string, number> | null
 }

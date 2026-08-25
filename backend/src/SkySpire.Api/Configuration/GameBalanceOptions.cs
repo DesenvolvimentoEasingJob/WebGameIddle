@@ -46,16 +46,54 @@ public sealed class GameBalanceOptions
     public double HpDefeatRevivePct { get; set; } = 0.5;
 
     /// <summary>
-    /// Segundos simulados por turno de combate para <c>hpRegenPerSec</c>.
-    /// Regen em batalha = taxa × este valor, ao fim de cada turno (player vivo).
+    /// Intervalo base de ação (ms) quando <c>attackSpeed = 1.0</c>.
+    /// Próximo ato = agora + base / max(attackSpeed, ε).
     /// </summary>
-    public double CombatTurnSeconds { get; set; } = 1.0;
+    public int CombatBaseActionMs { get; set; } = 1000;
+
+    /// <summary>Duração máxima da simulação de combate (ms).</summary>
+    public int CombatMaxDurationMs { get; set; } = 60000;
+
+    /// <summary>Período dos ticks de regen em combate (ms).</summary>
+    public int CombatRegenTickMs { get; set; } = 1000;
 
     /// <summary>
     /// Amplitude do ruído RNG somado ao dano do golpe (<c>rng × noise</c>).
     /// Crit/dodge/defesa/bônus vêm do JSON — não deste env.
     /// </summary>
     public double CombatDamageNoise { get; set; } = 0;
+
+    /// <summary>
+    /// Defesa que resulta em ~50% de redução física:
+    /// <c>reduction = def^p / (def^p + mid^p)</c>.
+    /// </summary>
+    public double CombatArmorMidDef { get; set; } = 4800;
+
+    /// <summary>
+    /// Expoente da curva de armadura (menor = late mais longo).
+    /// Com mid=4800 e p≈0.31: ~30% @ 300 def.
+    /// </summary>
+    public double CombatArmorPower { get; set; } = 0.31;
+
+    /// <summary>Chance por monstro morto de tentar drop de item único (0–1).</summary>
+    public double UniqueDropChance { get; set; } = 0.005;
+
+    /// <summary>Feature flag; se false, nunca tenta único.</summary>
+    public bool UniqueDropEnabled { get; set; } = true;
+
+    /// <summary>
+    /// Multiplica a chance base de cada raridade no pick do único (<c>min(1, chance × mult)</c>).
+    /// </summary>
+    public double UniqueRarityChanceMult { get; set; } = 7;
+
+    /// <summary>Qualidade (estrelas) forçada no item único.</summary>
+    public int UniqueStars { get; set; } = 5;
+
+    /// <summary>Timeout OpenAI para flavor do único (ms).</summary>
+    public int UniqueOpenAiTimeoutMs { get; set; } = 8000;
+
+    /// <summary>Timeout PixelLab para ícone do único (ms).</summary>
+    public int UniquePixelLabTimeoutMs { get; set; } = 45000;
 
     public double LevelAttributeMultiplier(int level)
     {

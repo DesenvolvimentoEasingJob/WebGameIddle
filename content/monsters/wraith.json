@@ -2,12 +2,16 @@
   "id": "wraith",
   "name": "wraith",
   "description": "Espectro negro esfumaÃ§ado, manto fluido e mÃ£os alongadas, sem pernas definidas. rico em detalhes das trevas.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 150,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 50,
+    "attackSpeed": 1.1,
+    "dodgeChance": 0.18
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +57,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

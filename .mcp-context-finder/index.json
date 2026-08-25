@@ -1,0 +1,4471 @@
+{
+  "version": 1,
+  "workspaceRoot": "c:\\GitHub\\WebGameIddle",
+  "lastIndexedAt": "2026-08-10T19:42:42.531Z",
+  "files": [
+    {
+      "path": ".cursor/.cursor/commands/archive.md",
+      "hash": "d29a98752421a447deb038c39d57d5cceef50148d730c73330c0bd1a90fac587",
+      "size": 3372,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.679Z",
+      "summary": "File: .cursor/.cursor/commands/archive.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/.cursor/commands/build.md",
+      "hash": "9e87e1e2e9d6f35d8aed4312a9788f7051281485e10b8f679615869bf7faf03a",
+      "size": 3815,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.679Z",
+      "summary": "File: .cursor/.cursor/commands/build.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/.cursor/commands/creative.md",
+      "hash": "55e7b066cf8d546cf2d7beecd5eea820cfffc22f7044e1cc4aa4e0ffbae7ddf8",
+      "size": 2732,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.680Z",
+      "summary": "File: .cursor/.cursor/commands/creative.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/.cursor/commands/plan.md",
+      "hash": "eae10f185690d3eaecb817f0326f18c6d20d471880c46c5d4fccafdd24f45749",
+      "size": 2639,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.680Z",
+      "summary": "File: .cursor/.cursor/commands/plan.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/.cursor/commands/reflect.md",
+      "hash": "c0b4b4ad1075a7f3b8df5ced1483c358f6a044b6f4d3d8bd3936a1781f1d14fb",
+      "size": 2746,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.680Z",
+      "summary": "File: .cursor/.cursor/commands/reflect.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/.cursor/commands/van.md",
+      "hash": "2942a52368dd0d79c1eca7cb709e4865320c851ab8f20802c66bf1b1f5b99c6c",
+      "size": 2365,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:47:03.680Z",
+      "summary": "File: .cursor/.cursor/commands/van.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/skills/conteudo-json-jogo/schemas.md",
+      "hash": "77246a36deeb129860c0f31d35c0970ccebe9c0ccce574fc7110973225b5556e",
+      "size": 10649,
+      "extension": ".md",
+      "modifiedAt": "2026-08-10T15:42:22.399Z",
+      "summary": "File: .cursor/skills/conteudo-json-jogo/schemas.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/skills/conteudo-json-jogo/SKILL.md",
+      "hash": "1d82342543cdb13cc672b23ad7df73386055681c1613c80473191ec72ff82fab",
+      "size": 1451,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "File: .cursor/skills/conteudo-json-jogo/SKILL.md",
+      "symbols": []
+    },
+    {
+      "path": ".cursor/skills/continuar-plano/SKILL.md",
+      "hash": "4eb6b8fc685a0b945e672eb90ccb194647af10dc6caa86f48d31755778d86264",
+      "size": 1079,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T21:22:57.849Z",
+      "summary": "File: .cursor/skills/continuar-plano/SKILL.md",
+      "symbols": []
+    },
+    {
+      "path": "AGENTS.md",
+      "hash": "9be364dbb1dd3af8c0f96562b4f694b3186a7ace7f6146b8fd05e58aa5ff88b3",
+      "size": 2045,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T20:37:16.719Z",
+      "summary": "File: AGENTS.md",
+      "symbols": []
+    },
+    {
+      "path": "backend/README.md",
+      "hash": "466d8c859fdf8fce7ee5b38c1cb0139a646dea75af8458ace5d81de8eed4a9e8",
+      "size": 580,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T23:42:37.940Z",
+      "summary": "File: backend/README.md",
+      "symbols": []
+    },
+    {
+      "path": "backend/src/SkySpire.Api/appsettings.Development.json",
+      "hash": "ce694fa8d1d1a563e1102270a9fe2b1c5712b6331d01ff235919bd3f44b8c80b",
+      "size": 125,
+      "extension": ".json",
+      "modifiedAt": "2026-08-03T23:42:26.367Z",
+      "summary": "keys: Logging",
+      "symbols": [
+        "Logging"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/appsettings.json",
+      "hash": "3477848e30492bcd8fc9f87c80b14e1fd39740ed34a8c4904bf7c309645f5a52",
+      "size": 280,
+      "extension": ".json",
+      "modifiedAt": "2026-08-03T23:42:25.664Z",
+      "summary": "keys: Logging, AllowedHosts, ConnectionStrings",
+      "symbols": [
+        "Logging",
+        "AllowedHosts",
+        "ConnectionStrings"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Configuration/AppSecretsOptions.cs",
+      "hash": "45d03425c622172b2c188af63f7362ad7f4aa4ba85670c07d482bb05c31182a8",
+      "size": 753,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T22:51:50.227Z",
+      "summary": "namespace SkySpire.Api.Configuration; class AppSecretsOptions",
+      "symbols": [
+        "SkySpire.Api.Configuration",
+        "AppSecretsOptions"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Configuration/ConfigurationExtensions.cs",
+      "hash": "6af53e42d1f82952fe759f262dc64618704cf8b3bb89abdce305e5e754fa4791",
+      "size": 2388,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T20:35:18.948Z",
+      "summary": "namespace SkySpire.Api.Configuration; class ConfigurationExtensions; service",
+      "symbols": [
+        "SkySpire.Api.Configuration",
+        "ConfigurationExtensions",
+        "AddDotEnvFile",
+        "AddSkySpireOptions"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Configuration/GameBalanceOptions.cs",
+      "hash": "91c36607217f0386a477eadc1688de297e01c9492b5a37d7326a1911a2dd5a8f",
+      "size": 2608,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "namespace SkySpire.Api.Configuration; class GameBalanceOptions",
+      "symbols": [
+        "SkySpire.Api.Configuration",
+        "GameBalanceOptions",
+        "LevelAttributeMultiplier"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Data/AppDbContext.cs",
+      "hash": "4ad6475573b34b5973f52407563f6c1c3a59c25e7a54a07aaf8c0944b84546cb",
+      "size": 2577,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "namespace SkySpire.Api.Data; class AppDbContext",
+      "symbols": [
+        "SkySpire.Api.Data",
+        "AppDbContext"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/AssetsEndpoints.cs",
+      "hash": "976b7c8bb3b9d672e37772dc54ef9eb0409d7285f038bc2f27f26188f8b8c096",
+      "size": 3166,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:16:32.997Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class AssetsEndpoints; record PixelLabGenerateRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "AssetsEndpoints",
+        "PixelLabGenerateRequest",
+        "MapAssetsEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/AuthEndpoints.cs",
+      "hash": "efc3b3869bc7c4e35ac65b5e6281fea64c935a2968a388dc4ae959a6c74eedc9",
+      "size": 3274,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class AuthEndpoints; record RegisterRequest; record LoginRequest; record MeResponse; record AuthResponse; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "AuthEndpoints",
+        "RegisterRequest",
+        "LoginRequest",
+        "MeResponse",
+        "AuthResponse",
+        "MapAuthEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/CharacterEndpoints.cs",
+      "hash": "dd390e3c6a28fe1f4fdba279b72c22382c770982529140884c496da6c10d5eb5",
+      "size": 2576,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-06T01:12:25.310Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class CharacterEndpoints; record CreateCharacterRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "CharacterEndpoints",
+        "CreateCharacterRequest",
+        "MapCharacterEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/ContentEndpoints.cs",
+      "hash": "b13108bb554ec77ff434a2efced7cca0cec847b656afd5469ebe6a27ec7bb8d5",
+      "size": 1571,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.745Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class ContentEndpoints; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "ContentEndpoints",
+        "MapContentEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/EconomyEndpoints.cs",
+      "hash": "5a9948cbbb3d1b2b3886bc82fa2cd3adaa4112f6ff637e23b851b381500df575",
+      "size": 2155,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.635Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class EconomyEndpoints; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "EconomyEndpoints",
+        "MapEconomyEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/EditorEndpoints.cs",
+      "hash": "2229b15ebb37f0849c9abddf9d177f6962c52b5d777a71df59918deed73b3239",
+      "size": 12707,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:16:32.997Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class EditorEndpoints; record ItemDraftRequest; record ItemIconRequest; record MonsterDraftRequest; record FloorDraftRequest; record MonsterSpriteRequest; record MonsterAnimateRequest; record PixelLabCommitRequest; record PixelLabDiscardRequest; record AttributeCardRequest; record FloorBackgroundRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "EditorEndpoints",
+        "ItemDraftRequest",
+        "ItemIconRequest",
+        "MonsterDraftRequest",
+        "FloorDraftRequest",
+        "MonsterSpriteRequest",
+        "MonsterAnimateRequest",
+        "PixelLabCommitRequest",
+        "PixelLabDiscardRequest",
+        "AttributeCardRequest",
+        "FloorBackgroundRequest",
+        "MapEditorEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/InventoryEndpoints.cs",
+      "hash": "789a08017ebb8430320b0b9d8021086f349405410f87838d70de39a10c0c8679",
+      "size": 2645,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.637Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class InventoryEndpoints; record EquipRequest; record UnequipRequest; record DiscardRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "InventoryEndpoints",
+        "EquipRequest",
+        "UnequipRequest",
+        "DiscardRequest",
+        "MapInventoryEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/MarketEndpoints.cs",
+      "hash": "460c0f95545b14d994a895c017843f62f1a5efa21c6b73cdc94db0bad84de67a",
+      "size": 3051,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class MarketEndpoints; record MarketListRequest; record MarketBuyRequest; record MarketCancelRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "MarketEndpoints",
+        "MarketListRequest",
+        "MarketBuyRequest",
+        "MarketCancelRequest",
+        "MapMarketEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/RankingEndpoints.cs",
+      "hash": "faaaff5c3c5f86850e85ca6fdf9d8288d7d07e9e1e4502c18798b5c98db90d92",
+      "size": 540,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class RankingEndpoints; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "RankingEndpoints",
+        "MapRankingEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/TowerEndpoints.cs",
+      "hash": "9a1613698359e01c1e7ec90682b3fe562acdb855945aaa5973f1d5c7d164eaa8",
+      "size": 6193,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.648Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class TowerEndpoints; record EnterTowerRequest; record AutoClimbRequest; record MoveRoomRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "TowerEndpoints",
+        "EnterTowerRequest",
+        "AutoClimbRequest",
+        "MoveRoomRequest",
+        "MapTowerEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Endpoints/TrainingEndpoints.cs",
+      "hash": "f839e9db575e6833cc941e19a8fdf64ad104a9fbb705b342e1080a6b679fe824",
+      "size": 2397,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-06T00:44:40.457Z",
+      "summary": "namespace SkySpire.Api.Endpoints; class TrainingEndpoints; record TrainRequest; service",
+      "symbols": [
+        "SkySpire.Api.Endpoints",
+        "TrainingEndpoints",
+        "TrainRequest",
+        "MapTrainingEndpoints"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Entities/EconomyEntities.cs",
+      "hash": "12e459a11307ccaa70530a9889bc7d65319511bf983db173676d0fc439deb4a4",
+      "size": 1795,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "namespace SkySpire.Api.Entities; class LedgerEntry; class MarketListing; class CharacterStats; class FloorOwnership",
+      "symbols": [
+        "SkySpire.Api.Entities",
+        "LedgerEntry",
+        "MarketListing",
+        "CharacterStats",
+        "FloorOwnership"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Entities/User.cs",
+      "hash": "0bddbd86693577e4f7e003c73a51e09f6c29635a52c41cb23c5a2a108380255d",
+      "size": 601,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.709Z",
+      "summary": "namespace SkySpire.Api.Entities; class User",
+      "symbols": [
+        "SkySpire.Api.Entities",
+        "User"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Program.cs",
+      "hash": "dbcc17ee73a553c165f43b44b92eddd545f1461ed6ea4529219be38ffba06788",
+      "size": 7480,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T23:10:12.428Z",
+      "summary": "service",
+      "symbols": []
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Properties/launchSettings.json",
+      "hash": "f5173c5385e31a0854439672950589a20fbefb5bbe7d8607d23250f8d81bdbbf",
+      "size": 358,
+      "extension": ".json",
+      "modifiedAt": "2026-08-03T23:42:27.738Z",
+      "summary": "json file",
+      "symbols": []
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/AttributeCardResult.cs",
+      "hash": "55357c8c1f3f3c2137c54c733e8fc4e2c5ae82b5c6141d999f7c3a522ea2d521",
+      "size": 345,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "namespace SkySpire.Api.Services; record AttributeCardResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "AttributeCardResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/AuthService.cs",
+      "hash": "e124512c38e9b7b8e2f714b7c718eeb2668d4d460a7a45b6b5c26a0a827983e3",
+      "size": 4096,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-05T00:57:56.429Z",
+      "summary": "namespace SkySpire.Api.Services; class AuthService; class AuthException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "AuthService",
+        "AuthException"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/CharacterService.cs",
+      "hash": "2e6d8d0971689858911d1cf51643ddd82f579ff2afc2c4090d3e1fb425a6d40a",
+      "size": 15693,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.664Z",
+      "summary": "namespace SkySpire.Api.Services; class CharacterService; class CharacterException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "CharacterService",
+        "CharacterException",
+        "CreateAsync",
+        "MigrateExistingCharactersHpAsync",
+        "ExpandEquipmentSnapshotsAsync",
+        "SaveCharacterNodeAsync",
+        "SaveBagNodeAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/CombatHitResolver.cs",
+      "hash": "192e37f4fcb87f96c3f04f8888dd955163681f0f75b2a3ab2593feeac1e5910c",
+      "size": 8945,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T01:24:52.601Z",
+      "summary": "namespace SkySpire.Api.Services; class CombatFighterProfile; record BonusDamageEntry; record struct; class CombatHitResolver",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "CombatFighterProfile",
+        "BonusDamageEntry",
+        "struct",
+        "CombatHitResolver",
+        "HitResolution",
+        "FromCalculatedStats",
+        "FromMonster",
+        "Resolve",
+        "ReadBonusDamage",
+        "ReadBonusDefense"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/CombatService.cs",
+      "hash": "cd584c3f382d8dd97ba13d0c6f126603f0195e935347de4c10c9790c224afd89",
+      "size": 27333,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T01:24:52.633Z",
+      "summary": "namespace SkySpire.Api.Services; class CombatService; class EnemyFighter; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "CombatService",
+        "EnemyFighter",
+        "ResolveRoomBattleAsync",
+        "ResolveChallengeBattleAsync",
+        "WouldPlayerWin",
+        "ApplyCombatTurnRegen",
+        "ResolveMonsterIds"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/ContentService.cs",
+      "hash": "96aa6d9c5fbf3ef5e6fdde557520b16b3254f3b563f181b9da45f1b473ba4b05",
+      "size": 2397,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-05T00:57:40.866Z",
+      "summary": "namespace SkySpire.Api.Services; class ContentService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "ContentService",
+        "ListAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/DatabaseInitializer.cs",
+      "hash": "cee86fc655d047f3ad198885253df41ec88e222d9c7696d8b218a63433491efd",
+      "size": 2701,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.638Z",
+      "summary": "namespace SkySpire.Api.Services; class DatabaseInitializer",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "DatabaseInitializer",
+        "EnsureSchemaAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/EconomyService.cs",
+      "hash": "ea38d0efacf174e75fcde0544f69937b3dd6693d22f7532afa80e5c2b014d611",
+      "size": 4423,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T20:35:03.852Z",
+      "summary": "namespace SkySpire.Api.Services; class EconomyService; class EconomyException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "EconomyService",
+        "EconomyException",
+        "BattleRewardCoins",
+        "GetBalanceAsync",
+        "EnsureCanAffordAsync",
+        "CreditAsync",
+        "DebitAsync",
+        "BattleRewardForFloor",
+        "TransferAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/EquipmentGripHelper.cs",
+      "hash": "fe4780efbc5c6120ab58574d33c25233ea10039afaa7a57d7d335c691580010c",
+      "size": 8470,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:41:21.469Z",
+      "summary": "namespace SkySpire.Api.Services; class EquipmentGripHelper",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "EquipmentGripHelper",
+        "IsHandItemType",
+        "IsHandSlot",
+        "OrderedHandSlotNames",
+        "NormalizeGrip",
+        "ResolveHandSlotCount",
+        "IsGhost",
+        "PickHandSlotsToOccupy",
+        "CollectGripGroupSlots",
+        "BuildGhost"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/FloorBackgroundResult.cs",
+      "hash": "2fbeaadbeb95af011a32edd28949fab998ef9ab754358b8e3a9f67fd7ab1747a",
+      "size": 353,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T22:50:48.664Z",
+      "summary": "namespace SkySpire.Api.Services; record FloorBackgroundResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "FloorBackgroundResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/FloorDraftService.cs",
+      "hash": "d4ddde89ab77167ae80ecdfc2667aecbd9afffd6282a792a8c0a47ea47c2e0e3",
+      "size": 28676,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T22:57:14.142Z",
+      "summary": "namespace SkySpire.Api.Services; class FloorDraftService; record FloorDraftResult; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "FloorDraftService",
+        "FloorDraftResult",
+        "DraftAsync",
+        "Ok",
+        "Fail"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/GameConfigService.cs",
+      "hash": "70921a84e21ea74d540c5d73b717088bddc7e4f06fed9efeb8e9e442352e8559",
+      "size": 6942,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T23:09:57.459Z",
+      "summary": "namespace SkySpire.Api.Services; class GameConfigService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "GameConfigService",
+        "GetBalance"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/GeminiImageService.cs",
+      "hash": "5c2052189f05e753db2b1b010456d99c9d141f0ecb662331ad09ef15316c8264",
+      "size": 17460,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T23:10:07.078Z",
+      "summary": "namespace SkySpire.Api.Services; class GeminiImageService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "GeminiImageService",
+        "GenerateAttributeCardAsync",
+        "GenerateFloorBackgroundAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/HpService.cs",
+      "hash": "2fa4d0c45db4449d9a94ff7f954831bb8ca400a36f754717d030a5f01314a520",
+      "size": 7775,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T20:35:06.693Z",
+      "summary": "namespace SkySpire.Api.Services; class HpService; record HpSnapshot; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "HpService",
+        "HpSnapshot",
+        "GetMaxHpAsync",
+        "ResolveRegenRatePerSecAsync",
+        "EnsureRegenSeedAsync",
+        "ApplyRegenAsync",
+        "SetCurrentHp",
+        "ApplyDefeatRevive",
+        "RoundHp"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/InventoryService.cs",
+      "hash": "8e1b049968fac75840a49e2256dd85a7142c0028acd42a9e43fe290dfd89ab2a",
+      "size": 10065,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:41:49.290Z",
+      "summary": "namespace SkySpire.Api.Services; class InventoryService; class InventoryException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "InventoryService",
+        "InventoryException",
+        "GetAsync",
+        "EquipAsync",
+        "UnequipAsync",
+        "DiscardAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/ItemAttributeRoll.cs",
+      "hash": "d388a2e53cbfb99807272809a4bf9186168e696d16dd63b493e74305a6e37a1e",
+      "size": 5384,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T02:28:30.764Z",
+      "summary": "namespace SkySpire.Api.Services; class ItemAttributeRoll",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "ItemAttributeRoll",
+        "DefaultAttributeCountCurve",
+        "ResolveRoles",
+        "EligibleAttributeIds",
+        "ReadMinValue",
+        "ApplyToSnapshot"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/ItemDraftService.cs",
+      "hash": "047a432d50881b4cf6a80d789916f0043f63a5ee9f651d51a680d71caa5336e5",
+      "size": 8441,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:43:32.445Z",
+      "summary": "namespace SkySpire.Api.Services; class ItemDraftService; record ItemDraftResult; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "ItemDraftService",
+        "ItemDraftResult",
+        "DraftAsync",
+        "Ok",
+        "Fail"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/ItemIconResult.cs",
+      "hash": "c8ed00cd407571d9e2f994d7dee56d862215c116a9cf1ddd48be429bc8396ce6",
+      "size": 199,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T12:36:06.083Z",
+      "summary": "namespace SkySpire.Api.Services; record ItemIconResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "ItemIconResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/ItemRollService.cs",
+      "hash": "ac5ccab33987bef7f84136927ee4f9dc55fcb50d376dcba6183444ecbdd7d239",
+      "size": 12454,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:41:42.039Z",
+      "summary": "namespace SkySpire.Api.Services; class ItemRollService; class ItemRollException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "ItemRollService",
+        "ItemRollException",
+        "ApplyFloorLevel",
+        "BakeStat",
+        "CreateFromTemplateAsync",
+        "CreateMaterialSnapshotAsync",
+        "ExpandLegacyOrPassthroughAsync",
+        "IsStackable",
+        "PickStars"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/JsonSigningService.cs",
+      "hash": "056f039d5f93b07bd03d33b769123d9c62f622076cff5d7ec4886639c5aef849",
+      "size": 2573,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.685Z",
+      "summary": "namespace SkySpire.Api.Services; class JsonSigningService; class JsonIntegrityException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "JsonSigningService",
+        "JsonIntegrityException",
+        "Sign",
+        "SignInPlace",
+        "Verify",
+        "EnsureValidOrThrow"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/LevelGrowthService.cs",
+      "hash": "ebaf9de9fd4b8c9288c649060a262508d47b8e01f6fdf55185327438359a097c",
+      "size": 2613,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "namespace SkySpire.Api.Services; class LevelGrowthService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "LevelGrowthService",
+        "ApplyLevelGainsAsync",
+        "ApplyGainMap"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/MarketService.cs",
+      "hash": "8da609d89f01a8421139cf4d6a0c63fb07113499547a3074571fb263f1236c6c",
+      "size": 9936,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.640Z",
+      "summary": "namespace SkySpire.Api.Services; class MarketService; class MarketException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "MarketService",
+        "MarketException",
+        "ListAsync",
+        "ListFromBagAsync",
+        "BuyAsync",
+        "CancelAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/MonsterDraftService.cs",
+      "hash": "b6aa41fc38d6036f99d8774e4dd4e10187caf3f76cbc7939cc281b80606614ca",
+      "size": 13053,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:52:19.091Z",
+      "summary": "namespace SkySpire.Api.Services; class MonsterDraftService; record MonsterDraftResult; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "MonsterDraftService",
+        "MonsterDraftResult",
+        "DraftAsync",
+        "Ok",
+        "Fail"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/MonsterDropHelper.cs",
+      "hash": "76fbc63e9edc084f9a2f7e54946841300b59a6ab05d5b606742a6ec047112a53",
+      "size": 2383,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.638Z",
+      "summary": "namespace SkySpire.Api.Services; class MonsterDropHelper",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "MonsterDropHelper",
+        "EffectiveChance",
+        "ReadRarityLuck",
+        "TryReadSkyCoinDrop",
+        "RollSkyCoinDrop"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/MonsterIdleAnimResult.cs",
+      "hash": "ab3b9323d77cb13766308aa0ecff1efb96141d98bd48c78a05546881944fefc9",
+      "size": 482,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T12:36:09.771Z",
+      "summary": "namespace SkySpire.Api.Services; record MonsterIdleAnimResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "MonsterIdleAnimResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/MonsterSpriteResult.cs",
+      "hash": "f44eb48e80dfdd228c410472fa3e3de953bd3cf951ca99b5a09e6f0492a0eb69",
+      "size": 206,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T12:36:07.624Z",
+      "summary": "namespace SkySpire.Api.Services; record MonsterSpriteResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "MonsterSpriteResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/OwnershipService.cs",
+      "hash": "777d8470f8e5296cf6fec3573b1c494f80e0e90146a373e3ce97cdf5f87aac9a",
+      "size": 3510,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "namespace SkySpire.Api.Services; class OwnershipService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "OwnershipService",
+        "WriteSnapshotAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/PixelLabDraftResults.cs",
+      "hash": "278f7b12ace3476a97ba6f5d777362410725b495f29befe9474df551d284f2c1",
+      "size": 817,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:11:05.522Z",
+      "summary": "namespace SkySpire.Api.Services; record PixelLabCandidate; record PixelLabCandidatesResult; record PixelLabIdleDraftResult",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "PixelLabCandidate",
+        "PixelLabCandidatesResult",
+        "PixelLabIdleDraftResult"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/PixelLabService.cs",
+      "hash": "25f0f13e71015c9b29ebc2dfe805878334d4cf7bfaf7ed41f2dc2e1e58720f3d",
+      "size": 42255,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:15:25.568Z",
+      "summary": "namespace SkySpire.Api.Services; class PixelLabService; record DraftMeta; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "PixelLabService",
+        "DraftMeta",
+        "GenerateOrFallbackAsync",
+        "GenerateItemIconCandidatesAsync",
+        "GenerateMonsterSpriteCandidatesAsync",
+        "GenerateMonsterIdleDraftAsync",
+        "DiscardDraft"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/QualityService.cs",
+      "hash": "662643e2b8b68b499803c7514f22200cb3d67b29849fba43155cb030b140f068",
+      "size": 2852,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "namespace SkySpire.Api.Services; class RgbColor; class QualityDefinition; class QualityService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "RgbColor",
+        "QualityDefinition",
+        "QualityService",
+        "GetAllAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/RarityService.cs",
+      "hash": "4d52cfd9223977aac19f692ab38040a66f62d2465ff42229dbf06ad81e9a9dc9",
+      "size": 4452,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T02:28:32.649Z",
+      "summary": "namespace SkySpire.Api.Services; class RarityDefinition; class RarityService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "RarityDefinition",
+        "RarityService",
+        "GetAllAsync",
+        "PickAsync",
+        "PickFrom"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/RoomEncounterResolver.cs",
+      "hash": "324fe5f681a1e7f5fc26cae9a0856d9ce547aadf40fbbe79c232cb8c2f2ff21c",
+      "size": 10876,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T23:56:57.594Z",
+      "summary": "namespace SkySpire.Api.Services; class RoomEncounterResolver; record MonsterIdleAnimationDto; record EncounterMonsterDto; record RoomEncounterDto; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "RoomEncounterResolver",
+        "MonsterIdleAnimationDto",
+        "EncounterMonsterDto",
+        "RoomEncounterDto",
+        "ResolveMonsterIds",
+        "ResolveRoomType"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/StatCalculator.cs",
+      "hash": "1b490201eb04f4f719f562a6e0937d3aaf713664b47f33afcaeecabdc0d2d2bb",
+      "size": 11893,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:41:42.151Z",
+      "summary": "namespace SkySpire.Api.Services; class StatCalculator; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "StatCalculator",
+        "CalculateFromCharacterAsync",
+        "TryGetFormulas",
+        "CollectFormulaTargets",
+        "SeedMissingFormulaTargets",
+        "EnsureBaseStatSeedsAsync",
+        "ApplyAttributeFormulas",
+        "Evaluate"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/StatsService.cs",
+      "hash": "e0e267d21abbfa3874237902f04527dddc9ce2c3aaeab8b1d8bb2886bc62cc8e",
+      "size": 3112,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "namespace SkySpire.Api.Services; class StatsService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "StatsService",
+        "RecordProgressAsync",
+        "RefreshFloorsOwnedAsync",
+        "RankingsAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/TowerService.cs",
+      "hash": "8f2af2db35369f9cb8c2192b2acd8f2cef41a7057c42148b5219a063db4b5b7c",
+      "size": 23605,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T23:18:43.146Z",
+      "summary": "namespace SkySpire.Api.Services; class TowerService; record FloorChallengeRules; class TowerException; enum ChallengeKind; record TowerStateDto; record BattleEventDto; record BattleResultDto; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "TowerService",
+        "FloorChallengeRules",
+        "TowerException",
+        "ChallengeKind",
+        "TowerStateDto",
+        "BattleEventDto",
+        "BattleResultDto",
+        "NextRoomAfterVictory",
+        "UnlockedFloorAfterBossWin",
+        "RoomUnlockOnEnter",
+        "ListFloorsAsync",
+        "GetStateAsync",
+        "EnterAsync",
+        "SetAutoClimbAsync",
+        "MoveAsync",
+        "StartBattleAsync",
+        "ChallengeBossAsync",
+        "ChallengeRegistryAsync",
+        "ReadChallengeRules"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/TrainingService.cs",
+      "hash": "e8d281831315f3cd8dae53afa0fccff5bc1b2046906865a32fb149ad2103f5a6",
+      "size": 7594,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T20:35:14.699Z",
+      "summary": "namespace SkySpire.Api.Services; class TrainingService; class TrainingException; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "TrainingService",
+        "TrainingException",
+        "NextCost",
+        "GetTrainableAttributesAsync",
+        "PreviewAsync",
+        "CostsAsync",
+        "TrainAsync"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/Services/XpService.cs",
+      "hash": "62e8e3a88f66f22e2fb355a617e1c8d1dbd76798dbe3eeeecff786a6b268d5a6",
+      "size": 3007,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T20:35:00.921Z",
+      "summary": "namespace SkySpire.Api.Services; class XpService; service",
+      "symbols": [
+        "SkySpire.Api.Services",
+        "XpService",
+        "XpRequiredForLevel",
+        "XpRewardForMonster"
+      ]
+    },
+    {
+      "path": "backend/src/SkySpire.Api/SkySpire.Api.csproj",
+      "hash": "a213f6b6ff125fdc147ec85c96ca1467dcaab1cdf535379645b30448eab72f68",
+      "size": 674,
+      "extension": ".csproj",
+      "modifiedAt": "2026-08-05T00:57:33.370Z",
+      "summary": "TargetFramework net10.0; Package Microsoft.AspNetCore.Authentication.JwtBearer; Package Microsoft.EntityFrameworkCore; Package Microsoft.Extensions.Identity.Core; Package Npgsql; Package Npgsql.EntityFrameworkCore.PostgreSQL",
+      "symbols": [
+        "net10.0",
+        "Microsoft.AspNetCore.Authentication.JwtBearer",
+        "Microsoft.EntityFrameworkCore",
+        "Microsoft.Extensions.Identity.Core",
+        "Npgsql",
+        "Npgsql.EntityFrameworkCore.PostgreSQL"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/CombatAndXpTests.cs",
+      "hash": "bd1f3b4901e2687cdee04c7a5a61230559799258bf0f89efbc15e89ef4d2f4b3",
+      "size": 22805,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T01:25:12.308Z",
+      "summary": "namespace SkySpire.Api.Tests; class TestGameConfig; class CombatServiceTests; class XpServiceTests; class LevelGrowthTests; class EconomyServiceTests; class XpDeathPenaltyTests; class TowerProgressionTests; class FloorChallengeRulesTests; class TrainingCostTests; class DynamicAttributeTests; class CombatHitResolverTests; class EnemyGroupTests; service",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "TestGameConfig",
+        "CombatServiceTests",
+        "XpServiceTests",
+        "LevelGrowthTests",
+        "EconomyServiceTests",
+        "XpDeathPenaltyTests",
+        "TowerProgressionTests",
+        "FloorChallengeRulesTests",
+        "TrainingCostTests",
+        "DynamicAttributeTests",
+        "CombatHitResolverTests",
+        "EnemyGroupTests",
+        "Create",
+        "Strong_Player_Beats_Weak_Mob",
+        "Weak_Player_Loses_To_Strong_Mob",
+        "Xp_Curve_Increases_With_Level",
+        "Xp_Never_Sits_At_Or_Above_The_Level_Requirement",
+        "ApplyGainMap_Adds_To_BaseStats",
+        "Elf_Mage_LevelUp_Raises_Intelligence",
+        "Battle_Reward_Scales_With_Floor",
+        "Death_Penalty_Removes_Fraction_Of_Level_Xp",
+        "Auto_Climb_Loops_Farm_Rooms_Without_Reaching_Boss",
+        "Boss_Win_Unlocks_Next_Floor",
+        "Unlocked_Floor_Is_Capped_By_Available_Content",
+        "Enter_Cleared_Floors_Unlock_All_Rooms_Frontier_Restarts",
+        "Floor_Json_Overrides_Env_Fees",
+        "Legacy_Single_Fee_Applies_To_Both_Challenges",
+        "Missing_Or_Invalid_Fields_Fall_Back_To_Env",
+        "NextCost_Uses_Base_Then_GoldScale_On_LastCost"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/EquipmentGripHelperTests.cs",
+      "hash": "86c39543a7191b6134c369342ea19d8e53a2e9e85ecebf0e6ef9d2abf800f2a0",
+      "size": 4180,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T15:41:59.385Z",
+      "summary": "namespace SkySpire.Api.Tests; class EquipmentGripHelperTests",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "EquipmentGripHelperTests",
+        "ResolveHandSlotCount_Defaults_To_One",
+        "OrderedHandSlotNames_Filters_Hand_Compatible_Slots",
+        "PickHandSlotsToOccupy_TwoHand_Uses_Anchor_Plus_Next",
+        "PickHandSlotsToOccupy_Throws_When_Not_Enough_Hands",
+        "UnequipGripGroup_Removes_Ghosts_And_Returns_Real_Once",
+        "CollectGripGroupSlots_From_Anchor_Or_Ghost"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/ItemAttributeRollTests.cs",
+      "hash": "d1bd9224544405f51abc3abb796312ed6bae601b323e877fe2ede086a7b7afe9",
+      "size": 2690,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-10T02:28:54.908Z",
+      "summary": "namespace SkySpire.Api.Tests; class ItemAttributeRollTests",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "ItemAttributeRollTests",
+        "DefaultAttributeCountCurve_Legendary_Min3_Max20",
+        "Roll_Weapon_OnlyOffense_And_ValueTimesStars",
+        "Roll_Armor_OnlyDefense",
+        "Roll_CommonCountZero_Empty",
+        "Roll_DoesNotDuplicateIds"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/ItemRollServiceTests.cs",
+      "hash": "ed8fc056f9733bbb6d9c45233e99791dca7c8c395252fa48f723717c16ba1f6f",
+      "size": 1248,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "namespace SkySpire.Api.Tests; class ItemRollServiceTests; service",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "ItemRollServiceTests",
+        "ApplyFloorLevel_Adds_Base_Times_Level_Over_Ten",
+        "BakeStat_Floor_Then_Stars_Plus_Multiplier",
+        "PickStars_Respects_Weights_Range"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/MonsterDropHelperTests.cs",
+      "hash": "2b0a347247a94293840fc4c2fc1065d3b9948dd59c128adb77922acfe40af6d9",
+      "size": 2013,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "namespace SkySpire.Api.Tests; class MonsterDropHelperTests",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "MonsterDropHelperTests",
+        "EffectiveChance_LuckZero_EqualsBase",
+        "EffectiveChance_LuckRaisesChance",
+        "TryReadSkyCoinDrop_Absent_ReturnsFalse",
+        "TryReadSkyCoinDrop_ValidRange",
+        "RollSkyCoinDrop_FixedRange_AlwaysSame",
+        "RollSkyCoinDrop_Absent_ZeroUndefined",
+        "ReadRarityLuck_DefaultsToZero"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/RarityServiceTests.cs",
+      "hash": "cbde79d1d5d99a5b6ff5d074aca436512364a8b9a1cbbffe0594a64b7c026242",
+      "size": 3665,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "namespace SkySpire.Api.Tests; class RarityServiceTests; class ScriptedRandom; service",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "RarityServiceTests",
+        "ScriptedRandom",
+        "NextDouble",
+        "PickFrom_AllChancesZero_ReturnsCommon",
+        "PickFrom_OnlyUncommonAlways_ReturnsUncommon",
+        "PickFrom_HigherIdWinsWhenBothWouldSucceed",
+        "PickFrom_HigherFails_LowerSucceeds",
+        "PickFrom_AllFail_FallsBackToCommon",
+        "PickFrom_LuckZero_SameAsBaseChance",
+        "PickFrom_LuckBoostsChance_SucceedsWhereBaseWouldFail"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/SkySpire.Api.Tests.csproj",
+      "hash": "41ba534f6052e8cd5d4e8e213d323dff959fac3d833fe7cd97d20bac49e48da7",
+      "size": 746,
+      "extension": ".csproj",
+      "modifiedAt": "2026-08-05T01:03:26.075Z",
+      "summary": "TargetFramework net10.0; Package coverlet.collector; Package Microsoft.NET.Test.Sdk; Package xunit; Package xunit.runner.visualstudio",
+      "symbols": [
+        "net10.0",
+        "coverlet.collector",
+        "Microsoft.NET.Test.Sdk",
+        "xunit",
+        "xunit.runner.visualstudio"
+      ]
+    },
+    {
+      "path": "backend/tests/SkySpire.Api.Tests/StatCalculatorTests.cs",
+      "hash": "48a2abf289d52072eccfd1d267a3839f798960a3e68a619cefa0891bb95396ed",
+      "size": 1700,
+      "extension": ".cs",
+      "modifiedAt": "2026-08-09T19:31:46.734Z",
+      "summary": "namespace SkySpire.Api.Tests; class StatCalculatorTests; service",
+      "symbols": [
+        "SkySpire.Api.Tests",
+        "StatCalculatorTests",
+        "Evaluate_Respects_Operator_Precedence",
+        "ApplyAttributeFormulas_Adds_Scaled_Contribution",
+        "ApplyAttributeFormulas_Skips_Missing_Attribute"
+      ]
+    },
+    {
+      "path": "content/attributes/core.json",
+      "hash": "6f7ba1b1ac0cee54b4b1dadf72a0c0b7e559805fb4972efa246714679449d411",
+      "size": 1409,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T01:24:39.851Z",
+      "summary": "keys: id, strength, intelligence, agility",
+      "symbols": [
+        "id",
+        "strength",
+        "intelligence",
+        "agility"
+      ]
+    },
+    {
+      "path": "content/attributes/item-attributes.json",
+      "hash": "7e2e577792fb705ed2a9ed67026c2638103a1139a71b1589737acb9ee729078f",
+      "size": 3032,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:28:16.976Z",
+      "summary": "keys: id, typeRoles, critChance, critDamage, dodgeChance, lifeSteal, guardBonus, swiftStrike, vitalWire, fireBonusDMG",
+      "symbols": [
+        "id",
+        "typeRoles",
+        "critChance",
+        "critDamage",
+        "dodgeChance",
+        "lifeSteal",
+        "guardBonus",
+        "swiftStrike",
+        "vitalWire",
+        "fireBonusDMG"
+      ]
+    },
+    {
+      "path": "content/classes/mage.json",
+      "hash": "c864de8d4789a7f0409ba9b44ed0af4f0fe332fe64701b7ddcbc203710c6af04",
+      "size": 318,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "keys: id, name, description, allowedRaces, statFocus, levelGain, startingSkills, hpRegenBonus, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "allowedRaces",
+        "statFocus",
+        "levelGain",
+        "startingSkills",
+        "hpRegenBonus",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/classes/ranger.json",
+      "hash": "142590df45c0d97a6e8b7a50783b09fbed43097848633bce6e459dd5b775f5c3",
+      "size": 318,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "keys: id, name, description, allowedRaces, statFocus, levelGain, startingSkills, hpRegenBonus, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "allowedRaces",
+        "statFocus",
+        "levelGain",
+        "startingSkills",
+        "hpRegenBonus",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/classes/warrior.json",
+      "hash": "086ab576b14df90fceaeff2854eda20cc4bc93155590e7d173d15d6e2acf7bb8",
+      "size": 311,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "keys: id, name, description, allowedRaces, statFocus, levelGain, startingSkills, hpRegenBonus, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "allowedRaces",
+        "statFocus",
+        "levelGain",
+        "startingSkills",
+        "hpRegenBonus",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/config/global.json",
+      "hash": "04108e749054335e672e47bcf799f011dc2ce222558ec316c9cf61327ce6ff57",
+      "size": 993,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:09:54.761Z",
+      "summary": "keys: id, generative, balance",
+      "symbols": [
+        "id",
+        "generative",
+        "balance"
+      ]
+    },
+    {
+      "path": "content/floors/floor-01.json",
+      "hash": "514f0b51636a07acfdc332068d14f1700cfc30caf2fc4ccab23ae6a07f22cfaa",
+      "size": 1723,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:11:23.235Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-02.json",
+      "hash": "a1d415e060fa7a2ca38174e74fe2d46314a04a37ea2549078dd11b3402f9eb52",
+      "size": 1776,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:18:38.366Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-03.json",
+      "hash": "2b305d9cd66fb4275c58c2ae2bf5cda4b870edb2a53de371faeda77c3b8c6c8a",
+      "size": 1781,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.280Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-04.json",
+      "hash": "10f383577f430a47b491ee4844367fd9b48b30274a28fb30a72597a81fc6b73e",
+      "size": 1799,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:58:34.395Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-05.json",
+      "hash": "5049ae03fd72756913daf7f82668ac5ce373101a09bf690f530b7bc1f7e21005",
+      "size": 1730,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.282Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-06.json",
+      "hash": "b19ddb8a01a33647dd8161788fcfc2c4ff6fe2f6592ac98657a79becc46036f4",
+      "size": 1713,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.282Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-07.json",
+      "hash": "bcaaaa678402c94bb46353742f0a0d6db3bd6da31007e3ae76d6d5c8b0a41085",
+      "size": 1804,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.282Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-08.json",
+      "hash": "048bebfd1129f1c1cac8c239887322102fe27c3aeb913671cf5ffdf904f9a009",
+      "size": 1753,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.283Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-09.json",
+      "hash": "2bb4546e33d5fcccaa37580068e474c818fc80ac0fec7feda2d4832fc1104329",
+      "size": 1752,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.284Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/floors/floor-10.json",
+      "hash": "db0b85a28b41297b7811742aa22aaf1eb79e91ca55a1fff2b906bb0a6f235e4e",
+      "size": 1777,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T22:51:41.285Z",
+      "summary": "keys: id, number, name, description, theme, difficulty, itemLevel, rooms, boss, ownerPlayerId",
+      "symbols": [
+        "id",
+        "number",
+        "name",
+        "description",
+        "theme",
+        "difficulty",
+        "itemLevel",
+        "rooms",
+        "boss",
+        "ownerPlayerId"
+      ]
+    },
+    {
+      "path": "content/items/ash-bone-ring.json",
+      "hash": "78acb79fa34a9e9cb0697e89f7d2f07f7950fc47a0cee5969d90d9f0c2dbbf0c",
+      "size": 310,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T11:50:40.767Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/bone-focus.json",
+      "hash": "c23bc4bf44c052a4a5ebc1b6530575c5780d0af40dc4f673914f6a557d4dd1ea",
+      "size": 308,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.784Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/briar-spear.json",
+      "hash": "0053521ceda4adfb4bf6967cc1a34415b13b1cd2399a82692cce98fd4d4fadf2",
+      "size": 318,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.785Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/char-wrap.json",
+      "hash": "d7455942fd90363b1b989931484ebbfe7c32f50440212ff8c9045dc7441568c5",
+      "size": 291,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T12:11:46.153Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/chorus-focus.json",
+      "hash": "44a8902bf873e9682a83dd5c66f5c60497a82bb0fdf7549fb469280d08d48d87",
+      "size": 334,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.786Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/cinder-blade.json",
+      "hash": "3af4f6eb3983e9678bce39f71ecee65f2cfc5238debd505e353b0d6556b3b0c1",
+      "size": 337,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.787Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/cloth-vest.json",
+      "hash": "63d24d9f9490501cf18921d26affb77b9407a6e261d4dc38516e7d8271def3d1",
+      "size": 268,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.745Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/copper-ring.json",
+      "hash": "1984f9e0f0915ac3c9c77e1b5649e960b05aadfbb09b7465c63029c99e1aee10",
+      "size": 272,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.779Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/cord-amulet.json",
+      "hash": "6856661a1b9d158c024721e401082824e2b662ad3ed0b9abf72902c049b9ffcd",
+      "size": 275,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.680Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/echo-shard-blade.json",
+      "hash": "502b87df657fffd1f7c6bbb78123a5f230869e1fbc34a10fb1d1418b1acb1097",
+      "size": 335,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.790Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/ember-cord.json",
+      "hash": "8d3ddf80f41c993a9ddacbca0c7a85e40ab28fc3891c69f026fad0af6dff2125",
+      "size": 324,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T12:43:55.019Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/leather-helm.json",
+      "hash": "20a12f397d5ee384b285c50dedf00771dc1efa023c9ef29f1c9374c7afb9a1b8",
+      "size": 269,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.761Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/matriarch-crown.json",
+      "hash": "cf2d708dba8a2c1dfd80c8bee10c3a0f7d15ad1ee79da2a47f378f0a20bc3d13",
+      "size": 377,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:40:25.523Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/petal-helm.json",
+      "hash": "0a164392ed7be8a8933bf281b6022ecb5664e078f3381eb410513c4f481747db",
+      "size": 312,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:30:08.928Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/phantom-circlet.json",
+      "hash": "ea28d16dd648e36c5bb684f78cf7abe8b57921e1d35258b1eed08faae177198f",
+      "size": 311,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:33:22.838Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/reaver-cleaver.json",
+      "hash": "95b4bff6badce791a3cf393362ff9be3ff5c72fc1b53de4a4202479b13643028",
+      "size": 342,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.792Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/resonant-veil.json",
+      "hash": "43fb3114cbb43af5a71129be6f45ac1e293ebd293313395e69c6473f04f9b32d",
+      "size": 315,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:44:22.196Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/rusty-dagger.json",
+      "hash": "a2ade5c437b3150a91eb482faf83407823504b0b168a79e207d7ed3abf42e1c0",
+      "size": 304,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.794Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/scrap.json",
+      "hash": "ebb44f694e1b315b2289317220889fd785dfc7fdbfc9f597726989183a84a50b",
+      "size": 238,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:51:07.953Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/seep-focus.json",
+      "hash": "d4010b54ec6da2dd11848518218566d18f93316cabf7df432d1627b4aa39fb4b",
+      "size": 330,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.795Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/silver-echo-ring.json",
+      "hash": "4f9ccf0797a26efd90651af09dd32920677cab12b479259652b58f2d1e9391c2",
+      "size": 321,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T12:59:53.826Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/soot-buckler.json",
+      "hash": "aec5fe24476cab1e1b2bd2001e412eb0761c2e6b90aa0df65823c24d5fb2b84a",
+      "size": 324,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.796Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/sovereign-amulet.json",
+      "hash": "6cdac1330be1adf589196e921cc9d66161acc7d399892c07cba4900efd7af33f",
+      "size": 378,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:40:29.647Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/thorn-mail.json",
+      "hash": "a11dfc1cd5e8799e03cc53d98c31c62bf9690a2a7500c633bb69d8b7cb7a8fd0",
+      "size": 304,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T12:45:28.621Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/wolf-fang-ring.json",
+      "hash": "7130376a6599773f9b6f05e368d5e14745106c7e4a0624a5f939d92a2ebbf5a8",
+      "size": 306,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:44:24.918Z",
+      "summary": "keys: id, name, description, type, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/items/wooden-sword.json",
+      "hash": "210f367b78db31f7dd680e9818ea5e2483812a6f09e0a54947a897fed38b6641",
+      "size": 303,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T15:41:21.798Z",
+      "summary": "keys: id, name, description, type, grip, itemLevel, stackable, stats, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "type",
+        "grip",
+        "itemLevel",
+        "stackable",
+        "stats",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/monsters/ash-bat.json",
+      "hash": "5aca6eeffd5f2ad7d94232ec52b3cafbbd0ec2b80335ab4d509e5b651dbb26de",
+      "size": 1214,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:37.992Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/ashen-reaver.json",
+      "hash": "300092c876b53976b0da7bba0cb0dca437e3e725ab138fac2e1edd874818ba74",
+      "size": 1253,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:43.029Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/bandit.json",
+      "hash": "02f81d801ace1e952f1699b8044dfc69eb0f5dbbbbbcd0aa0ed77e9b8fb7a570",
+      "size": 1152,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T01:42:52.058Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/bat.json",
+      "hash": "25f80d5e49241c1fd802c3579a18c37f5f4387af919c505a5bfafc5cb145c83a",
+      "size": 1185,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:55.990Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/briar-matriarch.json",
+      "hash": "34f444d3253baf92ac86db5856afc35ce7cf9b94f0131a1e64265c63661fe1ba",
+      "size": 1347,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T11:08:06.094Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/echo-sovereign.json",
+      "hash": "e91dfcfed8af5194e5367efbcfc9ddd7a22591ec88c17d77515f6ae758b9410f",
+      "size": 1357,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T16:01:30.083Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/echo-wraith.json",
+      "hash": "ad7be53f55dccac297447985c80c9bee067799574d7a3a03a9762175d0113a44",
+      "size": 1419,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T16:10:30.522Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/ember-imp.json",
+      "hash": "c70442f70ed3f789a57dd18f8557b16ebf14a0d508c5aa6923bde50146742983",
+      "size": 1210,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T16:14:18.732Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/fractured-monarch.json",
+      "hash": "2bfd1dd44dc19302c635f847fd473466f405af0c50c9a44fc9eda399d6b44487",
+      "size": 906,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.869Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/glass-scarab.json",
+      "hash": "619d3e707208234843191c9ecaf4ef3fd97d188146ab57ffa17c546623f581f0",
+      "size": 790,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.870Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/golem-scrap.json",
+      "hash": "1ed342f03be5d2e6b29eab15f55b3d5f2092c7d7169976ee0bf208ab5e962a8a",
+      "size": 1190,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:57:08.573Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/iron-colossus.json",
+      "hash": "fed52589df323a2106bacbff1a8bfe495031537547d1941d5517cfc90140f3f3",
+      "size": 897,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.871Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/iron-hound.json",
+      "hash": "7afd31295948b2cce5ad163ce4ea2bdc9fac84b681038cdfd435152a22c0a312",
+      "size": 773,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.872Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/mage-apprentice.json",
+      "hash": "4836d4a8230db3ba4aa12d2dd2915efde92ce1ff46edf540c455597cfb10732e",
+      "size": 903,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.872Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/mist-stalker.json",
+      "hash": "b628075b6be4278171f71a28f8d352a31ff761193914cfa1c259eae51a4ab11e",
+      "size": 882,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.873Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/moss-crypt-lord.json",
+      "hash": "7688deb05f739da523755296b110d2cb7f544819c850a04df49f2a4c82f332b3",
+      "size": 1344,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T18:41:09.771Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/prismarch.json",
+      "hash": "7b18d63cb0238a2ac8c00e294bde5930d1846b88af75f44719dd31571fdcd105",
+      "size": 780,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.874Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/rat.json",
+      "hash": "a553d1f1ce15449c29a616301558614585d0daba2ca90c9983e37422abe8052b",
+      "size": 1245,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.874Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/ruin-broker.json",
+      "hash": "ea20cb679c35a31a64a5e895cd1ad213b6c1330d9489ab88e9554c80877110b2",
+      "size": 1210,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:28:25.487Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/skeleton.json",
+      "hash": "172fbbc59d47ae779c3e302839c9d9bd1cd6a7d8af5e246b167c394ebb9d10f4",
+      "size": 1202,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:40.619Z",
+      "summary": "keys: id, name, description, generativeComplement, level, hp, baseStats, bonusDefense, skills, behavior",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "generativeComplement",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior"
+      ]
+    },
+    {
+      "path": "content/monsters/slag-forgemaster.json",
+      "hash": "302c8c77d03e39b0d0917527fbbc2ad0d86418228b58764eb53e5b1014704ef1",
+      "size": 2057,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:03:13.774Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/slime.json",
+      "hash": "7746c4b6219d9ddd8156cbbb51932949e570ac85cb11e700aa311fb88a485428",
+      "size": 1156,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T23:25:05.876Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/thorn-sprite.json",
+      "hash": "6584ccb95014c216c0e0a35887cd829facf0a3caa36d95ce91940d7681525cee",
+      "size": 1333,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:45.660Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/throne-guard.json",
+      "hash": "ab646dd021825dac0c8d12fa8fa712bac11d77340bb6332fd68ff861836a2c73",
+      "size": 1196,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T01:40:04.853Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/veil-sovereign.json",
+      "hash": "7346f7387463a1e356e01a263a44188495ade18aad61d890378bd983d84a88c9",
+      "size": 1332,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:48:00.996Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/wolf.json",
+      "hash": "d3f81604c104c861111857ed60b0ffb41f0e6785f316882675eebdf5207f7ab4",
+      "size": 1190,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:41:48.344Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/monsters/wraith.json",
+      "hash": "ca63c81eb1d260c6fcc5bc33d0afd451322950e7ca4b52603440cbac9df45f2e",
+      "size": 1188,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T17:52:29.471Z",
+      "summary": "keys: id, name, description, level, hp, baseStats, bonusDefense, skills, behavior, skyCoinDrop",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "level",
+        "hp",
+        "baseStats",
+        "bonusDefense",
+        "skills",
+        "behavior",
+        "skyCoinDrop"
+      ]
+    },
+    {
+      "path": "content/qualities/qualities.json",
+      "hash": "410a5b5be9642599788aaf62d345b54d5a88c464e4113fe007de53ecfebfa647",
+      "size": 852,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.762Z",
+      "summary": "keys: qualities",
+      "symbols": [
+        "qualities"
+      ]
+    },
+    {
+      "path": "content/races/elf.json",
+      "hash": "7b71dbe1dd6facb0f8c91c44e92269f391d4adf57c10d510f2076f6e94d63311",
+      "size": 979,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "keys: id, name, description, baseStats, levelGain, equipmentSlots, blessings, limitations, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "baseStats",
+        "levelGain",
+        "equipmentSlots",
+        "blessings",
+        "limitations",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/races/human.json",
+      "hash": "3bd7f04a7e1a6ac8fb3d706e80644dd37e358c1cf339b68a6101d0ee472478fd",
+      "size": 988,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.648Z",
+      "summary": "keys: id, name, description, baseStats, levelGain, equipmentSlots, blessings, limitations, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "baseStats",
+        "levelGain",
+        "equipmentSlots",
+        "blessings",
+        "limitations",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/races/ork.json",
+      "hash": "a6ea284e2a6da061b9fb202ced3097ddf37513b37e5ea3488d8bc6863706acf6",
+      "size": 1108,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "keys: id, name, description, baseStats, levelGain, equipmentSlots, blessings, limitations, assets",
+      "symbols": [
+        "id",
+        "name",
+        "description",
+        "baseStats",
+        "levelGain",
+        "equipmentSlots",
+        "blessings",
+        "limitations",
+        "assets"
+      ]
+    },
+    {
+      "path": "content/rarities/rarities.json",
+      "hash": "852a6e3571bd5cc495b51b57b3e46189716ec329888afc78cb00e27b32b8de63",
+      "size": 13530,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T02:28:06.159Z",
+      "summary": "keys: rarities",
+      "symbols": [
+        "rarities"
+      ]
+    },
+    {
+      "path": "content/README.md",
+      "hash": "66ede49ad32e2d190e15c519ee92ea4d9d5acc9fa8d71892a92f035a16ee3202",
+      "size": 4849,
+      "extension": ".md",
+      "modifiedAt": "2026-08-10T15:42:22.399Z",
+      "summary": "File: content/README.md",
+      "symbols": []
+    },
+    {
+      "path": "data/bags/3e212972-10b0-4c09-976f-73a292af3ae9.json",
+      "hash": "0cc30c8cbf09a69156f9f51c3855fed60a13282c39748b7eed40e78359383901",
+      "size": 155686,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T19:30:03.527Z",
+      "summary": "keys: id, ownerId, slotCount, items, signature",
+      "symbols": [
+        "id",
+        "ownerId",
+        "slotCount",
+        "items",
+        "signature"
+      ]
+    },
+    {
+      "path": "data/characters/3e212972-10b0-4c09-976f-73a292af3ae9.json",
+      "hash": "2737052e8ae08074e65a4922c313e0a9faacb8a1cd6f273d389cd2d192975a37",
+      "size": 6212,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T19:30:03.540Z",
+      "summary": "keys: id, name, raceId, classId, level, xp, skyCoin, baseStats, equipmentSlots, equipment",
+      "symbols": [
+        "id",
+        "name",
+        "raceId",
+        "classId",
+        "level",
+        "xp",
+        "skyCoin",
+        "baseStats",
+        "equipmentSlots",
+        "equipment"
+      ]
+    },
+    {
+      "path": "data/README.md",
+      "hash": "6ac3ded0304e605442b5710faf8d9dab40a4550c3252cf5e381ee84fe457f0f6",
+      "size": 210,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T21:32:18.873Z",
+      "summary": "File: data/README.md",
+      "symbols": []
+    },
+    {
+      "path": "data/snapshots/floor-01.json",
+      "hash": "b514515e7a5b17bb69e9e180b186696faa59faa9f093de516ff8d21405615766",
+      "size": 5668,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T18:41:22.633Z",
+      "summary": "keys: id, name, raceId, classId, level, xp, baseStats, equipmentSlots, equipment, ownerUsername",
+      "symbols": [
+        "id",
+        "name",
+        "raceId",
+        "classId",
+        "level",
+        "xp",
+        "baseStats",
+        "equipmentSlots",
+        "equipment",
+        "ownerUsername"
+      ]
+    },
+    {
+      "path": "docker/README.md",
+      "hash": "658c7e15d0597666783d68a0a23099ae470314e0577fe0802350c1a45ca95bbc",
+      "size": 173,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T21:32:16.267Z",
+      "summary": "File: docker/README.md",
+      "symbols": []
+    },
+    {
+      "path": "docker-compose.yml",
+      "hash": "90f832e1b1cd684df3ee530e437269df2c9e6f28fb68e52c1d6108ee060e03f6",
+      "size": 1179,
+      "extension": ".yml",
+      "modifiedAt": "2026-08-03T23:42:35.323Z",
+      "summary": "File: docker-compose.yml",
+      "symbols": []
+    },
+    {
+      "path": "docs/balance.md",
+      "hash": "e4259b82eae68cd84efcfedef77294795afa719f56186427d7c3540a676df122",
+      "size": 9577,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T22:43:25.899Z",
+      "summary": "File: docs/balance.md",
+      "symbols": []
+    },
+    {
+      "path": "docs/pixellab.md",
+      "hash": "e1a84cac053286900c54150a935cd3d77e3e8b8c45391a7f16cc9165bc429659",
+      "size": 2951,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "File: docs/pixellab.md",
+      "symbols": []
+    },
+    {
+      "path": "docs/security.md",
+      "hash": "be17195d0b6e4faec1d62c69be40ffb4c6d603b56df1fa8cdd98013f1e829065",
+      "size": 789,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.702Z",
+      "summary": "File: docs/security.md",
+      "symbols": []
+    },
+    {
+      "path": "docs/smoke-test.md",
+      "hash": "e99e6ac3e39b15dc047c8b16a05a414459af152af4387f1bf2ee7e7e14f0505b",
+      "size": 1408,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.685Z",
+      "summary": "File: docs/smoke-test.md",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/.oxlintrc.json",
+      "hash": "b4d344818a1e1bf43997e4744a9153c8eef770c98b58229cd86363dabb85ded4",
+      "size": 245,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.026Z",
+      "summary": "keys: $schema, plugins, rules",
+      "symbols": [
+        "$schema",
+        "plugins",
+        "rules"
+      ]
+    },
+    {
+      "path": "fronend-editor/index.html",
+      "hash": "c205d12d3532f23ad5036adbf9f64cd00fedd59a34a3bea06db05568f9d597f0",
+      "size": 463,
+      "extension": ".html",
+      "modifiedAt": "2026-08-09T19:31:46.638Z",
+      "summary": "File: fronend-editor/index.html",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/package-lock.json",
+      "hash": "c1da587e8f7755849140332b9963dc0d4f00fb717702ffbbb2b59a3b6dc6dcfd",
+      "size": 42665,
+      "extension": ".json",
+      "modifiedAt": "2026-08-05T19:31:39.396Z",
+      "summary": "keys: name, version, lockfileVersion, requires, packages",
+      "symbols": [
+        "name",
+        "version",
+        "lockfileVersion",
+        "requires",
+        "packages"
+      ]
+    },
+    {
+      "path": "fronend-editor/package.json",
+      "hash": "2b3840c90cc59033343c11bb7f13831016b8a0e1c4af24990652aaec79915304",
+      "size": 569,
+      "extension": ".json",
+      "modifiedAt": "2026-08-05T19:31:11.615Z",
+      "summary": "keys: name, private, version, type, scripts, dependencies, devDependencies",
+      "symbols": [
+        "name",
+        "private",
+        "version",
+        "type",
+        "scripts",
+        "dependencies",
+        "devDependencies"
+      ]
+    },
+    {
+      "path": "fronend-editor/README.md",
+      "hash": "c0161d0dcfcb7c0cd2703c829b7c2a0d6c5bca5ccda1f9519f8f19f49476985b",
+      "size": 4272,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T23:10:31.843Z",
+      "summary": "File: fronend-editor/README.md",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/server/contentFsPlugin.ts",
+      "hash": "2c2aab3b19d9585f29f565113980330d81dc1529d71bf326f74f658fa5cd6808",
+      "size": 5632,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T22:38:17.286Z",
+      "summary": "function contentFsPlugin",
+      "symbols": [
+        "contentFsPlugin"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/api/contentFs.ts",
+      "hash": "e44a3f72a4aac8d14713349d6deeb00281a9bc4e60c82c4567d0e31b32fce6c5",
+      "size": 1437,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.735Z",
+      "summary": "function listContent; function getContent; function putContent; function deleteContent",
+      "symbols": [
+        "listContent",
+        "getContent",
+        "putContent",
+        "deleteContent"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/api/editorApi.ts",
+      "hash": "781ea88d5b5d909659bc94259f165fd635c787ef00a9f591bd1db59c359c6495",
+      "size": 13771,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:27:08.038Z",
+      "summary": "function getApiBase; function draftItem; function generateItemIcon; function commitItemIcon; function draftMonster; function draftFloor; function generateMonsterSprite; function commitMonsterSprite; function generateMonsterIdle; function commitMonsterIdle; function discardPixelLabDraft; function generateFloorBackground; function generateAttributeCard",
+      "symbols": [
+        "getApiBase",
+        "draftItem",
+        "generateItemIcon",
+        "commitItemIcon",
+        "draftMonster",
+        "draftFloor",
+        "generateMonsterSprite",
+        "commitMonsterSprite",
+        "generateMonsterIdle",
+        "commitMonsterIdle",
+        "discardPixelLabDraft",
+        "generateFloorBackground",
+        "generateAttributeCard"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/App.tsx",
+      "hash": "b8b2b31f4f021fb82056ecfc40ec126181fe75ce1d57dccab670e034b147ba1e",
+      "size": 1102,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T20:36:10.878Z",
+      "summary": "function App; react component",
+      "symbols": [
+        "App"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/components/JsonNodeEditor.tsx",
+      "hash": "f2059bd257fc9987d53803d054deffeb41a3788010d081ec617aa3680b62070f",
+      "size": 8433,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "function JsonNodeEditor; function SuggestionDataLists",
+      "symbols": [
+        "JsonNodeEditor",
+        "SuggestionDataLists",
+        "replaceNode",
+        "move"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/components/PixelLabQualityModal.tsx",
+      "hash": "b1bc29d537d4ba15ab680752b95d687dfbeb079511f74261e4bd9fcaa0ee6d87",
+      "size": 6785,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:17:14.616Z",
+      "summary": "function loadPixelLabQuality; function savePixelLabQuality; function sizesForKind; function PixelLabQualityModal; react component",
+      "symbols": [
+        "loadPixelLabQuality",
+        "savePixelLabQuality",
+        "sizesForKind",
+        "PixelLabQualityModal"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/components/PixelLabReviewModal.tsx",
+      "hash": "06eea3f05a3dc35b9075b3406fd62bb25c90fd6fa5edb6edaabcf3fb860eccc0",
+      "size": 5669,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:17:22.168Z",
+      "summary": "function PixelLabReviewModal; react component",
+      "symbols": [
+        "PixelLabReviewModal"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/AttributesEditor.tsx",
+      "hash": "b3df6cebedfec4506659f1b95e9dd6bb11d7a228cd2c9183431a0a07f4e2176a",
+      "size": 14999,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.745Z",
+      "summary": "function AttributesEditor; react component",
+      "symbols": [
+        "AttributesEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/ConfigEditor.tsx",
+      "hash": "32da7d36beb292291feceb1fd140513632b731af1cd66f3a1ed9b80039ef7c22",
+      "size": 5832,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T23:10:30.840Z",
+      "summary": "function ConfigEditor; react component",
+      "symbols": [
+        "ConfigEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/ContentEditor.tsx",
+      "hash": "837d624394c178d66cf2aef9a9abd0b7adea4dc5539b3a1d9d2f2fadcbb5bdd1",
+      "size": 9721,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "function ContentEditor; react component",
+      "symbols": [
+        "ContentEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/FloorFormEditor.tsx",
+      "hash": "4528ce5cc2ff48bc47f1eb9e052f0fdae57adc70b41f609ba9374fa9e13a19d7",
+      "size": 15754,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T23:10:23.694Z",
+      "summary": "function FloorFormEditor; react component",
+      "symbols": [
+        "FloorFormEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/FloorsEditor.tsx",
+      "hash": "ec780d530e2884019c81aefaf9d8802c73a2bacd0ab596d2ba20d14a424721bb",
+      "size": 21888,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T23:10:25.255Z",
+      "summary": "function FloorsEditor; react component",
+      "symbols": [
+        "FloorsEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/ItemFormEditor.tsx",
+      "hash": "9a90694a26b8b6dca06fb93a1406404e89abdc86e6b29404a125a81c766f4ea6",
+      "size": 9152,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:42:50.062Z",
+      "summary": "function ItemFormEditor; function resolveIconPreview; react component",
+      "symbols": [
+        "ItemFormEditor",
+        "resolveIconPreview"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/ItemsEditor.tsx",
+      "hash": "b5443819b015d82043ed2f29b14234d5201936fd71557163b45359b7c74a62d3",
+      "size": 20102,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:27:51.587Z",
+      "summary": "function ItemsEditor; react component",
+      "symbols": [
+        "ItemsEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/MonsterFormEditor.tsx",
+      "hash": "05b67d1a843f2d08d0a31a5d258a47b04b7f4fec8cc75eac3a10440d98f52d2b",
+      "size": 19594,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:52:15.019Z",
+      "summary": "function MonsterFormEditor; function resolveSpritePreview; react component",
+      "symbols": [
+        "MonsterFormEditor",
+        "resolveSpritePreview"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/editors/MonstersEditor.tsx",
+      "hash": "54083ef04294c59e0f0a23129c0362f222ad705a14c2c28f7be7ed16fe391133",
+      "size": 24736,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:52:19.109Z",
+      "summary": "function MonstersEditor; react component",
+      "symbols": [
+        "MonstersEditor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/attributeModel.ts",
+      "hash": "2315991f1c164fe8e265b5cfa4a7417e5e0dfd8a8dba67c058725a2ebd8fcc5b",
+      "size": 3126,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.651Z",
+      "summary": "function isAttributeKey; function emptyAttributeForm; function parseAttributeForm; function attributeFormToNode; function validateAttributeForm; function listAttributeKeys; function coreDocWithAttribute",
+      "symbols": [
+        "isAttributeKey",
+        "emptyAttributeForm",
+        "parseAttributeForm",
+        "attributeFormToNode",
+        "validateAttributeForm",
+        "listAttributeKeys",
+        "coreDocWithAttribute"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/configModel.ts",
+      "hash": "a5711f60f6640962d2cea6797245bfcbf67b98077b1d0264fa10cf265afeeab0",
+      "size": 6846,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T23:10:28.591Z",
+      "summary": "function emptyGlobalConfig; function parseGlobalConfig; function globalConfigToJson; function validateGlobalConfig",
+      "symbols": [
+        "emptyGlobalConfig",
+        "parseGlobalConfig",
+        "globalConfigToJson",
+        "validateGlobalConfig"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/floorModel.ts",
+      "hash": "8f42b9cf31e8ba3a78d791e46f89acb160f92e2c47ad245fabcf67e0f5673f4a",
+      "size": 8332,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T23:10:20.379Z",
+      "summary": "function emptyRooms; function emptyFloorForm; function parseFloorForm; function floorNumberFromId; function floorFormToJson; function validateFloorForm; function syncNumberFromId",
+      "symbols": [
+        "emptyRooms",
+        "emptyFloorForm",
+        "parseFloorForm",
+        "floorNumberFromId",
+        "floorFormToJson",
+        "validateFloorForm",
+        "syncNumberFromId"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/itemModel.ts",
+      "hash": "01f2d550569bcd3d889fbbc0617f6d0e1ed90e1b5c220e85e0b8bd59b7271d3f",
+      "size": 4331,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:42:46.247Z",
+      "summary": "function emptyItemForm; function parseItemForm; function itemFormToJson; function validateItemForm; function stackableStatsWarning",
+      "symbols": [
+        "emptyItemForm",
+        "parseItemForm",
+        "itemFormToJson",
+        "validateItemForm",
+        "stackableStatsWarning"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/jsonModel.ts",
+      "hash": "eb8ff23b9a34e8aaa02901aab1f95ff78b2180193dc977cc30b6f68d3b8b7992",
+      "size": 5232,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "function toNode; function toJson; function emptyNode; function changeKind; function newEntry; function newItem; function summarize; function cloneNode",
+      "symbols": [
+        "toNode",
+        "toJson",
+        "emptyNode",
+        "changeKind",
+        "newEntry",
+        "newItem",
+        "summarize",
+        "cloneNode"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/monsterModel.ts",
+      "hash": "64e567ed1d20a1857f27d73eb5ccecb322e9a9e93e8ad3d74a6164b25fbdbb44",
+      "size": 10747,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T23:25:29.664Z",
+      "summary": "function emptyIdleAnimation; function emptyMonsterForm; function parseMonsterForm; function monsterFormToJson; function validateMonsterForm",
+      "symbols": [
+        "emptyIdleAnimation",
+        "emptyMonsterForm",
+        "parseMonsterForm",
+        "monsterFormToJson",
+        "validateMonsterForm"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/lib/templates.ts",
+      "hash": "1397c12ec1a877c246e0bcf080b66c4976d05dde0e6e002ff433758bd060f782",
+      "size": 3231,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T23:25:44.498Z",
+      "summary": "function templateFor",
+      "symbols": [
+        "templateFor"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/main.tsx",
+      "hash": "209c94bf2744e45ca7f832c64e2739a19984db92693af9de5b8ec8d7f8790e6a",
+      "size": 897,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T20:36:14.140Z",
+      "summary": "fronend-editor/src/main.tsx",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/src/pages/EditorPages.tsx",
+      "hash": "2d9d80181808da11006d6b5251dd8c4d8085eab12a821ab754ce913087cd957e",
+      "size": 2099,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T22:51:47.135Z",
+      "summary": "function HomePage; function MonstersPage; function ItemsPage; function AttributesPage; function FloorsPage; function ConfigPage",
+      "symbols": [
+        "HomePage",
+        "MonstersPage",
+        "ItemsPage",
+        "AttributesPage",
+        "FloorsPage",
+        "ConfigPage"
+      ]
+    },
+    {
+      "path": "fronend-editor/src/styles/global.css",
+      "hash": "5b56b0e66d842c7540a54ae80b4a224f656d34e5bc810c2a4e88d29504b0be02",
+      "size": 18418,
+      "extension": ".css",
+      "modifiedAt": "2026-08-10T15:17:22.298Z",
+      "summary": "File: fronend-editor/src/styles/global.css",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/src/types/content.ts",
+      "hash": "6dbc22db17bbcd181ce28db740563e764aae3f2519869254d4c806f201fe0448",
+      "size": 2252,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:42:51.414Z",
+      "summary": "fronend-editor/src/types/content.ts",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/tsconfig.app.json",
+      "hash": "8e5d12ba330e7d86409edec74b95451e0db22ee09b9426c94b5bf817571eddb0",
+      "size": 655,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.048Z",
+      "summary": "json file",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/tsconfig.json",
+      "hash": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808",
+      "size": 119,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.053Z",
+      "summary": "keys: files, references",
+      "symbols": [
+        "files",
+        "references"
+      ]
+    },
+    {
+      "path": "fronend-editor/tsconfig.node.json",
+      "hash": "431788c12ce49db54ab6f75975ba5784f2ab344a3bc9e81fc6b21d2421207de1",
+      "size": 576,
+      "extension": ".json",
+      "modifiedAt": "2026-08-09T19:31:46.639Z",
+      "summary": "json file",
+      "symbols": []
+    },
+    {
+      "path": "fronend-editor/vite.config.ts",
+      "hash": "534433aa4ce9639852e6e4eb87c76d919e9239a16455532592112c4e08cff574",
+      "size": 471,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "fronend-editor/vite.config.ts",
+      "symbols": []
+    },
+    {
+      "path": "frontend/.oxlintrc.json",
+      "hash": "b4d344818a1e1bf43997e4744a9153c8eef770c98b58229cd86363dabb85ded4",
+      "size": 245,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.026Z",
+      "summary": "keys: $schema, plugins, rules",
+      "symbols": [
+        "$schema",
+        "plugins",
+        "rules"
+      ]
+    },
+    {
+      "path": "frontend/index.html",
+      "hash": "8a0846cc1969582d648719a14d94adea77638ad2a58f57d70732b94d6abeb788",
+      "size": 364,
+      "extension": ".html",
+      "modifiedAt": "2026-08-04T21:54:34.383Z",
+      "summary": "File: frontend/index.html",
+      "symbols": []
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "hash": "e6a920809a16ce345a7748748e61bec29087404ac3a47763e5cfa785fa1a575a",
+      "size": 56640,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T00:10:36.106Z",
+      "summary": "keys: name, version, lockfileVersion, requires, packages",
+      "symbols": [
+        "name",
+        "version",
+        "lockfileVersion",
+        "requires",
+        "packages"
+      ]
+    },
+    {
+      "path": "frontend/package.json",
+      "hash": "ec12bfa9b99eaf310b37cda04fe22659531023741c774f00b695ee89e95b07be",
+      "size": 623,
+      "extension": ".json",
+      "modifiedAt": "2026-08-10T00:10:53.922Z",
+      "summary": "keys: name, private, version, type, scripts, dependencies, devDependencies",
+      "symbols": [
+        "name",
+        "private",
+        "version",
+        "type",
+        "scripts",
+        "dependencies",
+        "devDependencies"
+      ]
+    },
+    {
+      "path": "frontend/README.md",
+      "hash": "b8c47396ea6b23d6a6cedb104f9b839348d732eca71bdf97a58820c4622d9e2c",
+      "size": 582,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:54:33.929Z",
+      "summary": "File: frontend/README.md",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/api/auth.ts",
+      "hash": "ad6e07f08f68f08e5ff87ef90dcb92d509b62f7c4b9a05c84c55d5cae0b66401",
+      "size": 618,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-05T00:58:45.160Z",
+      "summary": "function register; function login; function fetchMe",
+      "symbols": [
+        "register",
+        "login",
+        "fetchMe"
+      ]
+    },
+    {
+      "path": "frontend/src/api/client.ts",
+      "hash": "b387a9c47563357aca98e6fed6af3097ed22dbee592f56ea9fa0940192b85f08",
+      "size": 1556,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-05T00:58:41.236Z",
+      "summary": "function apiGet; function apiPost; function getApiBaseUrl; class ApiError",
+      "symbols": [
+        "apiGet",
+        "apiPost",
+        "getApiBaseUrl",
+        "ApiError"
+      ]
+    },
+    {
+      "path": "frontend/src/api/content.ts",
+      "hash": "2da502c0262bc264fd4cc7dd559e1aa102fce94a121747a1de195a8ff39bb505",
+      "size": 779,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-06T01:12:25.656Z",
+      "summary": "function listRaces; function listClasses; function listItems; function createCharacter; function fetchMyCharacter; function fetchMyStats",
+      "symbols": [
+        "listRaces",
+        "listClasses",
+        "listItems",
+        "createCharacter",
+        "fetchMyCharacter",
+        "fetchMyStats"
+      ]
+    },
+    {
+      "path": "frontend/src/api/economy.ts",
+      "hash": "31c463279e0aaceda8daa3e94153e5c2cb6ba3bb78839070d8d30d73c1d790ec",
+      "size": 467,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "function fetchBalance; function fetchLedger",
+      "symbols": [
+        "fetchBalance",
+        "fetchLedger"
+      ]
+    },
+    {
+      "path": "frontend/src/api/health.ts",
+      "hash": "907d3fac8c4e8bafc2991e7fd7281e925b6dff8784061676b113029452491fd1",
+      "size": 194,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-04T21:54:27.117Z",
+      "summary": "function fetchHealth",
+      "symbols": [
+        "fetchHealth"
+      ]
+    },
+    {
+      "path": "frontend/src/api/inventory.ts",
+      "hash": "e9c192d70bcd4859a166361da99bfbd0a9622f771a1d89fe548fea52b89df4ab",
+      "size": 383,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "function fetchInventory",
+      "symbols": [
+        "fetchInventory"
+      ]
+    },
+    {
+      "path": "frontend/src/api/market.ts",
+      "hash": "439caba57b78636b9c3c88d6587a1402721f8ab89c0a850ca5455237ea710d32",
+      "size": 995,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "function fetchMarket; function listOnMarket; function buyListing; function cancelListing",
+      "symbols": [
+        "fetchMarket",
+        "listOnMarket",
+        "buyListing",
+        "cancelListing"
+      ]
+    },
+    {
+      "path": "frontend/src/api/rankings.ts",
+      "hash": "b97d6128f54bde8e627c01de1f8b5357f578829a90edbaa57af894145fd8f81c",
+      "size": 376,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "function fetchRankings",
+      "symbols": [
+        "fetchRankings"
+      ]
+    },
+    {
+      "path": "frontend/src/api/tower.ts",
+      "hash": "ad408e430ca0e2872a8854b1a46362b77a75bfe7b2c04eb7dd55a782d9eabbd9",
+      "size": 1778,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.779Z",
+      "summary": "function fetchTowerState; function enterTower; function setAutoClimb; function moveRoom; function startBattle; function challengeBoss; function challengeRegistry; function fetchOwnership; function fetchFloor; function fetchFloors",
+      "symbols": [
+        "fetchTowerState",
+        "enterTower",
+        "setAutoClimb",
+        "moveRoom",
+        "startBattle",
+        "challengeBoss",
+        "challengeRegistry",
+        "fetchOwnership",
+        "fetchFloor",
+        "fetchFloors"
+      ]
+    },
+    {
+      "path": "frontend/src/api/training.ts",
+      "hash": "51f08ea53256daa151b64999e6fd0299e3b658a791a32298924bd94c754219bf",
+      "size": 1012,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.762Z",
+      "summary": "function trainAttribute; function fetchTrainingCosts; function previewTraining",
+      "symbols": [
+        "trainAttribute",
+        "fetchTrainingCosts",
+        "previewTraining"
+      ]
+    },
+    {
+      "path": "frontend/src/App.tsx",
+      "hash": "b38a1343219a912f44236479025778b24715b6e63f1f2f4c27e75f792425c9c7",
+      "size": 2522,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "function App; react component",
+      "symbols": [
+        "App"
+      ]
+    },
+    {
+      "path": "frontend/src/auth/AuthContext.tsx",
+      "hash": "b395865979afad8d3d960d43fdebe27235aa2c6e624e8845ac4d0e183775b360",
+      "size": 2332,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:58:25.565Z",
+      "summary": "function AuthProvider; function useAuth; react component",
+      "symbols": [
+        "AuthProvider",
+        "useAuth"
+      ]
+    },
+    {
+      "path": "frontend/src/auth/CreateFlowContext.tsx",
+      "hash": "56ddcd8cfedb401e62fb1dc357c3d4d926d1a23ce5c8a9b0dd735b62228eb53d",
+      "size": 1079,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:58:53.207Z",
+      "summary": "function CreateFlowProvider; function useCreateFlow; react component",
+      "symbols": [
+        "CreateFlowProvider",
+        "useCreateFlow"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/CharacterSidebar.tsx",
+      "hash": "4a71fc605b203271b15c478b2b0196095dc452d51d398cd237745975e43968b6",
+      "size": 6254,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.779Z",
+      "summary": "function CharacterSidebar; react component",
+      "symbols": [
+        "CharacterSidebar"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/CombatDock.tsx",
+      "hash": "861aa8e647388c9505f1e08ffe42385f4c86c60d0d0b2328f37946c950eaf565",
+      "size": 11746,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:11:29.984Z",
+      "summary": "function CombatDock; react component",
+      "symbols": [
+        "CombatDock",
+        "rank"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/ConfirmModal.tsx",
+      "hash": "93a7b2ba2a76e8be36e249cf72fe646bff062adb97ba32f1d144dc9b6f0e9c0d",
+      "size": 1839,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:41:53.098Z",
+      "summary": "function ConfirmModal; react component",
+      "symbols": [
+        "ConfirmModal"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/GameShell.tsx",
+      "hash": "71eead77e9a252e2f4b650792ab1cf58a67e1d24391ffed0501bcc7b0058b9e8",
+      "size": 552,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.725Z",
+      "summary": "function GameShell; react component",
+      "symbols": [
+        "GameShell"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/ItemInfoModal.tsx",
+      "hash": "e8f87e9251c3a1d44dea714bb4d5fd68423c6df7c406084cec3400de00f42706",
+      "size": 4092,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:42:54.560Z",
+      "summary": "function ItemInfoModal; react component",
+      "symbols": [
+        "ItemInfoModal"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/ItemTileVisual.tsx",
+      "hash": "4d892eef4d3995fcc7bedbd1734bab4d0c1d871d9d83b67bf54852fea6c4d716",
+      "size": 1500,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:53:33.590Z",
+      "summary": "function ItemTileVisual; react component",
+      "symbols": [
+        "ItemTileVisual"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/MonsterCombatSprite.tsx",
+      "hash": "cbd196361f65363c45bbb2972608e98f114086db9708854cf93217e9a9aefd06",
+      "size": 2804,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T23:56:43.916Z",
+      "summary": "function MonsterCombatSprite; react component",
+      "symbols": [
+        "MonsterCombatSprite"
+      ]
+    },
+    {
+      "path": "frontend/src/components/game/MonsterEncounterPanel.tsx",
+      "hash": "7a5de1de5e317a8497998311c16f72d4aa1ebd4790fa9cccf1e62e171a18b3a2",
+      "size": 3659,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:00:55.694Z",
+      "summary": "function MonsterEncounterPanel; react component",
+      "symbols": [
+        "MonsterEncounterPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/components/ProtectedRoute.tsx",
+      "hash": "4e90e78dbf8e3d00e55bf635441fe1957e68b0a63d97a88973b9228b2dee1c13",
+      "size": 554,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:58:29.682Z",
+      "summary": "function ProtectedRoute; react component",
+      "symbols": [
+        "ProtectedRoute"
+      ]
+    },
+    {
+      "path": "frontend/src/game/attributeAssets.ts",
+      "hash": "38fe0bd3cedb844716194275aa9a621c476a535b41d896830d6233d0b29cc33c",
+      "size": 1078,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.636Z",
+      "summary": "function resolveAttributeCardUrl",
+      "symbols": [
+        "resolveAttributeCardUrl"
+      ]
+    },
+    {
+      "path": "frontend/src/game/combatPlayback.test.ts",
+      "hash": "c9ae88e08a97b0f208440f5587b91f7addbb74967db42078ff9f75cf227efcb5",
+      "size": 7153,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T00:10:51.936Z",
+      "summary": "frontend/src/game/combatPlayback.test.ts",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/game/combatPlayback.ts",
+      "hash": "ed09f22a11ada0a695bf33e69e3df69f6b846edfc37dcf2f907c19ae5a165c21",
+      "size": 12374,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T00:10:03.065Z",
+      "summary": "function peekNextEnemyTargetSlot; function groupBattleEvents; function planBeat; function planPlayback; function createPlaybackClock; function runBeatPlan",
+      "symbols": [
+        "peekNextEnemyTargetSlot",
+        "groupBattleEvents",
+        "planBeat",
+        "planPlayback",
+        "createPlaybackClock",
+        "runBeatPlan",
+        "finish"
+      ]
+    },
+    {
+      "path": "frontend/src/game/floorAssets.ts",
+      "hash": "69b4932aa1b76465ce5f69971c6881a5311fce5e4d73a4b0f3c0562c9afc9d24",
+      "size": 1115,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T22:56:51.839Z",
+      "summary": "function resolveFloorBackgroundUrl",
+      "symbols": [
+        "resolveFloorBackgroundUrl"
+      ]
+    },
+    {
+      "path": "frontend/src/game/GameSessionContext.tsx",
+      "hash": "891437ef17e9a4b29067a56d01cd0eb6d885a4d8889d3dbfbb3e306478008cad",
+      "size": 19317,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:11:29.042Z",
+      "summary": "function GameSessionProvider; function useGameSession; react component",
+      "symbols": [
+        "GameSessionProvider",
+        "useGameSession",
+        "tick",
+        "handleAction"
+      ]
+    },
+    {
+      "path": "frontend/src/game/itemAssets.ts",
+      "hash": "5daa3b67ba0408e32bfdb2513683b966a624a40d65a838dee66a1035c58517b7",
+      "size": 1110,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.686Z",
+      "summary": "function resolveItemIconUrl",
+      "symbols": [
+        "resolveItemIconUrl"
+      ]
+    },
+    {
+      "path": "frontend/src/game/itemQuality.ts",
+      "hash": "344f951fb7fbf138affe280a18a7555590272b0697ebbb3e8af16a4cf93f6c63",
+      "size": 1797,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.648Z",
+      "summary": "function rgbCss; function resolveItemQuality; function itemQualityStyle",
+      "symbols": [
+        "rgbCss",
+        "resolveItemQuality",
+        "itemQualityStyle"
+      ]
+    },
+    {
+      "path": "frontend/src/game/itemUpgradeCompare.test.ts",
+      "hash": "2b461648b6a3581e4ad85793e19fc40ef97a7acd33c41a42dfce34cb31150187",
+      "size": 2499,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:42:54.718Z",
+      "summary": "frontend/src/game/itemUpgradeCompare.test.ts",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/game/itemUpgradeCompare.ts",
+      "hash": "8b15aef42487827d145f4e885373bbf8dff186338d4596dcebd536bccb33324e",
+      "size": 2317,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:42:12.460Z",
+      "summary": "function resolveEquippedItem; function hasHigherAttribute; function bagItemShowsUpgradeArrow",
+      "symbols": [
+        "resolveEquippedItem",
+        "hasHigherAttribute",
+        "bagItemShowsUpgradeArrow"
+      ]
+    },
+    {
+      "path": "frontend/src/game/monsterAssets.ts",
+      "hash": "3ef46463df0cf4c7cad11cc2a2a34dd16113859871b0684db48a17ebeb67a20e",
+      "size": 1471,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.762Z",
+      "summary": "function resolveMonsterSpriteUrl; function resolveMonsterIdleFrameUrls",
+      "symbols": [
+        "resolveMonsterSpriteUrl",
+        "resolveMonsterIdleFrameUrls"
+      ]
+    },
+    {
+      "path": "frontend/src/game/stats.ts",
+      "hash": "f22d5239875eb09ab03ebb6ad9e12eb22905ded96e25779c28814b339e3c5e5c",
+      "size": 1313,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T19:31:46.734Z",
+      "summary": "function sortStats; function statLabel; function formatStat; function formatStatDelta",
+      "symbols": [
+        "sortStats",
+        "statLabel",
+        "formatStat",
+        "formatStatDelta"
+      ]
+    },
+    {
+      "path": "frontend/src/main.tsx",
+      "hash": "1373340b3650cef09739acb44a45c2ea0a5fcd78e54934b58f054d11ea14fe6e",
+      "size": 330,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-04T21:54:31.701Z",
+      "summary": "frontend/src/main.tsx",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/pages/ClassSelectPage.tsx",
+      "hash": "0e535a767f5f9596a322db6fecbce0b069078611817c0643257c966a3ae9a629",
+      "size": 3568,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:59:32.492Z",
+      "summary": "function ClassSelectPage; react component",
+      "symbols": [
+        "ClassSelectPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/HomePage.tsx",
+      "hash": "0333a0849c2481a1d83aaadc27539274bbdaf2bbed83987cc59a1cc73fe37a69",
+      "size": 908,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:56:44.439Z",
+      "summary": "function HomePage; react component",
+      "symbols": [
+        "HomePage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/HubPage.tsx",
+      "hash": "05e89dcb4498d085c5f08ed5e84a781825884b4aa72b9eddb529b141bd16585f",
+      "size": 1527,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "function HubPage; react component",
+      "symbols": [
+        "HubPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/InventoryPage.tsx",
+      "hash": "16c5f48dae7022fa5ae268953a057b63a66e28421e356db4b0965ad191518f34",
+      "size": 175,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.664Z",
+      "summary": "function InventoryPage; react component",
+      "symbols": [
+        "InventoryPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/LoginPage.tsx",
+      "hash": "6f9b24ca6cedcb6ebd5b64854020196f4cf5b138250dad73c6dfbab37097378c",
+      "size": 2463,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:59:36.470Z",
+      "summary": "function LoginPage; react component",
+      "symbols": [
+        "LoginPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/InventoryPanel.tsx",
+      "hash": "3006d3a73b1ff2991573b682e6e56bcf0ca9fb7a5b06be1026caab1d8512f01a",
+      "size": 20127,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T15:42:14.526Z",
+      "summary": "function InventoryPanel; react component",
+      "symbols": [
+        "InventoryPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/MarketPanel.tsx",
+      "hash": "f070744092805274424083ab1ff87319bd9c019041f53583ed30251e8cce65b7",
+      "size": 4755,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "function MarketPanel; react component",
+      "symbols": [
+        "MarketPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/RankingsPanel.tsx",
+      "hash": "dfce2c0ab607df64ef92a392d70185daea7407283a30e71e886d74e42706c42c",
+      "size": 1958,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.686Z",
+      "summary": "function RankingsPanel; react component",
+      "symbols": [
+        "RankingsPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/StatusPanel.tsx",
+      "hash": "4fcd5054cdc68c158a6bbdc5db12c7bd77ecb92211b3b935a53ef37ba437e9f2",
+      "size": 1826,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-06T01:12:25.786Z",
+      "summary": "function StatusPanel; react component",
+      "symbols": [
+        "StatusPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/TowerPanel.tsx",
+      "hash": "102fbbf3811c6304ac859c7fb609419a4f3a327260925b3477ef107a4c305345",
+      "size": 8850,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-10T00:42:09.394Z",
+      "summary": "function TowerPanel; react component",
+      "symbols": [
+        "TowerPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/panels/TrainingPanel.tsx",
+      "hash": "86a3b8a91fb686dab1011cbecf7f772287caf17226d69fec7e5c9be65b148084",
+      "size": 7832,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.663Z",
+      "summary": "function TrainingPanel; react component",
+      "symbols": [
+        "TrainingPanel"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/RaceSelectPage.tsx",
+      "hash": "f3f40a32ef167c748e453170ccc3ee869d64e58a696c71eeb90a23475859161d",
+      "size": 2062,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:59:36.961Z",
+      "summary": "function RaceSelectPage; react component",
+      "symbols": [
+        "RaceSelectPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/RegisterPage.tsx",
+      "hash": "26884e78ba781be5a8675a231f4fb683788001b45c4b32938217cc397274a9c8",
+      "size": 2866,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-05T00:59:06.800Z",
+      "summary": "function RegisterPage; react component",
+      "symbols": [
+        "RegisterPage"
+      ]
+    },
+    {
+      "path": "frontend/src/pages/TowerPage.tsx",
+      "hash": "c0e7981d82d9d7499507d22a902694fa90c66cea3b6434d2d35a36917715f5bc",
+      "size": 208,
+      "extension": ".tsx",
+      "modifiedAt": "2026-08-09T19:31:46.686Z",
+      "summary": "function TowerPage; react component",
+      "symbols": [
+        "TowerPage"
+      ]
+    },
+    {
+      "path": "frontend/src/styles/global.css",
+      "hash": "06cae69786823c2b9ae11beb775f9f15a88c4600b7027f02db3eb76f9dbd31cb",
+      "size": 60195,
+      "extension": ".css",
+      "modifiedAt": "2026-08-10T15:42:14.648Z",
+      "summary": "File: frontend/src/styles/global.css",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/types/api.ts",
+      "hash": "ad0d8561f38c816b258d5e400950cc559b2f2e8c555b587b467ec5eb020e636b",
+      "size": 3713,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-09T23:25:17.257Z",
+      "summary": "frontend/src/types/api.ts",
+      "symbols": []
+    },
+    {
+      "path": "frontend/src/types/item.ts",
+      "hash": "50e416a6f2deff05c1988ddd3cf9115dac858bcf5d0a833218b18673898a7451",
+      "size": 1564,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T15:42:05.132Z",
+      "summary": "function bagItemTemplateId; function bagItemLabel",
+      "symbols": [
+        "bagItemTemplateId",
+        "bagItemLabel"
+      ]
+    },
+    {
+      "path": "frontend/tsconfig.app.json",
+      "hash": "82a5db4f3335b292a2080cc9b9981e7ddf06cab32089a7096282e3949fe75d28",
+      "size": 675,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:54:21.516Z",
+      "summary": "json file",
+      "symbols": []
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "hash": "770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808",
+      "size": 119,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.053Z",
+      "summary": "keys: files, references",
+      "symbols": [
+        "files",
+        "references"
+      ]
+    },
+    {
+      "path": "frontend/tsconfig.node.json",
+      "hash": "d366cc0827139db39c61815f22491bbfda56c654354a42ad7795143d314e45e8",
+      "size": 558,
+      "extension": ".json",
+      "modifiedAt": "2026-08-04T21:53:35.057Z",
+      "summary": "json file",
+      "symbols": []
+    },
+    {
+      "path": "frontend/vite.config.ts",
+      "hash": "0cf7d86cc83bd1060b0e915a68099ca439261ed87ea8f6d369041426461564de",
+      "size": 245,
+      "extension": ".ts",
+      "modifiedAt": "2026-08-10T00:10:55.459Z",
+      "summary": "frontend/vite.config.ts",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/activeContext.md",
+      "hash": "30bedca72bbc0d395825a496198504b84eee79800cb38c9b8313b5c63451a526",
+      "size": 257,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.816Z",
+      "summary": "File: memory-bank/activeContext.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/productContext.md",
+      "hash": "607717a736c1f6a1d366371d4b0bf62bb141db1afbfa33a832ea330a35c91b31",
+      "size": 1529,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:50:28.110Z",
+      "summary": "File: memory-bank/productContext.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/progress.md",
+      "hash": "ca35e65e96046db823ce47126e93915b607f7b5c65b756caf9d5c310eda363f5",
+      "size": 281,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:49.698Z",
+      "summary": "File: memory-bank/progress.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/projectbrief.md",
+      "hash": "5a1a25115e01cd4c36a80db6fdb30f7450263d26c6b8b07510256c1eb829fc88",
+      "size": 1914,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:50:22.344Z",
+      "summary": "File: memory-bank/projectbrief.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/style-guide.md",
+      "hash": "f0d3abfc0b14f4a5faf23d1ebae18c673a88b078f92d7e308ddfa143dbba97f9",
+      "size": 1108,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:50:44.757Z",
+      "summary": "File: memory-bank/style-guide.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/systemPatterns.md",
+      "hash": "a9002dcb61b346a4fe7b8e8b504e6869be2c3b2b091d051b6e1c969c9dd114a9",
+      "size": 2457,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:50:41.875Z",
+      "summary": "File: memory-bank/systemPatterns.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/tasks.md",
+      "hash": "c969f414ed12e8d70a5b01274dc503cf903b016e8704491c4cca3afc280893a4",
+      "size": 728,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:54:56.843Z",
+      "summary": "File: memory-bank/tasks.md",
+      "symbols": []
+    },
+    {
+      "path": "memory-bank/techContext.md",
+      "hash": "b401a1f74f762ab1823c60c6a02d71c5574761fe4e81f9f9c25fa0a42d08d163",
+      "size": 2330,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:50:34.745Z",
+      "summary": "File: memory-bank/techContext.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/00-INDEX.md",
+      "hash": "57babd85c859cd9ad773dd2ce13397584cd7fc78eb35c3ba65ddc8c4b18dbbd9",
+      "size": 8769,
+      "extension": ".md",
+      "modifiedAt": "2026-08-10T02:29:38.909Z",
+      "summary": "File: plano-desenvolvimento/00-INDEX.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/01-fundacao-repositorio.md",
+      "hash": "032cc12852f2d4fcebfd705d6bca98274ee16e695db856a5c13b45366520f2ad",
+      "size": 1262,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T21:32:27.918Z",
+      "summary": "File: plano-desenvolvimento/01-fundacao-repositorio.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/02-backend-dotnet-docker.md",
+      "hash": "52fcef87502d1c2648f22bfbadf532e412c85bb5243c0d1178cbd0e3334a5777",
+      "size": 1227,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T23:43:35.345Z",
+      "summary": "File: plano-desenvolvimento/02-backend-dotnet-docker.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/03-variaveis-ambiente-balance.md",
+      "hash": "8cb2846b4e5132f0c36996680f5106bfbe0bd72ddf94e9860bac054cd53ede7f",
+      "size": 1501,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T00:12:44.525Z",
+      "summary": "File: plano-desenvolvimento/03-variaveis-ambiente-balance.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/04-frontend-react-vite.md",
+      "hash": "8b2ca32533e5d4ede41d1230b35bb120c4146780cd3de8bbbbd5aea89a97f89f",
+      "size": 1158,
+      "extension": ".md",
+      "modifiedAt": "2026-08-04T21:54:50.089Z",
+      "summary": "File: plano-desenvolvimento/04-frontend-react-vite.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/05-pagina-inicial.md",
+      "hash": "aadaf107829be5d4de5a41681477a9cf70c19fff4140bac3bbac72094b5b184e",
+      "size": 990,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.091Z",
+      "summary": "File: plano-desenvolvimento/05-pagina-inicial.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/06-api-autenticacao.md",
+      "hash": "694fba6b5bb368bd86bbb293a8d2eff4597c9fd6622d8965ff47b5d88739d8df",
+      "size": 976,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.092Z",
+      "summary": "File: plano-desenvolvimento/06-api-autenticacao.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/07-paginas-login-cadastro.md",
+      "hash": "4910ea3d4d58377bd6a60c5916d56488804091db8e16550a8071c7de519dd208",
+      "size": 951,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.093Z",
+      "summary": "File: plano-desenvolvimento/07-paginas-login-cadastro.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/08-teste-login.md",
+      "hash": "c7a9def7c6b8b5a30e1a3af63dbd9ecd4b50e32508ecb90326cd692c905a8a7a",
+      "size": 1037,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.094Z",
+      "summary": "File: plano-desenvolvimento/08-teste-login.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/09-conteudo-json-base.md",
+      "hash": "b0290963a479c6bfdc15ce0e903a6e71cb3255464ed451d60c8728b540478592",
+      "size": 1213,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.095Z",
+      "summary": "File: plano-desenvolvimento/09-conteudo-json-base.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/10-api-conteudo-racas-classes.md",
+      "hash": "d1e4bf634a661a526080c5bbf08b908bcf1f6515db61a407e29a34ec926e72ce",
+      "size": 889,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.096Z",
+      "summary": "File: plano-desenvolvimento/10-api-conteudo-racas-classes.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/11-pagina-selecao-raca.md",
+      "hash": "b6260966faf0b1f6343ba12a8bb43b13032234896e07e13d579047174ec36fbf",
+      "size": 928,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.098Z",
+      "summary": "File: plano-desenvolvimento/11-pagina-selecao-raca.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/12-pagina-selecao-classe.md",
+      "hash": "86395b5dda8747912371160a009b1a192c305ed01e2e83a3884e78aa6020094d",
+      "size": 713,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.099Z",
+      "summary": "File: plano-desenvolvimento/12-pagina-selecao-classe.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/13-criacao-personagem.md",
+      "hash": "b2e6e3f2733ae97bec094feae003d7504d1dcfb550d1d7106c9014e1099ffc0f",
+      "size": 1035,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:01:18.100Z",
+      "summary": "File: plano-desenvolvimento/13-criacao-personagem.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/14-hub-personagem.md",
+      "hash": "2b788a8aede59a18380415adc17fc38ef620a477008cebb868788313b9899248",
+      "size": 1045,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.737Z",
+      "summary": "File: plano-desenvolvimento/14-hub-personagem.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/15-motor-atributos.md",
+      "hash": "d0c4f37c7019a45a72a61f8015ea422fb0ef6026453f85b0ea67059e2269f8bd",
+      "size": 1006,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:03:56.407Z",
+      "summary": "File: plano-desenvolvimento/15-motor-atributos.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/16-andares-json-manuais.md",
+      "hash": "2691a347ad9fb993b048e504f3cda10253da2591cd694880b8f737758fe7682a",
+      "size": 909,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T01:03:56.409Z",
+      "summary": "File: plano-desenvolvimento/16-andares-json-manuais.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/17-api-torre.md",
+      "hash": "b09ab92afdeb628b6cde429eccba9714c3391f876b3f7ce2bfc66d54be1b599b",
+      "size": 915,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.038Z",
+      "summary": "File: plano-desenvolvimento/17-api-torre.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/18-pagina-torre.md",
+      "hash": "8e051bc4bf029c70bfab79cd2d7911daf87d5b0e05b7b3b0d375aa214aeba22a",
+      "size": 867,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "File: plano-desenvolvimento/18-pagina-torre.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/19-sistema-combate.md",
+      "hash": "87f7763bbabe255c7c2954cd4c95ddb613d5d1a14fe1465f201b099b93c631d3",
+      "size": 1100,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.044Z",
+      "summary": "File: plano-desenvolvimento/19-sistema-combate.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/20-animacao-combate-front.md",
+      "hash": "717d1433d40ebc617dbf8b3587b46654583148c1fda2cd50c951c3e2de66ba22",
+      "size": 858,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.047Z",
+      "summary": "File: plano-desenvolvimento/20-animacao-combate-front.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/21-xp-level.md",
+      "hash": "543be760b78db3b50ec288b9ab0b5d1836114b950564b30e116e920855b54f0e",
+      "size": 922,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.049Z",
+      "summary": "File: plano-desenvolvimento/21-xp-level.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/22-monstros-drops.md",
+      "hash": "46d7f675e397d7ebbecd1759bce1879710cab3e15f583a34d49bc62bb2050a91",
+      "size": 861,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.051Z",
+      "summary": "File: plano-desenvolvimento/22-monstros-drops.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/23-inventario-equipamentos.md",
+      "hash": "95c253a68e0ac9938d7c2a686b074534214752ca998ff681ae95270db7a993a1",
+      "size": 796,
+      "extension": ".md",
+      "modifiedAt": "2026-08-05T10:32:48.052Z",
+      "summary": "File: plano-desenvolvimento/23-inventario-equipamentos.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/24-ui-inventario.md",
+      "hash": "78fdde63e5566a7f048dae4cec54b0b98ed7f9a99a5c0b4ce447747d050af0dc",
+      "size": 845,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.709Z",
+      "summary": "File: plano-desenvolvimento/24-ui-inventario.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/25-economia-skycoin.md",
+      "hash": "a0c4a29b09ea7416fe281a8e7dcbc5b2b6d99d2097659c77e135181f6698a701",
+      "size": 992,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "File: plano-desenvolvimento/25-economia-skycoin.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/25b-layout-shell-persistente.md",
+      "hash": "44573f79a5c40f89ea458581f6b6cf92129ae68b67725f06ed8c0603f32d5652",
+      "size": 4289,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.639Z",
+      "summary": "File: plano-desenvolvimento/25b-layout-shell-persistente.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/26-chefe-morte-registro.md",
+      "hash": "36e71af2611a39a323f6fe2a338c38b401cd353248da3ca9072bd4aad2dfa7bb",
+      "size": 1337,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "File: plano-desenvolvimento/26-chefe-morte-registro.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/27-mercado.md",
+      "hash": "84f2fc46d1bc857b33d79f04d97f7db489050654bddb18e7fbf571c601841e78",
+      "size": 707,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.725Z",
+      "summary": "File: plano-desenvolvimento/27-mercado.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/28-campo-treinamento.md",
+      "hash": "fd725ca6a8251205d3fdc1fb7ab8b47be5dbe919c181e006a9fd06fd10dad61a",
+      "size": 758,
+      "extension": ".md",
+      "modifiedAt": "2026-08-06T00:37:52.907Z",
+      "summary": "File: plano-desenvolvimento/28-campo-treinamento.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/29-rankings-estatisticas.md",
+      "hash": "6fe08325e72034d5683233c16436446e335fc7b6676b5583a3cd4b0e42759aac",
+      "size": 643,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.725Z",
+      "summary": "File: plano-desenvolvimento/29-rankings-estatisticas.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/30-assinatura-json.md",
+      "hash": "41750fdcfeaf3ee1aa7577e405eabdd2b4529cfd9876bacc2bd1af7cb9399eaf",
+      "size": 785,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "File: plano-desenvolvimento/30-assinatura-json.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/31-pixellab-assets.md",
+      "hash": "6a3613dd1b8bf440a0913f6cea976cd44c4126ae1a63e77627e8fa7ec6e60581",
+      "size": 793,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "File: plano-desenvolvimento/31-pixellab-assets.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/32-polish-seguranca-docs.md",
+      "hash": "805f3b6513250007c83d54f3b0df2ec313f5665213355e5b15274df1549e2d31",
+      "size": 943,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.737Z",
+      "summary": "File: plano-desenvolvimento/32-polish-seguranca-docs.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/33-opcional-itens-ia.md",
+      "hash": "08232cf5e041f65cce61ca5d12d912054a6791e671aa90c8b68e08ccbc3e4d3c",
+      "size": 928,
+      "extension": ".md",
+      "modifiedAt": "2026-08-03T21:12:23.848Z",
+      "summary": "File: plano-desenvolvimento/33-opcional-itens-ia.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/34-correcao-portao-chefe-andar.md",
+      "hash": "69dbb109394c2a53c5db8b37e115ef6e3b74c2f5f161d9b35e98d8e6052fe8ef",
+      "size": 7283,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "File: plano-desenvolvimento/34-correcao-portao-chefe-andar.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/35-correcao-navegacao-andares.md",
+      "hash": "7101302dbbc2ebe1737874dc795c33400eb1a15155feebb0b63dbf20cac9c089",
+      "size": 2992,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "File: plano-desenvolvimento/35-correcao-navegacao-andares.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/36-correcao-taxas-desafio-json.md",
+      "hash": "a4124bd83152cffb5d10c328ecb9f536a030c0a6785493b16109a83e4301a77c",
+      "size": 4677,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.701Z",
+      "summary": "File: plano-desenvolvimento/36-correcao-taxas-desafio-json.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/36b-correcao-barra-xp.md",
+      "hash": "47772f9aaa9ee1ebeda3ef9db515c193835cbe9e5e74e41386f6628b787cd1f9",
+      "size": 2837,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.680Z",
+      "summary": "File: plano-desenvolvimento/36b-correcao-barra-xp.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/37-editor-conteudo-fundacao.md",
+      "hash": "90e374064c8f18d14f6331818d62d9782b6a6e58e0d3392657635b9f37dc36da",
+      "size": 3502,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "File: plano-desenvolvimento/37-editor-conteudo-fundacao.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/38-editor-monstros.md",
+      "hash": "68c778d633017d0b128d32d8247697e26532e543f79318a0a7abadeffd16ef30",
+      "size": 2590,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.734Z",
+      "summary": "File: plano-desenvolvimento/38-editor-monstros.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/39-editor-itens.md",
+      "hash": "c030c35071378ce77926b05d4bbf3d0a0892550deac66f4be58984b1dd33fb93",
+      "size": 1244,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "File: plano-desenvolvimento/39-editor-itens.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/40-editor-andares.md",
+      "hash": "988f1f0af82a8bf94a6de5ada7defda8fbb62b38e8b42671773da827efdc537d",
+      "size": 1949,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T22:31:20.883Z",
+      "summary": "File: plano-desenvolvimento/40-editor-andares.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/41-correcao-barras-hp-combate.md",
+      "hash": "2ce947ea32c7a31822c8c78292b6c39f291ea856719d2203a64c7d42f26dc65c",
+      "size": 1301,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.734Z",
+      "summary": "File: plano-desenvolvimento/41-correcao-barras-hp-combate.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/42-grupos-monstros-salas.md",
+      "hash": "f5d9f9e7226857c732b2fa59c1799def32b79f30ea461fd0f272d8c8420d11ee",
+      "size": 1087,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.744Z",
+      "summary": "File: plano-desenvolvimento/42-grupos-monstros-salas.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/43-atributos-dinamicos-core.md",
+      "hash": "319c7fc18e4ca934aced940468e967d0213da10662afe1bd009258656135ebd3",
+      "size": 1037,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "File: plano-desenvolvimento/43-atributos-dinamicos-core.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/44-combate-data-driven.md",
+      "hash": "b62caee77cff67c348b647c589497a336295ff8abd1349c198ef61bc5e421e00",
+      "size": 1294,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.648Z",
+      "summary": "File: plano-desenvolvimento/44-combate-data-driven.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/45-raridades-conteudo.md",
+      "hash": "a6075b4822aefa9dcafaab278568a787fb180f622abeb4f20d5dca16b1b1e6ab",
+      "size": 342,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.651Z",
+      "summary": "File: plano-desenvolvimento/45-raridades-conteudo.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/46-item-snapshot-bag.md",
+      "hash": "55379f61f06ab4482d2df9e8c2275bd3abbac3aba2f211272152f98032c0d478",
+      "size": 397,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.684Z",
+      "summary": "File: plano-desenvolvimento/46-item-snapshot-bag.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/47-drop-roll-raridade.md",
+      "hash": "81abc2dcc508eaa986e949a1c9eb437f691ce56f984b29b888f551fd08a460c8",
+      "size": 370,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.746Z",
+      "summary": "File: plano-desenvolvimento/47-drop-roll-raridade.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/48-ui-item-raridade.md",
+      "hash": "97bca11d580d518ee00b008f979f2a17f2afcb0a79bdad8349d64ba5f670e2ca",
+      "size": 350,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.673Z",
+      "summary": "File: plano-desenvolvimento/48-ui-item-raridade.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/49-itemlevel-andar.md",
+      "hash": "ed61b3d68fa47fd1e14e0b78265cec100020dbbff2b51bd56305d9eeaddc54ed",
+      "size": 433,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.762Z",
+      "summary": "File: plano-desenvolvimento/49-itemlevel-andar.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/50-monster-gold-rarity-drop.md",
+      "hash": "b7af5741d0f0504d0eaa8585b00e1ff2eb6f7d6b68a2a1433caa2932f7ee2db8",
+      "size": 4035,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.723Z",
+      "summary": "File: plano-desenvolvimento/50-monster-gold-rarity-drop.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/51-conteudo-gold-rarity-monstros.md",
+      "hash": "aa396d7cf09c66127031f626c2c5b44913f70450ad113300aced9228ef83be9b",
+      "size": 1780,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.709Z",
+      "summary": "File: plano-desenvolvimento/51-conteudo-gold-rarity-monstros.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/52-ui-monster-gold-rarity.md",
+      "hash": "e3de397b07c722f310b7c7c4bafe45e3bf11f766b3f42d7fb59d68b2d474faa3",
+      "size": 1327,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.663Z",
+      "summary": "File: plano-desenvolvimento/52-ui-monster-gold-rarity.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/53-editor-item-ia-draft.md",
+      "hash": "cedcfcd8f0273e47f669356d6dc080101dbba464141ee968b4a3db8e1f268713",
+      "size": 830,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.779Z",
+      "summary": "File: plano-desenvolvimento/53-editor-item-ia-draft.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/54-editor-item-icon-pixellab.md",
+      "hash": "c3d084103b73ed0d48c14dcc0fc8619189b4eb53f8d62c59d4d32d7d9f5288ab",
+      "size": 893,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.762Z",
+      "summary": "File: plano-desenvolvimento/54-editor-item-icon-pixellab.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/55-editor-andar-ia-draft.md",
+      "hash": "5dc93cb1d7830239519bbd7a13145ca7d82de367f9ed1cf86112245fccd5b3c0",
+      "size": 1537,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T22:31:25.855Z",
+      "summary": "File: plano-desenvolvimento/55-editor-andar-ia-draft.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/56-atributos-item-drop.md",
+      "hash": "9a78b875c697ffb9ffc3525fcef6639365ae21d8695e410fd599c90b73418fa5",
+      "size": 967,
+      "extension": ".md",
+      "modifiedAt": "2026-08-10T02:29:38.893Z",
+      "summary": "File: plano-desenvolvimento/56-atributos-item-drop.md",
+      "symbols": []
+    },
+    {
+      "path": "plano-desenvolvimento/PROXIMO.md",
+      "hash": "5aeb4a967de310333d85b16a4bfd6f91dfd172171c048088d30a8b27c66c2459",
+      "size": 1387,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T22:31:30.463Z",
+      "summary": "File: plano-desenvolvimento/PROXIMO.md",
+      "symbols": []
+    },
+    {
+      "path": "README.md",
+      "hash": "b760dde3c202d9d911a64e11d204b637fe6f072892b146076ce669a6df2612d6",
+      "size": 2346,
+      "extension": ".md",
+      "modifiedAt": "2026-08-09T19:31:46.668Z",
+      "summary": "File: README.md",
+      "symbols": []
+    }
+  ],
+  "ignoredCount": 251,
+  "totalScanned": 579
+}

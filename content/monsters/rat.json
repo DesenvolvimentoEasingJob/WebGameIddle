@@ -4,11 +4,13 @@
   "description": "Rato de masmorra cinza-sujo, focinho pontudo, olhos vermelhos e cauda longa e peluda.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 120,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 40,
+    "attackSpeed": 1.35
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",

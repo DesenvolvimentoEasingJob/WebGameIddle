@@ -202,6 +202,7 @@ export interface MonsterDraftResponse {
   level: number
   hp: number
   baseStats: Record<string, number>
+  bonusDamage?: Record<string, { dmgBase: number; counter: string }>
   bonusDefense: Record<string, number>
   skills: string[]
   behavior: string

@@ -4,11 +4,16 @@
   "description": "Predador esguio envolto em nÃ©voa cinza, olhos brilhantes e garras alongadas.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 160,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 55,
+    "attackSpeed": 1.25,
+    "critChance": 0.22,
+    "critDamage": 1.9,
+    "dodgeChance": 0.1
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",

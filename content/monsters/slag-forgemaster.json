@@ -2,13 +2,23 @@
   "id": "slag-forgemaster",
   "name": "Slag Forgemaster",
   "description": "Mestre forjador de escÃ³ria e lava, bigorna nas costas, martelo incandescente e peito fumegante.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 8,
-  "hp": 140,
+  "hp": 450,
   "baseStats": {
     "dmgBase": 19,
-    "defBase": 9
+    "defBase": 130,
+    "attackSpeed": 0.85
   },
-  "bonusDefense": {},
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 12,
+      "counter": "fireResistance"
+    }
+  },
+  "bonusDefense": {
+    "fireResistance": 20
+  },
   "skills": [],
   "behavior": "aggressive",
   "skyCoinDrop": [
@@ -73,6 +83,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

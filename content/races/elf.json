@@ -20,12 +20,12 @@
     "mpBase": 2
   },
   "equipmentSlots": [
-    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
-    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
-    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1 },
-    { "name": "offHand", "itemType": ["weapon", "focus"], "boxSize": 1 },
-    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
-    { "name": "amulet", "itemType": ["amulet"], "boxSize": 2 }
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1, "row": 1, "order": 2 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1, "row": 2, "order": 2 },
+    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1, "row": 2, "order": 3 },
+    { "name": "offHand", "itemType": ["weapon", "focus"], "boxSize": 1, "row": 2, "order": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 1 },
+    { "name": "amulet", "itemType": ["amulet"], "boxSize": 2, "row": 1, "order": 3 }
   ],
   "blessings": ["mpRegen"],
   "limitations": ["lowCap"],

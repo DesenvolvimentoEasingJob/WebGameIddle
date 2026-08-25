@@ -358,23 +358,45 @@ public class DynamicAttributeTests
     }
 
     [Fact]
-    public void Combat_Turn_Regen_Beats_Low_Damage_Over_Time()
+    public void Combat_Regen_Tick_Beats_Low_Damage_Over_Time()
     {
         var events = new List<BattleEventDto>();
         double hp = 50;
         const double max = 100;
         const double regen = 2; // HP/s
-        const double turnSec = 1;
-        const double damagePerTurn = 1;
+        const int tickMs = 1000;
+        const double damagePerTick = 1;
+        var at = 0;
 
         for (var i = 0; i < 20; i++)
         {
-            hp -= damagePerTurn;
-            CombatService.ApplyCombatTurnRegen(ref hp, max, regen, turnSec, events);
+            at += tickMs;
+            hp -= damagePerTick;
+            CombatService.ApplyCombatRegenTick(ref hp, max, regen, tickMs, at, events);
         }
 
         Assert.True(hp > 50);
         Assert.Contains(events, e => e.Type == "regen");
+        Assert.All(events.Where(e => e.Type == "regen"), e => Assert.True(e.AtMs > 0));
+    }
+
+    [Fact]
+    public void ActionInterval_Scales_With_AttackSpeed()
+    {
+        Assert.Equal(1000, CombatService.ActionIntervalMs(1.0, 1000));
+        Assert.Equal(500, CombatService.ActionIntervalMs(2.0, 1000));
+        Assert.Equal(2000, CombatService.ActionIntervalMs(0.5, 1000));
+    }
+
+    [Fact]
+    public void Fast_Player_Still_Allows_Enemy_Swing_On_Same_Tick_As_Last_Kill()
+    {
+        // AS 4 → player acts 250/500/750/1000; slimes AS 1 → first act at 1000.
+        // No mesmo ms do kill do último, o slime restante deve bater antes de morrer.
+        Assert.Equal(250, CombatService.ActionIntervalMs(4.0, 1000));
+        Assert.Equal(1000, CombatService.ActionIntervalMs(1.0, 1000));
+        // 4 kills: 250+500+750+1000 — o 4º coincide com o 1º ato inimigo.
+        Assert.Equal(4 * 250, CombatService.ActionIntervalMs(1.0, 1000));
     }
 }
 
@@ -437,27 +459,62 @@ public class CombatHitResolverTests
     }
 
     [Fact]
-    public void DefBase_Reduces_Only_Base()
+    public void Armor_Percent_Reduces_Only_Base_Not_Bonus()
     {
         var bonus = new[] { new BonusDamageEntry("fireDamage", 20, "fireResistance") };
+        // mid=10, power=1 → def 10 = 50% reduction
         var hit = CombatHitResolver.Resolve(
             Atk(30, bonus: bonus),
             Def(10, bonusDef: new Dictionary<string, double> { ["fireResistance"] = 15 }),
             0,
-            new Random(0));
-        Assert.Equal(20, hit.BaseDealt);
+            new Random(0),
+            armorMidDef: 10,
+            armorPower: 1);
+        Assert.Equal(15, hit.BaseDealt); // 30 × 0.5
         Assert.Equal(5, hit.BonusDealt);
-        Assert.Equal(25, hit.Amount);
+        Assert.Equal(20, hit.Amount);
+    }
+
+    [Fact]
+    public void Armor_Never_Fully_Negates_Damage()
+    {
+        var hit = CombatHitResolver.Resolve(
+            Atk(100),
+            Def(1_000_000),
+            0,
+            new Random(0),
+            armorMidDef: 4800,
+            armorPower: 0.31);
+        Assert.True(hit.BaseDealt > 0);
+        Assert.True(hit.Amount > 0);
+        Assert.True(hit.Amount < 100);
+    }
+
+    [Fact]
+    public void Armor_Curve_Hits_About_30_Percent_At_300_And_50_At_Mid()
+    {
+        const double mid = 4800;
+        const double power = 0.31;
+        var r300 = CombatHitResolver.ArmorDamageReduction(300, mid, power);
+        var rMid = CombatHitResolver.ArmorDamageReduction(mid, mid, power);
+        Assert.InRange(r300, 0.28, 0.32);
+        Assert.Equal(0.5, rMid, 5);
     }
 
     [Fact]
     public void Bonus_Without_Counter_Ignores_Base_Defense()
     {
         var bonus = new[] { new BonusDamageEntry("fireDamage", 20, "fireResistance") };
-        var hit = CombatHitResolver.Resolve(Atk(30, bonus: bonus), Def(10), 0, new Random(0));
-        Assert.Equal(20, hit.BaseDealt);
+        var hit = CombatHitResolver.Resolve(
+            Atk(30, bonus: bonus),
+            Def(10),
+            0,
+            new Random(0),
+            armorMidDef: 10,
+            armorPower: 1);
+        Assert.Equal(15, hit.BaseDealt);
         Assert.Equal(20, hit.BonusDealt);
-        Assert.Equal(40, hit.Amount);
+        Assert.Equal(35, hit.Amount);
     }
 
     [Fact]
@@ -487,29 +544,23 @@ public class CombatHitResolverTests
     }
 
     [Fact]
-    public void AttackSpeed_1_Leaves_Base_Unchanged()
-    {
-        var hit = CombatHitResolver.Resolve(Atk(30, attackSpeed: 1.0), Def(10), 0, new Random(0));
-        Assert.Equal(20, hit.BaseDealt);
-        Assert.Equal(20, hit.Amount);
-    }
-
-    [Fact]
-    public void AttackSpeed_1_1_Adds_Ten_Percent_To_Base_Only()
+    public void AttackSpeed_Does_Not_Multiply_Damage()
     {
         var bonus = new[] { new BonusDamageEntry("fireDamage", 20, "fireResistance") };
         var hit = CombatHitResolver.Resolve(
             Atk(30, bonus: bonus, attackSpeed: 1.1),
             Def(10),
             0,
-            new Random(0));
-        Assert.Equal(22, hit.BaseDealt); // (30 - 10) × 1.1
+            new Random(0),
+            armorMidDef: 10,
+            armorPower: 1);
+        Assert.Equal(15, hit.BaseDealt); // 30 × 50%, no AS multiplier
         Assert.Equal(20, hit.BonusDealt);
-        Assert.Equal(42, hit.Amount);
+        Assert.Equal(35, hit.Amount);
     }
 
     [Fact]
-    public void AttackSpeed_Applies_Before_Crit()
+    public void Crit_Ignores_AttackSpeed_On_Damage()
     {
         var hit = CombatHitResolver.Resolve(
             Atk(10, critChance: 1, critDamage: 2, attackSpeed: 1.1),
@@ -517,8 +568,19 @@ public class CombatHitResolverTests
             0,
             new Random(0));
         Assert.True(hit.Crit);
-        Assert.Equal(22, hit.BaseDealt); // 10 × 1.1 × 2
-        Assert.Equal(22, hit.Amount);
+        Assert.Equal(20, hit.BaseDealt); // 10 × 2, no AS
+        Assert.Equal(20, hit.Amount);
+    }
+
+    [Fact]
+    public void Monster_StatScale_Applies_To_Dmg_And_Def()
+    {
+        using var doc = System.Text.Json.JsonDocument.Parse("""
+            { "baseStats": { "dmgBase": 5, "defBase": 10 } }
+            """);
+        var profile = CombatHitResolver.FromMonster(doc.RootElement, statScale: 4);
+        Assert.Equal(20, profile.DmgBase);
+        Assert.Equal(40, profile.DefBase);
     }
 
     [Fact]
@@ -594,6 +656,74 @@ public class CombatHitResolverTests
         Assert.Equal(2, profile.DefBase);
         Assert.Equal(10, profile.BonusDefense["fireResistance"]);
         Assert.Equal(1.0, profile.AttackSpeed);
+    }
+
+    [Fact]
+    public void Monster_Reads_Crit_Dodge_And_BonusDamage()
+    {
+        using var doc = System.Text.Json.JsonDocument.Parse("""
+            {
+              "baseStats": {
+                "dmgBase": 10,
+                "defBase": 1,
+                "critChance": 0.25,
+                "critDamage": 2,
+                "dodgeChance": 0.1
+              },
+              "bonusDamage": {
+                "fireDamage": { "dmgBase": 8, "counter": "fireResistance" }
+              }
+            }
+            """);
+        var profile = CombatHitResolver.FromMonster(doc.RootElement);
+        Assert.Equal(0.25, profile.CritChance);
+        Assert.Equal(2, profile.CritDamage);
+        Assert.Equal(0.1, profile.DodgeChance);
+        Assert.Single(profile.BonusDamage);
+        Assert.Equal("fireDamage", profile.BonusDamage[0].Key);
+        Assert.Equal(8, profile.BonusDamage[0].DmgBase);
+        Assert.Equal("fireResistance", profile.BonusDamage[0].Counter);
+    }
+
+    [Fact]
+    public void Monster_HpRegen_Missing_Is_Zero()
+    {
+        using var doc = System.Text.Json.JsonDocument.Parse("""
+            { "baseStats": { "dmgBase": 5, "defBase": 2 } }
+            """);
+        Assert.Equal(0, CombatHitResolver.ReadMonsterHpRegenPerSec(doc.RootElement));
+    }
+
+    [Fact]
+    public void Monster_HpRegen_From_BaseStats()
+    {
+        using var doc = System.Text.Json.JsonDocument.Parse("""
+            { "baseStats": { "dmgBase": 5, "hpRegenPerSec": 2.5 } }
+            """);
+        Assert.Equal(2.5, CombatHitResolver.ReadMonsterHpRegenPerSec(doc.RootElement));
+    }
+
+    [Fact]
+    public void Combat_Regen_Tick_Can_Target_Enemy()
+    {
+        var events = new List<BattleEventDto>();
+        double hp = 40;
+        CombatService.ApplyCombatRegenTick(
+            ref hp,
+            maxHp: 100,
+            regenPerSec: 3,
+            tickMs: 1000,
+            atMs: 1000,
+            events,
+            actor: "enemy",
+            slot: 1,
+            name: "Slime");
+
+        Assert.Equal(43, hp, 5);
+        var regen = Assert.Single(events, e => e.Type == "regen");
+        Assert.Equal("enemy", regen.Actor);
+        Assert.Equal(1, regen.Slot);
+        Assert.Contains("Slime", regen.Message);
     }
 }
 

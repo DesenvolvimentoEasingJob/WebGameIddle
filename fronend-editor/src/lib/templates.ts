@@ -10,6 +10,7 @@ function monsterTemplate(): JsonValue {
     level: 1,
     hp: 30,
     baseStats: { dmgBase: 5, defBase: 2 },
+    bonusDamage: {},
     bonusDefense: {},
     skills: [],
     behavior: 'aggressive',
@@ -91,8 +92,12 @@ function configTemplate(): JsonValue {
       battleCoinRewardBase: 2,
       hpRegenGlobalMult: 1.0,
       hpDefeatRevivePct: 0.5,
-      combatTurnSeconds: 1.0,
+      combatBaseActionMs: 1000,
+      combatMaxDurationMs: 60000,
+      combatRegenTickMs: 1000,
       combatDamageNoise: 0,
+      combatArmorMidDef: 4800,
+      combatArmorPower: 0.31,
     },
   }
 }

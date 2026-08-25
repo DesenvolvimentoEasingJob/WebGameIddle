@@ -5,7 +5,13 @@ export type InventoryResponse = {
   slotCount: number
   items: BagItem[]
   equipment: Record<string, BagItem | null>
-  equipmentSlots: { name: string; itemType: string[]; boxSize: number }[]
+  equipmentSlots: {
+    name: string
+    itemType: string[]
+    boxSize: number
+    row?: number
+    order?: number
+  }[]
 }
 
 export function fetchInventory() {

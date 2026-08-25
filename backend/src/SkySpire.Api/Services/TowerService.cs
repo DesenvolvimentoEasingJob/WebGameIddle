@@ -204,12 +204,14 @@ public sealed class TowerService(
                     ct);
                 node["skyCoin"] = skyCoin;
                 var withCoins = result.Events.ToList();
+                var coinAt = withCoins.Count == 0 ? 0 : withCoins.Max(e => e.AtMs);
                 withCoins.Add(new BattleEventDto(
                     "coins",
                     "player",
                     null,
                     (int)coinsGained,
-                    $"+{coinsGained} SkyCoin"));
+                    $"+{coinsGained} SkyCoin",
+                    AtMs: coinAt));
                 events = withCoins;
             }
             else
@@ -338,7 +340,8 @@ public sealed class TowerService(
                 "system",
                 null,
                 (int)fee,
-                isRegistry ? $"-{fee} SkyCoin registry fee" : $"-{fee} SkyCoin boss gate fee"));
+                isRegistry ? $"-{fee} SkyCoin registry fee" : $"-{fee} SkyCoin boss gate fee",
+                AtMs: 0));
         }
 
         if (result.Victory)
@@ -346,12 +349,14 @@ public sealed class TowerService(
             if (isRegistry)
             {
                 await ownership.WriteSnapshotAsync(userId, user.Username, node, floor, ct);
+                var metaAt = events.Count == 0 ? 0 : events.Max(e => e.AtMs);
                 events.Add(new BattleEventDto(
                     "ownership",
                     "system",
                     null,
                     floor,
-                    $"You registered floor {floor}!"));
+                    $"You registered floor {floor}!",
+                    AtMs: metaAt));
             }
 
             var floorCount = await FloorCountAsync(ct);
@@ -359,12 +364,14 @@ public sealed class TowerService(
             if (unlocked > maxFloor)
             {
                 tower["maxUnlockedFloor"] = unlocked;
+                var unlockAt = events.Count == 0 ? 0 : events.Max(e => e.AtMs);
                 events.Add(new BattleEventDto(
                     "floor_unlocked",
                     "system",
                     null,
                     unlocked,
-                    $"Floor {unlocked} unlocked!"));
+                    $"Floor {unlocked} unlocked!",
+                    AtMs: unlockAt));
             }
 
             node["tower"] = tower;
@@ -386,12 +393,14 @@ public sealed class TowerService(
                     isRegistry ? "registry_battle_reward" : "boss_battle_reward",
                     $"floor-{floor}",
                     ct);
+                var coinAt = events.Count == 0 ? 0 : events.Max(e => e.AtMs);
                 events.Add(new BattleEventDto(
                     "coins",
                     "player",
                     null,
                     (int)coinsGained,
-                    $"+{coinsGained} SkyCoin"));
+                    $"+{coinsGained} SkyCoin",
+                    AtMs: coinAt));
             }
             else
             {
@@ -626,7 +635,9 @@ public sealed record BattleEventDto(
     string? Message,
     int? HpAfter = null,
     int? MaxHp = null,
-    int? Slot = null);
+    int? Slot = null,
+    /// <summary>Tempo simulado da luta (ms). Empates: ordem estável no array.</summary>
+    int AtMs = 0);
 
 public sealed record BattleResultDto(
     bool Victory,
@@ -640,4 +651,19 @@ public sealed record BattleResultDto(
     long CoinsGained = 0,
     long? SkyCoin = null,
     /// <summary>True se algum monstro da luta tinha <c>skyCoinDrop</c> no JSON.</summary>
-    bool MonsterSkyCoinDefined = false);
+    bool MonsterSkyCoinDefined = false,
+    /// <summary>Itens únicos dropados nesta luta (anúncio no front; não vão no battle log).</summary>
+    IReadOnlyList<UniqueDropDto>? UniqueDrops = null);
+
+/// <summary>Preview de item único para modal de anúncio.</summary>
+public sealed record UniqueDropDto(
+    string Name,
+    string? Description,
+    string? Lore,
+    string? Icon,
+    string? Type,
+    int? Stars,
+    string? RarityName,
+    int? RarityId,
+    int? ItemLevel,
+    IReadOnlyDictionary<string, double>? Stats);

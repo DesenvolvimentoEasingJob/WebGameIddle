@@ -28,8 +28,18 @@ Um arquivo. Editável no fronend-editor → Config. Secrets ficam no `.env`.
     "battleCoinRewardBase": 2,
     "hpRegenGlobalMult": 1.0,
     "hpDefeatRevivePct": 0.5,
-    "combatTurnSeconds": 1.0,
-    "combatDamageNoise": 0
+    "combatBaseActionMs": 1000,
+    "combatMaxDurationMs": 60000,
+    "combatRegenTickMs": 1000,
+    "combatDamageNoise": 0,
+    "combatArmorMidDef": 4800,
+    "combatArmorPower": 0.31,
+    "uniqueDropChance": 0.005,
+    "uniqueDropEnabled": true,
+    "uniqueRarityChanceMult": 7,
+    "uniqueStars": 5,
+    "uniqueOpenAiTimeoutMs": 8000,
+    "uniquePixelLabTimeoutMs": 45000
   }
 }
 ```
@@ -55,8 +65,9 @@ Prompt sprite PixelLab: prefixo fixo + `generative.monsterImageComplement` + mon
   },
   "levelGain": { "strength": 1, "intelligence": 1, "agility": 1, "hpBase": 3 },
   "equipmentSlots": [
-    { "name": "mainHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
-    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 }
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1, "row": 1, "order": 2 },
+    { "name": "mainHand", "itemType": ["weapon", "shield"], "boxSize": 1, "row": 2, "order": 3 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 1 }
   ],
   "blessings": [],
   "limitations": [],
@@ -64,7 +75,9 @@ Prompt sprite PixelLab: prefixo fixo + `generative.monsterImageComplement` + mon
 }
 ```
 
-`boxSize` é divisor do tamanho visual do slot no inventário (`1` = tamanho cheio, `2` = metade, … até `4` para anéis). Copiado para o JSON do personagem na create.
+`boxSize` controla o tamanho visual do slot no inventário em escala `1…10`: `1` = tamanho cheio, `10` = menor (mesmo tamanho que o antigo `4`, ou seja ~1/4 do base). Valores intermediários interpolam em passos iguais. Copiado para o JSON do personagem na create.
+
+`row` e `order` controlam o paper doll em `/hub/status`: `row` = linha do corpo (1 = cabeça, 2 = tronco/mãos, …); `order` = posição esquerda→direita na linha. O inventário ainda ignora esses campos.
 
 `baseStats.hpRegenPerSec` é HP **bruto** por segundo (como `dmgBase`), não fração do máximo.
 O valor efetivo = semente + fórmulas do `attributes/core.json`.
@@ -147,7 +160,12 @@ vários do mesmo tipo, ou misture tipos. Sem hardcode de quantidade no servidor.
   "hp": 30,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 1
+    "defBase": 1,
+    "attackSpeed": 1.0,
+    "critChance": 0,
+    "critDamage": 1.5,
+    "dodgeChance": 0,
+    "hpRegenPerSec": 0
   },
   "bonusDamage": {},
   "bonusDefense": {
@@ -183,12 +201,19 @@ vários do mesmo tipo, ou misture tipos. Sem hardcode de quantidade no servidor.
 |-------|-------------|
 | `description` | Flavor + aparência (PT); obrigatório no editor — enriquece Gerar sprite / Animar |
 | `generativeComplement` | Opcional; **acrescenta** a `config/global.json` → `generative.monsterImageComplement` |
+| `baseStats.attackSpeed` | Cadência (1.0 = uma ação por `combatBaseActionMs`); **não** multiplica dano. Default 1 |
+| `baseStats.critChance` / `critDamage` | Crítico só se **ambos** existirem; multiplica só o dano base |
+| `baseStats.dodgeChance` | Chance de anular golpe recebido |
+| `baseStats.hpRegenPerSec` | HP bruto/s em combate (ticks como o player). Ausente ⇒ 0 |
+| `bonusDamage` | Mapa `{ tipo: { dmgBase, counter } }` — elemental vs `bonusDefense[counter]` |
 | `skyCoinDrop` | Range inclusivo de SkyCoin ao matar; ausente → fallback de andar no server |
 | `rarityLuck` | Enviesa raridade do gear: `effectiveChance = 1 − (1 − chance)^(1 + luck)` |
 | `assets.width` / `assets.height` | Tamanho de apresentação no combat footer (px). Default server/front: 56. Chefes de andar: tipicamente 112 (2×) |
 | `assets.animations.idle` | Loop do combat footer (PixelLab Pro); opcional — sem isso usa `sprite` estático |
 
-Legado `attack`/`defense`/`weaknesses` ainda é lido no server como fallback; conteúdo MVP usa `baseStats` + `bonusDefense`.
+Legado `attack`/`defense`/`weaknesses` ainda é lido no server como fallback; conteúdo MVP usa `baseStats` + `bonusDamage`/`bonusDefense`.
+
+Monstro **não** passa por `StatCalculator`/`core.json` — scalars de combate são autorados direto no JSON.
 
 ### Combate data-driven (personagem e monstro)
 
@@ -197,9 +222,11 @@ Legado `attack`/`defense`/`weaknesses` ainda é lido no server como fallback; co
   "baseStats": {
     "dmgBase": 30,
     "defBase": 10,
+    "attackSpeed": 1.2,
     "critChance": 0.1,
     "critDamage": 1.5,
-    "dodgeChance": 0.05
+    "dodgeChance": 0.05,
+    "hpRegenPerSec": 1.5
   },
   "bonusDamage": {
     "fireDamage": {
@@ -216,11 +243,14 @@ Legado `attack`/`defense`/`weaknesses` ainda é lido no server como fallback; co
 | Campo ausente | Efeito |
 |---------------|--------|
 | `defBase` | defesa 0 |
+| `attackSpeed` | cadência 1.0 |
 | `critChance` / `critDamage` | sem crítico |
 | `dodgeChance` | sem esquiva |
-| counter em `bonusDefense` | bônus elemental integral (ignora `defBase`) |
+| `hpRegenPerSec` | sem regen em combate (monstro) |
+| counter em `bonusDefense` | bônus elemental integral (ignora armadura %) |
 
-Crit multiplica **somente** o dano base. Ruído RNG: env `COMBAT_DAMAGE_NOISE`.
+Defesa física: `reduction = def^p / (def^p + mid^p)` (`combatArmorMidDef` / `combatArmorPower` em `global.json`). Crit multiplica **somente** o dano base. Ruído RNG: `combatDamageNoise`.
+Magias/skills mid-fight: backlog (fora do todo 57–59).
 
 ## Atributos de item (`attributes/item-attributes.json`)
 

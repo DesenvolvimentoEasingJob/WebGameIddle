@@ -2,12 +2,17 @@
   "id": "briar-matriarch",
   "name": "Briar Matriarch",
   "description": "Matriarca de espinhos vivos, corpo vegetal armado de roseiras e raÃ­zes, presenÃ§a de boss.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 6,
-  "hp": 110,
+  "hp": 360,
   "baseStats": {
     "dmgBase": 15,
-    "defBase": 7
+    "defBase": 110,
+    "attackSpeed": 0.85,
+    "dodgeChance": 0.06,
+    "hpRegenPerSec": 1.2
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -61,6 +66,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

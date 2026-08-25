@@ -9,6 +9,7 @@ export const BASE_STAT_SUGGESTIONS = [
   'critDamage',
   'dodgeChance',
   'attackSpeed',
+  'hpRegenPerSec',
 ] as const
 
 export interface MonsterLootForm {
@@ -16,6 +17,11 @@ export interface MonsterLootForm {
   chance: number
   qtyMin: number
   qtyMax: number
+}
+
+export interface MonsterBonusDamageEntry {
+  dmgBase: number
+  counter: string
 }
 
 export interface MonsterIdleAnimation {
@@ -37,6 +43,7 @@ export interface MonsterFormData {
   level: number
   hp: number
   baseStats: Record<string, number>
+  bonusDamage: Record<string, MonsterBonusDamageEntry>
   bonusDefense: Record<string, number>
   skills: string[]
   behavior: string
@@ -73,6 +80,7 @@ export function emptyMonsterForm(): MonsterFormData {
     level: 1,
     hp: 30,
     baseStats: { dmgBase: 5, defBase: 2 },
+    bonusDamage: {},
     bonusDefense: {},
     skills: [],
     behavior: 'aggressive',
@@ -93,6 +101,20 @@ function readNumberMap(raw: unknown): Record<string, number> {
   return out
 }
 
+function readBonusDamageMap(raw: unknown): Record<string, MonsterBonusDamageEntry> {
+  const out: Record<string, MonsterBonusDamageEntry> = {}
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (!v || typeof v !== 'object' || Array.isArray(v)) continue
+    const entry = v as Record<string, unknown>
+    const dmgBase =
+      typeof entry.dmgBase === 'number' && Number.isFinite(entry.dmgBase) ? entry.dmgBase : 0
+    const counter = typeof entry.counter === 'string' ? entry.counter : ''
+    out[k] = { dmgBase, counter }
+  }
+  return out
+}
+
 export function parseMonsterForm(raw: unknown): MonsterFormData {
   const base = emptyMonsterForm()
   if (!raw || typeof raw !== 'object') return base
@@ -109,6 +131,7 @@ export function parseMonsterForm(raw: unknown): MonsterFormData {
   }
 
   const bonusDefense = readNumberMap(o.bonusDefense)
+  const bonusDamage = readBonusDamageMap(o.bonusDamage)
 
   const skills: string[] = []
   if (Array.isArray(o.skills)) {
@@ -169,6 +192,7 @@ export function parseMonsterForm(raw: unknown): MonsterFormData {
     level: typeof o.level === 'number' && Number.isFinite(o.level) ? o.level : 1,
     hp: typeof o.hp === 'number' && Number.isFinite(o.hp) ? o.hp : 30,
     baseStats,
+    bonusDamage,
     bonusDefense,
     skills,
     behavior: typeof o.behavior === 'string' && o.behavior ? o.behavior : 'aggressive',
@@ -248,6 +272,12 @@ export function monsterFormToJson(
     level: form.level,
     hp: form.hp,
     baseStats: { ...form.baseStats },
+    bonusDamage: Object.fromEntries(
+      Object.entries(form.bonusDamage).map(([k, v]) => [
+        k,
+        { dmgBase: v.dmgBase, counter: v.counter.trim() },
+      ]),
+    ),
     bonusDefense: { ...form.bonusDefense },
     skills: [...form.skills],
     behavior: form.behavior,
@@ -297,6 +327,15 @@ export function validateMonsterForm(form: MonsterFormData): string | null {
   for (const [k, v] of Object.entries(form.bonusDefense)) {
     if (!k.trim()) return 'bonusDefense: chave vazia não é permitida.'
     if (!Number.isFinite(v)) return `bonusDefense: valor inválido em "${k}".`
+  }
+  for (const [k, v] of Object.entries(form.bonusDamage)) {
+    if (!k.trim()) return 'bonusDamage: chave vazia não é permitida.'
+    if (!Number.isFinite(v.dmgBase) || v.dmgBase <= 0) {
+      return `bonusDamage.${k}: dmgBase deve ser > 0.`
+    }
+    if (!v.counter.trim()) {
+      return `bonusDamage.${k}: counter é obrigatório (ex.: fireResistance).`
+    }
   }
   for (let i = 0; i < form.loot.length; i++) {
     const l = form.loot[i]

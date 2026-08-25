@@ -2,6 +2,7 @@
 
 STATUS: concluido
 CONCLUIDO_EM: 2026-08-06
+SUPERSEDED_BY: docs/migracao-combat-timeline.md
 
 ## Objetivo
 

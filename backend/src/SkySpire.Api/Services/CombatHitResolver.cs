@@ -11,7 +11,7 @@ public sealed class CombatFighterProfile
 {
     public double DmgBase { get; init; }
     public double DefBase { get; init; }
-    /// <summary>Multiplicador do dano base por golpe (1.0 = neutro; 1.1 = +10%).</summary>
+    /// <summary>Cadência relativa (1.0 = uma ação por <c>combatBaseActionMs</c>). Não multiplica dano.</summary>
     public double AttackSpeed { get; init; } = 1.0;
     public double? CritChance { get; init; }
     public double? CritDamage { get; init; }
@@ -38,8 +38,9 @@ public readonly record struct HitResolution(
     double Noise);
 
 /// <summary>
-/// Resolve um golpe a partir dos JSONs do atacante/defensor — sem hardcode de crit/dodge/def.
-/// Crit e attackSpeed multiplicam **somente** o dano base. Bônus elementais usam <c>counter</c> em <c>bonusDefense</c>.
+/// Resolve um golpe a partir dos JSONs do atacante/defensor — sem hardcode de crit/dodge.
+/// Crit multiplica **somente** o dano base. <c>attackSpeed</c> é cadência (fora desta fórmula).
+/// Defesa física: <c>reduction = def^p / (def^p + mid^p)</c>; bônus elementais usam <c>counter</c>.
 /// </summary>
 public static class CombatHitResolver
 {
@@ -95,11 +96,13 @@ public static class CombatHitResolver
 
     /// <summary>
     /// Monstro: <c>baseStats.dmgBase</c>/<c>defBase</c> ou legado <c>attack</c>/<c>defense</c>.
+    /// <paramref name="statScale"/> multiplica dmg e def (ex.: √difficulty do andar).
     /// </summary>
-    public static CombatFighterProfile FromMonster(JsonElement monster, double dmgScale = 1.0)
+    public static CombatFighterProfile FromMonster(JsonElement monster, double statScale = 1.0)
     {
-        var dmg = ReadMonsterStat(monster, "dmgBase", "attack", 0) * dmgScale;
-        var def = ReadMonsterStat(monster, "defBase", "defense", 0);
+        var scale = Math.Max(0, statScale);
+        var dmg = ReadMonsterStat(monster, "dmgBase", "attack", 0) * scale;
+        var def = ReadMonsterStat(monster, "defBase", "defense", 0) * scale;
         var attackSpeed = TryReadNestedStat(monster, "attackSpeed") ?? 1.0;
         double? critChance = TryReadNestedStat(monster, "critChance");
         double? critDamage = TryReadNestedStat(monster, "critDamage");
@@ -118,19 +121,39 @@ public static class CombatHitResolver
         };
     }
 
+    /// <summary>
+    /// Redução física 0..&lt;1: <c>def^p / (def^p + mid^p)</c>. Nunca chega a 100%.
+    /// </summary>
+    public static double ArmorDamageReduction(double def, double midDef, double power)
+    {
+        var d = Math.Max(0, def);
+        if (d <= 0)
+        {
+            return 0;
+        }
+
+        var mid = Math.Max(1e-9, midDef);
+        var p = Math.Max(1e-9, power);
+        var dp = Math.Pow(d, p);
+        var mp = Math.Pow(mid, p);
+        return dp / (dp + mp);
+    }
+
     public static HitResolution Resolve(
         CombatFighterProfile attacker,
         CombatFighterProfile defender,
         double damageNoise,
-        Random rng)
+        Random rng,
+        double armorMidDef = 4800,
+        double armorPower = 0.31)
     {
         if (defender.CanDodge && rng.NextDouble() < defender.DodgeChance!.Value)
         {
             return new HitResolution(true, false, 0, 0, 0, 0);
         }
 
-        var baseDealt = Math.Max(0, attacker.DmgBase - defender.DefBase);
-        baseDealt *= Math.Max(0, attacker.AttackSpeed);
+        var reduction = ArmorDamageReduction(defender.DefBase, armorMidDef, armorPower);
+        var baseDealt = Math.Max(0, attacker.DmgBase * (1.0 - reduction));
         var crit = false;
         if (attacker.CanCrit && rng.NextDouble() < attacker.CritChance!.Value)
         {
@@ -235,6 +258,12 @@ public static class CombatHitResolver
 
         return fallback;
     }
+
+    /// <summary>
+    /// HP/s bruto do monstro em combate (<c>baseStats.hpRegenPerSec</c> ou root). Ausente ⇒ 0.
+    /// </summary>
+    public static double ReadMonsterHpRegenPerSec(JsonElement monster) =>
+        Math.Max(0, TryReadNestedStat(monster, "hpRegenPerSec") ?? 0);
 
     private static double? TryReadNestedStat(JsonElement monster, string key)
     {

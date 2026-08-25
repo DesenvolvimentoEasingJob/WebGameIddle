@@ -30,6 +30,7 @@ import type {
   CharacterSummary,
   CombatEnemy,
   TowerState,
+  UniqueDropPreview,
 } from '../types/api'
 import {
   COMBAT_TIMING,
@@ -61,6 +62,11 @@ type GameSessionValue = {
   characterMissing: boolean
   /** Revalida personagem + stats. Chamar em eventos que os alteram, não por tick. */
   refreshCharacter: () => Promise<void>
+  /**
+   * Sobe quando a bag pode ter mudado fora do painel (ex.: loot de batalha).
+   * Inventário reage a este contador — sem polling.
+   */
+  inventoryRevision: number
   error: string | null
   busy: boolean
   playing: boolean
@@ -87,6 +93,12 @@ type GameSessionValue = {
   skipAnimation: () => void
   clearError: () => void
   ownership: { owned: boolean; ownerUsername: string | null } | null
+  /** Fila de anúncios de item único (modal; fora do battle log). */
+  uniqueAnnounce: UniqueDropPreview | null
+  uniqueAnnounceRemaining: number
+  dismissUniqueAnnounce: () => void
+  /** true enquanto o server demora (ex.: geração de item único). */
+  supernaturalEvent: boolean
 }
 
 const GameSessionContext = createContext<GameSessionValue | null>(null)
@@ -114,6 +126,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
   const [character, setCharacter] = useState<CharacterSummary | null>(null)
   const [stats, setStats] = useState<CharacterStats | null>(null)
   const [characterMissing, setCharacterMissing] = useState(false)
+  const [inventoryRevision, setInventoryRevision] = useState(0)
   const [enemies, setEnemies] = useState<CombatEnemy[]>([])
   const [playerHp, setPlayerHp] = useState<number | null>(null)
   const [playerMaxHp, setPlayerMaxHp] = useState<number | null>(null)
@@ -122,8 +135,11 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     null,
   )
   const [floors, setFloors] = useState<FloorSummary[]>([])
+  const [uniqueQueue, setUniqueQueue] = useState<UniqueDropPreview[]>([])
+  const [supernaturalEvent, setSupernaturalEvent] = useState(false)
   const skipRef = useRef(false)
   const stopAutoRef = useRef(false)
+  const supernaturalTimerRef = useRef<number | null>(null)
   const floaterId = useRef(0)
   const motionId = useRef(0)
   const playbackClockRef = useRef<ReturnType<typeof createPlaybackClock> | null>(null)
@@ -136,6 +152,14 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     playingRef.current = playing
   }, [playing])
+
+  useEffect(() => {
+    return () => {
+      if (supernaturalTimerRef.current != null) {
+        window.clearTimeout(supernaturalTimerRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     playerHpRef.current = playerHp
@@ -168,14 +192,17 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  // Regen fluido sempre (em e fora de combate). Dano aplica por outro caminho
-  // (hits); HP é um valor compartilhado — os dois sistemas não se bloqueiam.
+  // Regen fluido só fora de combate. Em playback a HP vem só dos eventos (atMs).
   useEffect(() => {
     let frame = 0
     let last = performance.now()
     const tick = (now: number) => {
       const dt = Math.min(0.25, (now - last) / 1000)
       last = now
+      if (playingRef.current) {
+        frame = window.requestAnimationFrame(tick)
+        return
+      }
       const cur = playerHpRef.current
       const max = playerMaxHpRef.current
       const rate = hpRegenPerSecRef.current
@@ -222,6 +249,10 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
 
   // Personagem e stats calculados mudam só em eventos (level up, treino, equip),
   // não a cada tick de combate. Buscamos uma vez e revalidamos sob demanda.
+  const bumpInventory = useCallback(() => {
+    setInventoryRevision((n) => n + 1)
+  }, [])
+
   const refreshCharacter = useCallback(async () => {
     try {
       const [c, s] = await Promise.all([fetchMyCharacter(), fetchMyStats()])
@@ -311,9 +342,24 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Player: dano só subtrai da HP local (regen continua no rAF).
-      // Inimigo: ainda usa hpAfter do server.
-      // regen do server: só log — a barra já sobe pelo tick local.
+      // HP em combate: só eventos do server (hpAfter quando presente).
+      if (ev.type === 'regen' && ev.hpAfter != null) {
+        if (ev.actor === 'player') {
+          syncPlayerVitals({
+            hp: ev.hpAfter,
+            maxHp: ev.maxHp ?? undefined,
+          })
+        } else if (ev.actor === 'enemy') {
+          const slot = ev.slot ?? 0
+          upsertEnemy(slot, {
+            slot,
+            hp: ev.hpAfter,
+            maxHp: ev.maxHp ?? undefined,
+            alive: ev.hpAfter > 0,
+          })
+        }
+      }
+
       if (ev.type === 'revive' && ev.hpAfter != null) {
         syncPlayerVitals({
           hp: ev.hpAfter,
@@ -321,15 +367,22 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
         })
       }
 
-      if ((ev.type === 'hit' || ev.type === 'crit') && ev.target === 'player' && ev.amount != null) {
-        if (ev.maxHp != null) {
-          setPlayerMaxHp(ev.maxHp)
-          playerMaxHpRef.current = ev.maxHp
+      if ((ev.type === 'hit' || ev.type === 'crit') && ev.target === 'player') {
+        if (ev.hpAfter != null) {
+          syncPlayerVitals({
+            hp: ev.hpAfter,
+            maxHp: ev.maxHp ?? undefined,
+          })
+        } else if (ev.amount != null) {
+          if (ev.maxHp != null) {
+            setPlayerMaxHp(ev.maxHp)
+            playerMaxHpRef.current = ev.maxHp
+          }
+          const cur = playerHpRef.current ?? 0
+          const next = Math.max(0, cur - ev.amount)
+          playerHpRef.current = next
+          setPlayerHp(next)
         }
-        const cur = playerHpRef.current ?? ev.hpAfter ?? 0
-        const next = Math.max(0, cur - ev.amount)
-        playerHpRef.current = next
-        setPlayerHp(next)
       }
 
       if ((ev.type === 'hit' || ev.type === 'crit') && ev.target === 'enemy' && ev.hpAfter != null) {
@@ -500,6 +553,42 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
     }
   }, [clearEnemies])
 
+  const enqueueUniqueDrops = useCallback((drops: UniqueDropPreview[] | null | undefined) => {
+    if (!drops || drops.length === 0) return false
+    stopAutoRef.current = true
+    setUniqueQueue((prev) => [...prev, ...drops])
+    return true
+  }, [])
+
+  const dismissUniqueAnnounce = useCallback(() => {
+    setUniqueQueue((prev) => prev.slice(1))
+  }, [])
+
+  /** Mostra loading atmosférico se a resolução da luta demorar (geração de único). */
+  const clearSupernaturalWait = useCallback(() => {
+    if (supernaturalTimerRef.current != null) {
+      window.clearTimeout(supernaturalTimerRef.current)
+      supernaturalTimerRef.current = null
+    }
+    setSupernaturalEvent(false)
+  }, [])
+
+  const awaitBattleResult = useCallback(
+    async (request: () => Promise<BattleResult>) => {
+      clearSupernaturalWait()
+      // Lutas normais respondem rápido; único (IA) demora — overlay após breve espera.
+      supernaturalTimerRef.current = window.setTimeout(() => {
+        setSupernaturalEvent(true)
+      }, 650)
+      try {
+        return await request()
+      } finally {
+        clearSupernaturalWait()
+      }
+    },
+    [clearSupernaturalWait],
+  )
+
   const battle = useCallback(async () => {
     setBusy(true)
     setError(null)
@@ -508,7 +597,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       let keepGoing = true
       while (keepGoing) {
         clearEnemies()
-        const result: BattleResult = await startBattle()
+        const result: BattleResult = await awaitBattleResult(startBattle)
         await playEvents(result.events)
         if (result.state) {
           setState(result.state)
@@ -521,8 +610,12 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
         else await refresh()
         if (result.skyCoin != null) setSkyCoin(result.skyCoin)
 
+        const gotUnique = enqueueUniqueDrops(result.uniqueDrops)
+        if (result.loot.length > 0 || gotUnique) bumpInventory()
+
         keepGoing =
           !stopAutoRef.current &&
+          !gotUnique &&
           Boolean(result.victory && result.autoAdvanceRoom && result.state?.autoClimb)
         if (keepGoing) {
           clearEnemies()
@@ -534,9 +627,19 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       setError(err instanceof ApiError ? err.message : 'Falha na batalha')
       setPlaying(false)
     } finally {
+      clearSupernaturalWait()
       setBusy(false)
     }
-  }, [playEvents, refresh, clearEnemies, syncPlayerVitals])
+  }, [
+    playEvents,
+    refresh,
+    clearEnemies,
+    syncPlayerVitals,
+    bumpInventory,
+    enqueueUniqueDrops,
+    awaitBattleResult,
+    clearSupernaturalWait,
+  ])
 
   const runChallenge = useCallback(
     async (request: () => Promise<BattleResult>) => {
@@ -545,7 +648,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       stopAutoRef.current = true
       try {
         clearEnemies()
-        const result = await request()
+        const result = await awaitBattleResult(request)
         await playEvents(result.events)
         if (result.state) {
           setState(result.state)
@@ -556,15 +659,27 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
           })
         }
         if (result.skyCoin != null) setSkyCoin(result.skyCoin)
+        const gotUnique = enqueueUniqueDrops(result.uniqueDrops)
+        if (result.loot.length > 0 || gotUnique) bumpInventory()
         await refresh()
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Falha no desafio')
         setPlaying(false)
       } finally {
+        clearSupernaturalWait()
         setBusy(false)
       }
     },
-    [playEvents, refresh, clearEnemies, syncPlayerVitals],
+    [
+      playEvents,
+      refresh,
+      clearEnemies,
+      syncPlayerVitals,
+      bumpInventory,
+      enqueueUniqueDrops,
+      awaitBattleResult,
+      clearSupernaturalWait,
+    ],
   )
 
   const challenge = useCallback(() => runChallenge(challengeBoss), [runChallenge])
@@ -586,6 +701,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       stats,
       characterMissing,
       refreshCharacter,
+      inventoryRevision,
       error,
       busy,
       playing,
@@ -610,6 +726,10 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       registerFloor,
       skipAnimation,
       clearError,
+      uniqueAnnounce: uniqueQueue[0] ?? null,
+      uniqueAnnounceRemaining: Math.max(0, uniqueQueue.length - 1),
+      dismissUniqueAnnounce,
+      supernaturalEvent,
     }),
     [
       state,
@@ -618,6 +738,7 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       stats,
       characterMissing,
       refreshCharacter,
+      inventoryRevision,
       error,
       busy,
       playing,
@@ -642,6 +763,9 @@ export function GameSessionProvider({ children }: { children: ReactNode }) {
       registerFloor,
       skipAnimation,
       clearError,
+      uniqueQueue,
+      dismissUniqueAnnounce,
+      supernaturalEvent,
     ],
   )
 

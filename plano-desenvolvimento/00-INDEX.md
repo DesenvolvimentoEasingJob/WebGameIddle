@@ -32,7 +32,8 @@ Plano sequencial baseado em `Game-base.txt`, adaptado para stack moderna.
 
 Incluído: home → login → raça → classe → personagem → torre (10 andares) → combate por eventos → XP → inventário/equip → **shell hub** (sidebar + painéis + combate persistente, todo 25b) → chefe/registro de andar → mercado básico → treinamento → rankings → segurança JSON assinada → env de balance.
 
-Deixado para depois (como no Game-base): geração infinita de andares por IA, multiplayer/guildas, itens narrativos OpenAI (todo opcional no fim).
+Deixado para depois (como no Game-base): geração infinita de andares por IA, multiplayer/guildas.
+(Todo 33 item único — concluído.)
 
 ## Índice dos todos
 
@@ -71,7 +72,7 @@ Deixado para depois (como no Game-base): geração infinita de andares por IA, m
 | 30 | `30-assinatura-json.md` | concluido | Assinar personagem/bag |
 | 31 | `31-pixellab-assets.md` | concluido | Integração PixelLab / atlas |
 | 32 | `32-polish-seguranca-docs.md` | concluido | Hardening e documentação |
-| 33 | `33-opcional-itens-ia.md` | pendente | (Opcional) itens narrativos OpenAI |
+| 33 | `33-opcional-itens-ia.md` | concluido | Item único: semente loot + chances raridade ×7 + OpenAI/PixelLab |
 | 34 | `34-correcao-portao-chefe-andar.md` | concluido | Correção: taxa no chefe libera próximo andar; auto só farm 1–9 |
 | 35 | `35-correcao-navegacao-andares.md` | concluido | Correção: sidebar/UI navega andares já liberados |
 | 36 | `36-correcao-taxas-desafio-json.md` | concluido | Correção: `gateFee`/`registryFee` por andar lidos do JSON |
@@ -91,11 +92,14 @@ Deixado para depois (como no Game-base): geração infinita de andares por IA, m
 | 49 | `49-itemlevel-andar.md` | concluido | Bake: base × (1+lv/10) do andar, depois raridade/estrelas |
 | 50 | `50-monster-gold-rarity-drop.md` | concluido | Schema + backend: `skyCoinDrop` + `rarityLuck` no monstro |
 | 51 | `51-conteudo-gold-rarity-monstros.md` | concluido | Preencher gold/luck em todos os monstros JSON |
-| 52 | `52-ui-monster-gold-rarity.md` | pendente | Painel do alvo + editor: gold range e rarity luck |
+| 52 | `52-ui-monster-gold-rarity.md` | concluido | Painel do alvo + editor: gold range e rarity luck |
 | 53 | `53-editor-item-ia-draft.md` | concluido | Editor: draft de item via OpenAI (gpt-4o-mini) |
 | 54 | `54-editor-item-icon-pixellab.md` | concluido | Editor: ícone inventário via generate-image-v2 |
 | 55 | `55-editor-andar-ia-draft.md` | concluido | Andares: draft IA (pacote floor+monsters+items) |
 | 56 | `56-atributos-item-drop.md` | concluido | Affixes no drop: attributeCount + item-attributes + roll |
+| 57 | `57-monster-combat-metrics-backend.md` | concluido | Monstro: regen + contrato métricas (AS/crit/dodge/elemental) |
+| 58 | `58-editor-monster-combat-metrics.md` | concluido | Editor: bonusDamage + hints baseStats combate |
+| 59 | `59-conteudo-monster-combat-metrics.md` | concluido | Conteúdo: archetypes de métricas nos monstros JSON |
 
 ## Fase 2 — Editor de conteúdo (dev-only)
 

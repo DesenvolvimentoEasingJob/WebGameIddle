@@ -4,12 +4,24 @@
   "description": "Monarca quebrado de pedra e cristal rachado, manto real em farrapos e coroa partida.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 20,
-  "hp": 320,
+  "hp": 1150,
   "baseStats": {
     "dmgBase": 43,
-    "defBase": 21
+    "defBase": 340,
+    "attackSpeed": 0.8,
+    "critChance": 0.15,
+    "critDamage": 2,
+    "hpRegenPerSec": 1.5
   },
-  "bonusDefense": {},
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 15,
+      "counter": "fireResistance"
+    }
+  },
+  "bonusDefense": {
+    "fireResistance": 12
+  },
   "skills": [],
   "behavior": "aggressive",
   "skyCoinDrop": [

@@ -2,12 +2,18 @@
   "id": "moss-crypt-lord",
   "name": "Moss Crypt Lord",
   "description": "Senhor de cripta coberto de musgo e ossos antigos, coroa de raÃ­zes e presenÃ§a de boss.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 2,
-  "hp": 1000,
+  "hp": 220,
   "baseStats": {
-    "dmgBase": 1,
-    "defBase": 3
+    "dmgBase": 11,
+    "defBase": 75,
+    "attackSpeed": 1.0,
+    "critChance": 0.05,
+    "critDamage": 1.8,
+    "hpRegenPerSec": 1
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -61,6 +67,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

@@ -1,11 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { BattleEvent } from '../types/api'
-import {
-  COMBAT_TIMING,
-  groupBattleEvents,
-  planBeat,
-  planPlayback,
-} from './combatPlayback'
+import { COMBAT_TIMING, planPlayback } from './combatPlayback'
 
 function ev(
   partial: Partial<BattleEvent> & Pick<BattleEvent, 'type' | 'actor'>,
@@ -14,16 +9,16 @@ function ev(
     target: null,
     amount: null,
     message: null,
+    atMs: 0,
     ...partial,
   }
 }
 
-describe('groupBattleEvents', () => {
-  it('compresses opening meta (start + vitals) into one beat', () => {
+describe('planPlayback (timeline atMs)', () => {
+  it('schedules applies at server atMs (scaled)', () => {
     const events = [
-      ev({ type: 'start', actor: 'system', message: 'Fight' }),
-      ev({ type: 'vitals', actor: 'player', hpAfter: 100, maxHp: 100 }),
-      ev({ type: 'vitals', actor: 'enemy', slot: 0, hpAfter: 40, maxHp: 40, message: 'Rat' }),
+      ev({ type: 'start', actor: 'system', message: 'Fight', atMs: 0 }),
+      ev({ type: 'vitals', actor: 'player', hpAfter: 100, maxHp: 100, atMs: 0 }),
       ev({
         type: 'hit',
         actor: 'player',
@@ -31,47 +26,26 @@ describe('groupBattleEvents', () => {
         amount: 12,
         hpAfter: 28,
         slot: 0,
+        atMs: 1000,
       }),
-    ]
-
-    const beats = groupBattleEvents(events)
-    expect(beats).toHaveLength(2)
-    expect(beats[0]).toMatchObject({ kind: 'meta' })
-    if (beats[0]?.kind === 'meta') {
-      expect(beats[0].events.map((e) => e.type)).toEqual(['start', 'vitals', 'vitals'])
-    }
-    expect(beats[1]?.kind).toBe('round')
-  })
-
-  it('keeps enemy death with the player kill beat and skips retaliation', () => {
-    const events = [
       ev({
         type: 'hit',
-        actor: 'player',
-        target: 'enemy',
-        amount: 40,
-        hpAfter: 0,
+        actor: 'enemy',
+        target: 'player',
+        amount: 5,
+        hpAfter: 95,
         slot: 0,
+        atMs: 1000,
       }),
-      ev({ type: 'death', actor: 'enemy', slot: 0, message: 'Rat dies' }),
-      ev({ type: 'victory', actor: 'player', message: 'Victory!' }),
-      ev({ type: 'xp', actor: 'player', amount: 10, message: '+10 XP' }),
-      ev({ type: 'loot', actor: 'player', message: 'Loot: scrap', slot: 0 }),
+      ev({ type: 'regen', actor: 'player', amount: 2, hpAfter: 97, atMs: 2000 }),
     ]
 
-    const beats = groupBattleEvents(events)
-    expect(beats[0]?.kind).toBe('round')
-    if (beats[0]?.kind === 'round') {
-      expect(beats[0].playerEvents.map((e) => e.type)).toEqual(['hit', 'death'])
-      expect(beats[0].enemyEvents).toHaveLength(0)
-    }
-    expect(beats[1]?.kind).toBe('meta')
-    if (beats[1]?.kind === 'meta') {
-      expect(beats[1].events.map((e) => e.type)).toEqual(['victory', 'xp', 'loot'])
-    }
+    const plan = planPlayback(events).plans[0]!
+    const applies = plan.actions.filter((a) => a.action.type === 'apply')
+    expect(applies.map((a) => a.atMs)).toEqual([0, 0, 1000, 1000, 2000])
   })
 
-  it('groups multi-mob retaliation after a player swing', () => {
+  it('keeps same-ms order from the array (player then enemy)', () => {
     const events = [
       ev({
         type: 'hit',
@@ -80,6 +54,7 @@ describe('groupBattleEvents', () => {
         amount: 8,
         hpAfter: 20,
         slot: 0,
+        atMs: 1000,
       }),
       ev({
         type: 'hit',
@@ -87,71 +62,24 @@ describe('groupBattleEvents', () => {
         target: 'player',
         amount: 3,
         slot: 0,
+        atMs: 1000,
       }),
-      ev({
-        type: 'crit',
-        actor: 'enemy',
-        target: 'player',
-        amount: 7,
-        slot: 1,
-      }),
-      ev({
-        type: 'dodge',
-        actor: 'enemy',
-        target: 'player',
-        slot: 2,
-        message: 'Dodged',
-      }),
-      ev({ type: 'regen', actor: 'player', amount: 2, message: '+2 HP (regen)' }),
     ]
-
-    const beats = groupBattleEvents(events)
-    expect(beats).toHaveLength(2)
-    expect(beats[0]?.kind).toBe('round')
-    if (beats[0]?.kind === 'round') {
-      expect(beats[0].playerEvents).toHaveLength(1)
-      expect(beats[0].enemyEvents.map((e) => e.type)).toEqual(['hit', 'crit', 'dodge'])
-      expect(beats[0].enemyEvents.map((e) => e.slot)).toEqual([0, 1, 2])
-    }
-    expect(beats[1]?.kind).toBe('meta')
-    if (beats[1]?.kind === 'meta') {
-      expect(beats[1].events[0]?.type).toBe('regen')
-    }
+    const plan = planPlayback(events).plans[0]!
+    const applies = plan.actions.filter((a) => a.action.type === 'apply')
+    expect(applies).toHaveLength(2)
+    expect(applies[0]!.action).toMatchObject({
+      type: 'apply',
+      event: { actor: 'player' },
+    })
+    expect(applies[1]!.action).toMatchObject({
+      type: 'apply',
+      event: { actor: 'enemy' },
+    })
+    expect(applies[0]!.atMs).toBe(applies[1]!.atMs)
   })
 
-  it('stops enemy batch when player dies mid-retaliation', () => {
-    const events = [
-      ev({
-        type: 'hit',
-        actor: 'player',
-        target: 'enemy',
-        amount: 5,
-        hpAfter: 10,
-        slot: 0,
-      }),
-      ev({
-        type: 'hit',
-        actor: 'enemy',
-        target: 'player',
-        amount: 50,
-        slot: 0,
-      }),
-      ev({ type: 'death', actor: 'player', message: 'You die' }),
-      ev({ type: 'defeat', actor: 'player', message: 'Defeat' }),
-      ev({ type: 'revive', actor: 'player', hpAfter: 20, maxHp: 100 }),
-    ]
-
-    const beats = groupBattleEvents(events)
-    expect(beats[0]?.kind).toBe('round')
-    if (beats[0]?.kind === 'round') {
-      expect(beats[0].enemyEvents.map((e) => e.type)).toEqual(['hit', 'death'])
-    }
-    expect(beats[1]?.kind).toBe('meta')
-  })
-})
-
-describe('planBeat / planPlayback', () => {
-  it('staggers multi-mob retaliation and overlaps with player beat', () => {
+  it('winds up strike before impact without moving apply earlier', () => {
     const events = [
       ev({
         type: 'hit',
@@ -160,54 +88,16 @@ describe('planBeat / planPlayback', () => {
         amount: 8,
         hpAfter: 20,
         slot: 0,
+        atMs: 1000,
       }),
-      ev({ type: 'hit', actor: 'enemy', target: 'player', amount: 3, slot: 0 }),
-      ev({ type: 'hit', actor: 'enemy', target: 'player', amount: 4, slot: 1 }),
     ]
-    const { plans } = planPlayback(events)
-    expect(plans).toHaveLength(1)
-    const plan = plans[0]!
-    const enemyApplies = plan.actions.filter(
-      (a) =>
-        a.action.type === 'apply' &&
-        a.action.event.actor === 'enemy' &&
-        a.action.event.type === 'hit',
+    const plan = planPlayback(events).plans[0]!
+    const strike = plan.actions.find(
+      (a) => a.action.type === 'motion' && a.action.motion.kind === 'strike',
     )
-    expect(enemyApplies).toHaveLength(2)
-    const gap = enemyApplies[1]!.atMs - enemyApplies[0]!.atMs
-    expect(gap).toBe(COMBAT_TIMING.enemyStaggerMs)
-
-    const playerImpact = plan.actions.find(
-      (a) =>
-        a.action.type === 'apply' &&
-        a.action.event.actor === 'player' &&
-        a.action.event.type === 'hit',
-    )
-    expect(playerImpact?.atMs).toBe(COMBAT_TIMING.windupMs)
-    // First enemy strike begins before the player beat would fully end.
-    const firstEnemyStrike = plan.actions.find(
-      (a) =>
-        a.action.type === 'motion' &&
-        a.action.motion.side === 'enemy' &&
-        a.action.motion.kind === 'strike',
-    )
-    expect(firstEnemyStrike).toBeTruthy()
-    expect(firstEnemyStrike!.atMs).toBeLessThan(plan.durationMs)
-    expect(firstEnemyStrike!.atMs).toBeLessThan(
-      COMBAT_TIMING.windupMs + COMBAT_TIMING.hitImpactHoldMs,
-    )
-  })
-
-  it('meta beat duration is far shorter than legacy 450ms-per-event', () => {
-    const beat = groupBattleEvents([
-      ev({ type: 'start', actor: 'system', message: 'Fight' }),
-      ev({ type: 'vitals', actor: 'player', hpAfter: 100, maxHp: 100 }),
-      ev({ type: 'vitals', actor: 'enemy', slot: 0, hpAfter: 40, maxHp: 40 }),
-    ])[0]!
-    expect(beat.kind).toBe('meta')
-    const plan = planBeat(beat)
-    expect(plan.durationMs).toBeLessThan(450)
-    expect(plan.durationMs).toBe(0)
+    const apply = plan.actions.find((a) => a.action.type === 'apply')
+    expect(strike?.atMs).toBe(1000 - COMBAT_TIMING.windupMs)
+    expect(apply?.atMs).toBe(1000)
   })
 
   it('attaches floaters to enemy slots on player hits', () => {
@@ -219,6 +109,7 @@ describe('planBeat / planPlayback', () => {
         amount: 22,
         hpAfter: 5,
         slot: 2,
+        atMs: 500,
       }),
     ]
     const plan = planPlayback(events).plans[0]!
@@ -227,5 +118,13 @@ describe('planBeat / planPlayback', () => {
       type: 'floater',
       floater: { side: 'right', slot: 2, text: 'CRIT -22' },
     })
+    expect(floater?.atMs).toBe(500)
+  })
+
+  it('defaults missing atMs to 0', () => {
+    const events = [ev({ type: 'start', actor: 'system', message: 'Fight' })]
+    delete (events[0] as { atMs?: number }).atMs
+    const plan = planPlayback(events).plans[0]!
+    expect(plan.actions[0]?.atMs).toBe(0)
   })
 })

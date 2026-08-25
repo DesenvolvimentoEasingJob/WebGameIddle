@@ -2,11 +2,19 @@
   "id": "ember-imp",
   "name": "ember imp",
   "description": "Diabrete pequeno de carvÃ£o e brasas, chifres curtos, olhos de fogo e cauda flamejante.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 140,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 45,
+    "attackSpeed": 1.1
+  },
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 4,
+      "counter": "fireResistance"
+    }
   },
   "bonusDefense": {
     "fireResistance": 10
@@ -55,6 +63,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

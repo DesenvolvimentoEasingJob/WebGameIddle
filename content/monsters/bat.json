@@ -2,12 +2,16 @@
   "id": "bat",
   "name": "bat",
   "description": "Morcego marrom clÃ¡ssico de caverna, asas esticadas e orelhas grandes, silhueta leve.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 120,
   "baseStats": {
-    "dmgBase": 5,
-    "defBase": 2
+    "dmgBase": 4,
+    "defBase": 40,
+    "attackSpeed": 1.4,
+    "dodgeChance": 0.05
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -20,17 +24,26 @@
     {
       "itemId": "scrap",
       "chance": 0.4,
-      "qty": [1, 2]
+      "qty": [
+        1,
+        2
+      ]
     },
     {
       "itemId": "echo-shard-blade",
       "chance": 0.06,
-      "qty": [1, 1]
+      "qty": [
+        1,
+        1
+      ]
     },
     {
       "itemId": "silver-echo-ring",
       "chance": 0.05,
-      "qty": [1, 1]
+      "qty": [
+        1,
+        1
+      ]
     }
   ],
   "assets": {
@@ -52,6 +65,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda`"
+  }
 }

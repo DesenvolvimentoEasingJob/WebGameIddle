@@ -20,12 +20,12 @@
     "hpBase": 3
   },
   "equipmentSlots": [
-    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
-    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
-    { "name": "mainHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
-    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
-    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
-    { "name": "ring2", "itemType": ["ring"], "boxSize": 4 }
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1, "row": 1, "order": 2 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1, "row": 2, "order": 2 },
+    { "name": "mainHand", "itemType": ["weapon", "shield"], "boxSize": 1, "row": 2, "order": 3 },
+    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1, "row": 2, "order": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 1 },
+    { "name": "ring2", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 3 }
   ],
   "blessings": [],
   "limitations": [],

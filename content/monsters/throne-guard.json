@@ -2,12 +2,15 @@
   "id": "throne-guard",
   "name": "throne guard",
   "description": "Guarda de trono em armadura pesada dourada-escura, escudo e lanÃ§a, postura firme.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 210,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 85,
+    "attackSpeed": 0.9
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +56,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

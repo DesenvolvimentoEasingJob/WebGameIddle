@@ -4,11 +4,15 @@
   "description": "Escaravelho de carapaÃ§a vÃ­trea translÃºcida, reflexos prismÃ¡ticos e patas finas afiadas.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 130,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 45,
+    "attackSpeed": 1.3,
+    "critChance": 0.12,
+    "critDamage": 1.6
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",

@@ -54,6 +54,13 @@ public static class AssetsEndpoints
             return path is null ? Results.NotFound() : Results.File(path, "image/png");
         }).AllowAnonymous();
 
+        // Race portraits (static under data/assets/races); anonymous read for hub Status.
+        group.MapGet("/races/{fileName}", (string fileName, GeminiImageService gemini) =>
+        {
+            var path = gemini.GetRacePortraitFilePath(fileName);
+            return path is null ? Results.NotFound() : Results.File(path, "image/png");
+        }).AllowAnonymous();
+
         // PixelLab generation drafts (editor pick/approve); anonymous read for preview.
         group.MapGet("/drafts/{draftId}/{fileName}", (string draftId, string fileName, PixelLabService pixellab) =>
         {

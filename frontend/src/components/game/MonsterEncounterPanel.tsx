@@ -41,6 +41,14 @@ export function MonsterEncounterPanel() {
   const goldLabel =
     hasGold && goldMin === goldMax ? `${goldMin} SC` : hasGold ? `${goldMin}–${goldMax} SC` : null
 
+  const luckRaw = monster?.rarityLuck
+  const hasLuck = luckRaw != null && Number.isFinite(luckRaw)
+  const luckLabel = hasLuck
+    ? luckRaw > 0
+      ? `Luck ${Number.isInteger(luckRaw) ? String(luckRaw) : luckRaw.toFixed(1)}`
+      : 'normal'
+    : null
+
   return (
     <aside className="encounter-panel" aria-label="Monstro enfrentado">
       {!monster ? (
@@ -93,6 +101,14 @@ export function MonsterEncounterPanel() {
               <div className="encounter-panel__stat-row">
                 <dt>Gold</dt>
                 <dd>{goldLabel}</dd>
+              </div>
+            ) : null}
+            {luckLabel ? (
+              <div className="encounter-panel__stat-row">
+                <dt>Raridade</dt>
+                <dd title="Enviesa o roll de raridade do gear ao matar este monstro">
+                  {luckLabel}
+                </dd>
               </div>
             ) : null}
           </dl>

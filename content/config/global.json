@@ -9,7 +9,7 @@
     "xpScale": 1.2,
     "xpScaleStepEvery": 10,
     "xpScaleStep": 0.1,
-    "floorDifficultyMult": 2.0,
+    "floorDifficultyMult": 2,
     "floorRewardMult": 1.5,
     "bossChallengeAttrMult": 10,
     "bossChallengeFee": 50,
@@ -18,9 +18,19 @@
     "trainingCostBase": 10,
     "trainingGoldScale": 1.3,
     "battleCoinRewardBase": 2,
-    "hpRegenGlobalMult": 1.0,
+    "hpRegenGlobalMult": 1,
     "hpDefeatRevivePct": 0.5,
-    "combatTurnSeconds": 1.0,
-    "combatDamageNoise": 0
+    "combatBaseActionMs": 1000,
+    "combatMaxDurationMs": 60000,
+    "combatRegenTickMs": 1000,
+    "combatDamageNoise": 0,
+    "combatArmorMidDef": 4800,
+    "combatArmorPower": 0.31,
+    "uniqueDropChance": 0.005,
+    "uniqueDropEnabled": true,
+    "uniqueRarityChanceMult": 7,
+    "uniqueStars": 5,
+    "uniqueOpenAiTimeoutMs": 8000,
+    "uniquePixelLabTimeoutMs": 45000
   }
 }

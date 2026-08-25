@@ -28,7 +28,7 @@ public class EquipmentGripHelperTests
               { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
               { "name": "hand3", "itemType": ["weapon"], "boxSize": 1 },
               { "name": "hand4", "itemType": ["focus"], "boxSize": 1 },
-              { "name": "ring1", "itemType": ["ring"], "boxSize": 4 }
+              { "name": "ring1", "itemType": ["ring"], "boxSize": 10 }
             ]
             """) as JsonArray ?? [];
 

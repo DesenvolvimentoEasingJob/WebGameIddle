@@ -2,12 +2,16 @@
   "id": "thorn-sprite",
   "name": "thorn sprite",
   "description": "EspÃ­rito vegetal minÃºsculo feito de folhas e espinhos, brilho verde-claro e asas frÃ¡geis.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 120,
   "baseStats": {
-    "dmgBase": 5,
-    "defBase": 2
+    "dmgBase": 4,
+    "defBase": 40,
+    "attackSpeed": 1.45,
+    "dodgeChance": 0.08
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -20,22 +24,34 @@
     {
       "itemId": "scrap",
       "chance": 0.4,
-      "qty": [1, 2]
+      "qty": [
+        1,
+        2
+      ]
     },
     {
       "itemId": "thorn-mail",
       "chance": 0.05,
-      "qty": [1, 1]
+      "qty": [
+        1,
+        1
+      ]
     },
     {
       "itemId": "petal-helm",
       "chance": 0.05,
-      "qty": [1, 1]
+      "qty": [
+        1,
+        1
+      ]
     },
     {
       "itemId": "seep-focus",
       "chance": 0.04,
-      "qty": [1, 1]
+      "qty": [
+        1,
+        1
+      ]
     }
   ],
   "assets": {
@@ -57,6 +73,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

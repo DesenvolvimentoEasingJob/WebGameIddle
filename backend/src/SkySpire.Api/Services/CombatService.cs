@@ -12,6 +12,7 @@ public sealed class CombatService(
     CharacterService characters,
     HpService hp,
     ItemRollService itemRoll,
+    UniqueItemDropService uniqueDrops,
     GameConfigService gameConfig,
     IOptions<AppSecretsOptions> secrets)
 {
@@ -44,8 +45,9 @@ public sealed class CombatService(
             var profile = CombatHitResolver.FromMonster(monster, difficultyScale);
             var level = monster.TryGetProperty("level", out var lvlEl) ? lvlEl.GetInt32() : 1;
             var name = monster.TryGetProperty("name", out var nEl) ? nEl.GetString() ?? monsterId : monsterId;
+            var hpRegen = CombatHitResolver.ReadMonsterHpRegenPerSec(monster);
 
-            enemies.Add(new EnemyFighter(slot, monsterId, name, maxHp, maxHp, level, monster, profile));
+            enemies.Add(new EnemyFighter(slot, monsterId, name, maxHp, maxHp, level, monster, profile, hpRegen));
         }
 
         var playerStats = await stats.CalculateFromCharacterAsync(
@@ -64,81 +66,65 @@ public sealed class CombatService(
                 snap.Regenerated,
                 $"+{snap.Regenerated} HP (regen)",
                 snap.CurrentHp,
-                snap.MaxHp));
+                snap.MaxHp,
+                AtMs: 0));
         }
 
         var playerProfile = CombatHitResolver.FromCalculatedStats(playerStats, character);
         var regenRate = Math.Max(0, GetStat(playerStats, "hpRegenPerSec", 0));
         var bal = gameConfig.GetBalance();
-        var turnSeconds = Math.Max(0, bal.CombatTurnSeconds);
+        var baseActionMs = Math.Max(1, bal.CombatBaseActionMs);
+        var maxDurationMs = Math.Max(baseActionMs, bal.CombatMaxDurationMs);
+        var regenTickMs = Math.Max(1, bal.CombatRegenTickMs);
         var noise = Math.Max(0, bal.CombatDamageNoise);
+        var armorMid = bal.CombatArmorMidDef;
+        var armorPower = bal.CombatArmorPower;
 
         var startLabel = enemies.Count == 1
             ? $"Battle vs {enemies[0].Name}"
             : $"Battle vs group ({string.Join(", ", enemies.Select(e => e.Name))})";
-        events.Add(new BattleEventDto("start", "system", null, null, startLabel));
-        events.Add(Vitals("player", playerHp, playerMaxHp));
+        events.Add(new BattleEventDto("start", "system", null, null, startLabel, AtMs: 0));
+        events.Add(Vitals("player", playerHp, playerMaxHp, atMs: 0));
         foreach (var e in enemies)
         {
-            events.Add(Vitals("enemy", e.Hp, e.MaxHp, e.Name, e.Slot));
+            events.Add(Vitals("enemy", e.Hp, e.MaxHp, e.Name, e.Slot, atMs: 0));
         }
 
         var playerAlive = true;
-        var turn = 0;
-
-        while (playerAlive && enemies.Any(e => e.Alive) && turn < 60)
+        var playerNextAct = ActionIntervalMs(playerProfile.AttackSpeed, baseActionMs);
+        foreach (var e in enemies)
         {
-            turn++;
+            e.NextActAtMs = ActionIntervalMs(e.Profile.AttackSpeed, baseActionMs);
+        }
 
-            var target = enemies.FirstOrDefault(e => e.Alive);
-            if (target is null)
+        var nextRegenAt = regenTickMs;
+        var nowMs = 0;
+
+        while (playerAlive && enemies.Any(e => e.Alive) && nowMs < maxDurationMs)
+        {
+            var next = NextTimelineMs(playerAlive, playerNextAct, enemies, regenRate, nextRegenAt);
+            if (next is null || next.Value > maxDurationMs)
             {
                 break;
             }
 
-            ApplyHit(
-                events,
-                playerProfile,
-                target.Profile,
-                noise,
-                "player",
-                "enemy",
-                target.Name,
-                target.Slot,
-                (dealt, hit) =>
-                {
-                    target.Hp -= dealt;
-                    return (HpService.RoundHp(Math.Max(0, target.Hp)), HpService.RoundHp(target.MaxHp));
-                },
-                out _);
+            nowMs = next.Value;
 
-            if (target.Hp <= 0)
-            {
-                target.Alive = false;
-                events.Add(new BattleEventDto(
-                    "death",
-                    "enemy",
-                    null,
-                    null,
-                    $"{target.Name} defeated",
-                    0,
-                    HpService.RoundHp(target.MaxHp),
-                    target.Slot));
-            }
-
-            if (!enemies.Any(e => e.Alive))
-            {
-                ApplyCombatTurnRegen(ref playerHp, playerMaxHp, regenRate, turnSeconds, events);
-                break;
-            }
-
-            foreach (var enemy in enemies.Where(e => e.Alive))
+            // Mesmo atMs: inimigos agem antes do player (empate de clock).
+            // Evita wipe no mesmo tick cancelar o primeiro swing de quem ainda estava vivo.
+            foreach (var enemy in enemies
+                         .Where(e => e.Alive && e.NextActAtMs == nowMs)
+                         .OrderBy(e => e.Slot)
+                         .ToList())
             {
                 var dodged = ApplyHit(
                     events,
+                    nowMs,
                     enemy.Profile,
                     playerProfile,
                     noise,
+                    armorMid,
+                    armorPower,
                     "enemy",
                     "player",
                     enemy.Name,
@@ -150,6 +136,8 @@ public sealed class CombatService(
                     },
                     out _);
 
+                enemy.NextActAtMs = nowMs + ActionIntervalMs(enemy.Profile.AttackSpeed, baseActionMs);
+
                 if (!dodged && playerHp <= 0)
                 {
                     playerAlive = false;
@@ -160,22 +148,106 @@ public sealed class CombatService(
                         null,
                         "You were defeated",
                         0,
-                        HpService.RoundHp(playerMaxHp)));
+                        HpService.RoundHp(playerMaxHp),
+                        AtMs: nowMs));
                     break;
                 }
             }
 
-            if (playerAlive)
+            if (!playerAlive)
             {
-                ApplyCombatTurnRegen(ref playerHp, playerMaxHp, regenRate, turnSeconds, events);
+                break;
+            }
+
+            if (playerNextAct == nowMs)
+            {
+                var target = enemies.FirstOrDefault(e => e.Alive);
+                if (target is not null)
+                {
+                    ApplyHit(
+                        events,
+                        nowMs,
+                        playerProfile,
+                        target.Profile,
+                        noise,
+                        armorMid,
+                        armorPower,
+                        "player",
+                        "enemy",
+                        target.Name,
+                        target.Slot,
+                        (dealt, _) =>
+                        {
+                            target.Hp -= dealt;
+                            return (HpService.RoundHp(Math.Max(0, target.Hp)), HpService.RoundHp(target.MaxHp));
+                        },
+                        out _);
+
+                    if (target.Hp <= 0)
+                    {
+                        target.Alive = false;
+                        events.Add(new BattleEventDto(
+                            "death",
+                            "enemy",
+                            null,
+                            null,
+                            $"{target.Name} defeated",
+                            0,
+                            HpService.RoundHp(target.MaxHp),
+                            target.Slot,
+                            nowMs));
+                    }
+                }
+
+                playerNextAct = nowMs + ActionIntervalMs(playerProfile.AttackSpeed, baseActionMs);
+            }
+
+            if (!enemies.Any(e => e.Alive))
+            {
+                break;
+            }
+
+            if (nextRegenAt == nowMs && NeedsCombatRegenTick(playerAlive, regenRate, enemies))
+            {
+                if (playerAlive && regenRate > 0)
+                {
+                    ApplyCombatRegenTick(
+                        ref playerHp,
+                        playerMaxHp,
+                        regenRate,
+                        regenTickMs,
+                        nowMs,
+                        events);
+                }
+
+                foreach (var enemy in enemies.Where(e => e.Alive && e.HpRegenPerSec > 0))
+                {
+                    var enemyHpRef = enemy.Hp;
+                    ApplyCombatRegenTick(
+                        ref enemyHpRef,
+                        enemy.MaxHp,
+                        enemy.HpRegenPerSec,
+                        regenTickMs,
+                        nowMs,
+                        events,
+                        actor: "enemy",
+                        slot: enemy.Slot,
+                        name: enemy.Name);
+                    enemy.Hp = enemyHpRef;
+                }
+
+                nextRegenAt = nowMs + regenTickMs;
             }
         }
+
+        var endMs = Math.Max(nowMs, LastEventAtMs(events));
 
         var victory = playerAlive && enemies.All(e => !e.Alive);
         var xpGain = 0;
         var leveledUp = false;
         int? newLevel = null;
         var loot = new List<string>();
+        var uniqueDropList = new List<UniqueDropDto>();
         var autoAdvance = false;
         long coinsGained = 0;
         var monsterSkyCoinDefined = false;
@@ -183,7 +255,7 @@ public sealed class CombatService(
         if (victory)
         {
             hp.SetCurrentHp(character, Math.Max(0, playerHp), playerMaxHp);
-            events.Add(new BattleEventDto("victory", "player", null, null, "Victory!"));
+            events.Add(new BattleEventDto("victory", "player", null, null, "Victory!", AtMs: endMs));
             var floorNumber = floor.TryGetProperty("number", out var fn) ? fn.GetInt32() : 1;
 
             foreach (var e in enemies)
@@ -194,8 +266,11 @@ public sealed class CombatService(
             var applied = await xp.ApplyXpAsync(character, xpGain, ct);
             leveledUp = applied.leveledUp;
             newLevel = applied.newLevel;
-            events.Add(new BattleEventDto("xp", "player", null, xpGain, $"+{xpGain} XP"));
-            events.AddRange(applied.events);
+            events.Add(new BattleEventDto("xp", "player", null, xpGain, $"+{xpGain} XP", AtMs: endMs));
+            foreach (var ev in applied.events)
+            {
+                events.Add(ev with { AtMs = endMs });
+            }
 
             foreach (var e in enemies)
             {
@@ -206,22 +281,44 @@ public sealed class CombatService(
                     coinsGained += coin;
                 }
 
-                var drops = await ApplyLootAsync(userId, e.Monster, floor, ct);
-                loot.AddRange(drops);
-                foreach (var item in drops)
+                var appliedLoot = await ApplyLootAsync(userId, character, e.Monster, floor, ct);
+                loot.AddRange(appliedLoot.AllLabels);
+                uniqueDropList.AddRange(appliedLoot.UniqueDrops);
+                foreach (var item in appliedLoot.LogLabels)
                 {
-                    events.Add(new BattleEventDto("loot", "player", null, null, $"Loot: {item}", null, null, e.Slot));
+                    events.Add(new BattleEventDto(
+                        "loot",
+                        "player",
+                        null,
+                        null,
+                        $"Loot: {item}",
+                        null,
+                        null,
+                        e.Slot,
+                        endMs));
                 }
             }
 
             autoAdvance = character["tower"] is JsonObject t &&
                           (t["autoClimb"]?.GetValue<bool>() ?? false);
+            // Item único interrompe auto-farm no server também.
+            if (uniqueDropList.Count > 0 && character["tower"] is JsonObject towerNode)
+            {
+                towerNode["autoClimb"] = false;
+                autoAdvance = false;
+            }
         }
         else if (!playerAlive)
         {
             hp.ApplyDefeatRevive(character, playerMaxHp);
             var revived = HpService.RoundHp(character["currentHp"]!.GetValue<double>());
-            events.Add(new BattleEventDto("defeat", "player", null, null, "Defeat — no XP penalty in normal rooms"));
+            events.Add(new BattleEventDto(
+                "defeat",
+                "player",
+                null,
+                null,
+                "Defeat — no XP penalty in normal rooms",
+                AtMs: endMs));
             events.Add(new BattleEventDto(
                 "revive",
                 "player",
@@ -229,7 +326,8 @@ public sealed class CombatService(
                 revived,
                 $"Revived with {revived} HP",
                 revived,
-                HpService.RoundHp(playerMaxHp)));
+                HpService.RoundHp(playerMaxHp),
+                AtMs: endMs));
         }
         else
         {
@@ -247,7 +345,8 @@ public sealed class CombatService(
             null,
             coinsGained,
             null,
-            monsterSkyCoinDefined);
+            monsterSkyCoinDefined,
+            uniqueDropList.Count > 0 ? uniqueDropList : null);
     }
 
     public async Task<BattleResultDto> ResolveChallengeBattleAsync(
@@ -276,19 +375,25 @@ public sealed class CombatService(
                 snap.Regenerated,
                 $"+{snap.Regenerated} HP (regen)",
                 snap.CurrentHp,
-                snap.MaxHp));
+                snap.MaxHp,
+                AtMs: 0));
         }
 
         var playerProfile = CombatHitResolver.FromCalculatedStats(playerStats, character);
         var regenRate = Math.Max(0, GetStat(playerStats, "hpRegenPerSec", 0));
         var bal = gameConfig.GetBalance();
-        var turnSeconds = Math.Max(0, bal.CombatTurnSeconds);
+        var baseActionMs = Math.Max(1, bal.CombatBaseActionMs);
+        var maxDurationMs = Math.Max(baseActionMs, bal.CombatMaxDurationMs);
+        var regenTickMs = Math.Max(1, bal.CombatRegenTickMs);
         var noise = Math.Max(0, bal.CombatDamageNoise);
+        var armorMid = bal.CombatArmorMidDef;
+        var armorPower = bal.CombatArmorPower;
 
         double enemyMaxHp;
         CombatFighterProfile enemyProfile;
         string enemyName;
         int enemyLevel;
+        double enemyRegenRate = 0;
         JsonElement? bossMonsterForDrop = null;
 
         if (ownerClone is not null)
@@ -300,9 +405,15 @@ public sealed class CombatService(
             enemyProfile = CombatHitResolver.FromCalculatedStats(cloneStats, ownerClone);
             enemyName = ownerClone["name"]?.GetValue<string>() ?? "Owner clone";
             enemyLevel = ownerClone["level"]?.GetValue<int>() ?? 1;
-            events.Add(new BattleEventDto("start", "system", null, null, $"Challenge vs {enemyName} (floor owner)"));
+            enemyRegenRate = Math.Max(0, GetStat(cloneStats, "hpRegenPerSec", 0));
+            events.Add(new BattleEventDto(
+                "start",
+                "system",
+                null,
+                null,
+                $"Challenge vs {enemyName} (floor owner)",
+                AtMs: 0));
 
-            // Gold/luck do chefe do andar (clone não carrega skyCoinDrop).
             var bossId = ResolveMonsterIds(floor, 10, 1)[0];
             var bossDoc = await content.GetByIdAsync("monsters", bossId, ct);
             if (bossDoc is not null)
@@ -320,6 +431,7 @@ public sealed class CombatService(
             enemyProfile = CombatHitResolver.FromMonster(monster, attrMult);
             enemyLevel = monster.TryGetProperty("level", out var lvlEl) ? lvlEl.GetInt32() : 1;
             enemyName = monster.TryGetProperty("name", out var nEl) ? nEl.GetString() ?? monsterId : monsterId;
+            enemyRegenRate = CombatHitResolver.ReadMonsterHpRegenPerSec(monster);
             events.Add(new BattleEventDto(
                 "start",
                 "system",
@@ -327,7 +439,8 @@ public sealed class CombatService(
                 null,
                 attrMult > 1
                     ? $"Registry challenge vs {enemyName} (×{attrMult:0.#} attrs)"
-                    : $"Boss challenge vs {enemyName}"));
+                    : $"Boss challenge vs {enemyName}",
+                AtMs: 0));
         }
 
         if (floor.TryGetProperty("difficulty", out var diff) && diff.ValueKind == JsonValueKind.Number)
@@ -338,82 +451,153 @@ public sealed class CombatService(
         }
 
         var enemyHp = enemyMaxHp;
-        events.Add(Vitals("player", playerHp, playerMaxHp));
-        events.Add(Vitals("enemy", enemyHp, enemyMaxHp, enemyName, 0));
+        var enemyAlive = true;
+        events.Add(Vitals("player", playerHp, playerMaxHp, atMs: 0));
+        events.Add(Vitals("enemy", enemyHp, enemyMaxHp, enemyName, 0, atMs: 0));
 
         var playerAlive = true;
-        var enemyAlive = true;
-        var turn = 0;
+        var playerNextAct = ActionIntervalMs(playerProfile.AttackSpeed, baseActionMs);
+        var enemyNextAct = ActionIntervalMs(enemyProfile.AttackSpeed, baseActionMs);
+        var nextRegenAt = regenTickMs;
+        var nowMs = 0;
 
-        while (playerAlive && enemyAlive && turn < 60)
+        while (playerAlive && enemyAlive && nowMs < maxDurationMs)
         {
-            turn++;
-            ApplyHit(
-                events,
-                playerProfile,
-                enemyProfile,
-                noise,
-                "player",
-                "enemy",
-                enemyName,
-                0,
-                (dealt, _) =>
-                {
-                    enemyHp -= dealt;
-                    return (HpService.RoundHp(Math.Max(0, enemyHp)), HpService.RoundHp(enemyMaxHp));
-                },
-                out _);
-
-            if (enemyHp <= 0)
+            var candidates = new List<int> { playerNextAct, enemyNextAct };
+            if ((playerAlive && regenRate > 0) || (enemyAlive && enemyRegenRate > 0))
             {
-                enemyAlive = false;
-                events.Add(new BattleEventDto(
-                    "death",
-                    "enemy",
-                    null,
-                    null,
-                    $"{enemyName} defeated",
-                    0,
-                    HpService.RoundHp(enemyMaxHp),
-                    0));
-                ApplyCombatTurnRegen(ref playerHp, playerMaxHp, regenRate, turnSeconds, events);
+                candidates.Add(nextRegenAt);
+            }
+
+            var next = candidates.Min();
+            if (next > maxDurationMs)
+            {
                 break;
             }
 
-            var dodged = ApplyHit(
-                events,
-                enemyProfile,
-                playerProfile,
-                noise,
-                "enemy",
-                "player",
-                enemyName,
-                0,
-                (dealt, _) =>
-                {
-                    playerHp -= dealt;
-                    return (HpService.RoundHp(Math.Max(0, playerHp)), HpService.RoundHp(playerMaxHp));
-                },
-                out _);
+            nowMs = next;
 
-            if (!dodged && playerHp <= 0)
+            // Empate de clock: inimigo age antes do player.
+            if (enemyAlive && enemyNextAct == nowMs)
             {
-                playerAlive = false;
-                events.Add(new BattleEventDto(
-                    "death",
+                var dodged = ApplyHit(
+                    events,
+                    nowMs,
+                    enemyProfile,
+                    playerProfile,
+                    noise,
+                    armorMid,
+                    armorPower,
+                    "enemy",
                     "player",
-                    null,
-                    null,
-                    "You were defeated",
+                    enemyName,
                     0,
-                    HpService.RoundHp(playerMaxHp)));
+                    (dealt, _) =>
+                    {
+                        playerHp -= dealt;
+                        return (HpService.RoundHp(Math.Max(0, playerHp)), HpService.RoundHp(playerMaxHp));
+                    },
+                    out _);
+
+                enemyNextAct = nowMs + ActionIntervalMs(enemyProfile.AttackSpeed, baseActionMs);
+
+                if (!dodged && playerHp <= 0)
+                {
+                    playerAlive = false;
+                    events.Add(new BattleEventDto(
+                        "death",
+                        "player",
+                        null,
+                        null,
+                        "You were defeated",
+                        0,
+                        HpService.RoundHp(playerMaxHp),
+                        AtMs: nowMs));
+                }
             }
 
-            if (playerAlive && enemyAlive)
+            if (!playerAlive)
             {
-                ApplyCombatTurnRegen(ref playerHp, playerMaxHp, regenRate, turnSeconds, events);
+                break;
+            }
+
+            if (playerNextAct == nowMs)
+            {
+                ApplyHit(
+                    events,
+                    nowMs,
+                    playerProfile,
+                    enemyProfile,
+                    noise,
+                    armorMid,
+                    armorPower,
+                    "player",
+                    "enemy",
+                    enemyName,
+                    0,
+                    (dealt, _) =>
+                    {
+                        enemyHp -= dealt;
+                        return (HpService.RoundHp(Math.Max(0, enemyHp)), HpService.RoundHp(enemyMaxHp));
+                    },
+                    out _);
+
+                if (enemyHp <= 0)
+                {
+                    enemyAlive = false;
+                    events.Add(new BattleEventDto(
+                        "death",
+                        "enemy",
+                        null,
+                        null,
+                        $"{enemyName} defeated",
+                        0,
+                        HpService.RoundHp(enemyMaxHp),
+                        0,
+                        nowMs));
+                }
+
+                playerNextAct = nowMs + ActionIntervalMs(playerProfile.AttackSpeed, baseActionMs);
+            }
+
+            if (!enemyAlive)
+            {
+                break;
+            }
+
+            if (nextRegenAt == nowMs &&
+                ((playerAlive && regenRate > 0) || (enemyAlive && enemyRegenRate > 0)))
+            {
+                if (playerAlive && regenRate > 0)
+                {
+                    ApplyCombatRegenTick(
+                        ref playerHp,
+                        playerMaxHp,
+                        regenRate,
+                        regenTickMs,
+                        nowMs,
+                        events);
+                }
+
+                if (enemyAlive && enemyRegenRate > 0)
+                {
+                    ApplyCombatRegenTick(
+                        ref enemyHp,
+                        enemyMaxHp,
+                        enemyRegenRate,
+                        regenTickMs,
+                        nowMs,
+                        events,
+                        actor: "enemy",
+                        slot: 0,
+                        name: enemyName);
+                }
+
+                nextRegenAt = nowMs + regenTickMs;
             }
         }
+
+        var endMs = Math.Max(nowMs, LastEventAtMs(events));
 
         var victory = !enemyAlive && playerAlive;
         var xpGain = 0;
@@ -425,14 +609,17 @@ public sealed class CombatService(
         if (victory)
         {
             hp.SetCurrentHp(character, Math.Max(0, playerHp), playerMaxHp);
-            events.Add(new BattleEventDto("victory", "player", null, null, "Floor claimed!"));
+            events.Add(new BattleEventDto("victory", "player", null, null, "Floor claimed!", AtMs: endMs));
             var floorNumber = floor.TryGetProperty("number", out var fn) ? fn.GetInt32() : 1;
             xpGain = xp.XpRewardForMonster(enemyLevel, floorNumber) * 3;
             var applied = await xp.ApplyXpAsync(character, xpGain, ct);
             leveledUp = applied.leveledUp;
             newLevel = applied.newLevel;
-            events.Add(new BattleEventDto("xp", "player", null, xpGain, $"+{xpGain} XP"));
-            events.AddRange(applied.events);
+            events.Add(new BattleEventDto("xp", "player", null, xpGain, $"+{xpGain} XP", AtMs: endMs));
+            foreach (var ev in applied.events)
+            {
+                events.Add(ev with { AtMs = endMs });
+            }
 
             if (bossMonsterForDrop is JsonElement dropSource)
             {
@@ -443,9 +630,13 @@ public sealed class CombatService(
         {
             hp.ApplyDefeatRevive(character, playerMaxHp);
             var revived = HpService.RoundHp(character["currentHp"]!.GetValue<double>());
-            events.Add(new BattleEventDto("defeat", "player", null, null, "Challenge failed"));
+            events.Add(new BattleEventDto("defeat", "player", null, null, "Challenge failed", AtMs: endMs));
             var penalty = xp.ApplyDeathPenalty(character);
-            events.AddRange(penalty.events);
+            foreach (var ev in penalty.events)
+            {
+                events.Add(ev with { AtMs = endMs });
+            }
+
             events.Add(new BattleEventDto(
                 "revive",
                 "player",
@@ -453,7 +644,8 @@ public sealed class CombatService(
                 revived,
                 $"Revived with {revived} HP",
                 revived,
-                HpService.RoundHp(playerMaxHp)));
+                HpService.RoundHp(playerMaxHp),
+                AtMs: endMs));
         }
         else
         {
@@ -482,27 +674,40 @@ public sealed class CombatService(
     }
 
     /// <summary>
-    /// Regen bruta por turno de combate: <c>hpRegenPerSec × CombatTurnSeconds</c>.
+    /// Intervalo até o próximo ato: <c>baseMs / max(attackSpeed, ε)</c>.
     /// </summary>
-    public static double ApplyCombatTurnRegen(
-        ref double playerHp,
-        double playerMaxHp,
-        double regenPerSec,
-        double turnSeconds,
-        IList<BattleEventDto> events)
+    public static int ActionIntervalMs(double attackSpeed, int baseActionMs)
     {
-        if (playerHp <= 0 || playerHp >= playerMaxHp || regenPerSec <= 0 || turnSeconds <= 0)
+        var speed = Math.Max(0.01, attackSpeed);
+        return Math.Max(1, (int)Math.Round(Math.Max(1, baseActionMs) / speed));
+    }
+
+    /// <summary>
+    /// Regen bruta por tick de combate: <c>hpRegenPerSec × (tickMs / 1000)</c>.
+    /// </summary>
+    public static double ApplyCombatRegenTick(
+        ref double hp,
+        double maxHp,
+        double regenPerSec,
+        int tickMs,
+        int atMs,
+        IList<BattleEventDto> events,
+        string actor = "player",
+        int? slot = null,
+        string? name = null)
+    {
+        if (hp <= 0 || hp >= maxHp || regenPerSec <= 0 || tickMs <= 0)
         {
             return 0;
         }
 
-        var gained = Math.Min(playerMaxHp - playerHp, regenPerSec * turnSeconds);
+        var gained = Math.Min(maxHp - hp, regenPerSec * (tickMs / 1000.0));
         if (gained <= 0)
         {
             return 0;
         }
 
-        playerHp += gained;
+        hp += gained;
         var amount = HpService.RoundHp(gained);
         if (amount <= 0 && gained < 0.5)
         {
@@ -514,22 +719,67 @@ public sealed class CombatService(
             amount = 1;
         }
 
+        var message = actor == "enemy" && !string.IsNullOrEmpty(name)
+            ? $"{name} +{amount} HP (regen)"
+            : $"+{amount} HP (regen)";
+
         events.Add(new BattleEventDto(
             "regen",
-            "player",
+            actor,
             null,
             amount,
-            $"+{amount} HP (regen)",
-            HpService.RoundHp(playerHp),
-            HpService.RoundHp(playerMaxHp)));
+            message,
+            HpService.RoundHp(hp),
+            HpService.RoundHp(maxHp),
+            slot,
+            atMs));
         return gained;
     }
 
+    private static bool NeedsCombatRegenTick(
+        bool playerAlive,
+        double playerRegenRate,
+        IReadOnlyList<EnemyFighter> enemies) =>
+        (playerAlive && playerRegenRate > 0) ||
+        enemies.Any(e => e.Alive && e.HpRegenPerSec > 0);
+
+    private static int? NextTimelineMs(
+        bool playerAlive,
+        int playerNextAct,
+        IReadOnlyList<EnemyFighter> enemies,
+        double regenRate,
+        int nextRegenAt)
+    {
+        var candidates = new List<int>();
+        if (playerAlive)
+        {
+            candidates.Add(playerNextAct);
+        }
+
+        foreach (var e in enemies.Where(e => e.Alive))
+        {
+            candidates.Add(e.NextActAtMs);
+        }
+
+        if (NeedsCombatRegenTick(playerAlive, regenRate, enemies))
+        {
+            candidates.Add(nextRegenAt);
+        }
+
+        return candidates.Count == 0 ? null : candidates.Min();
+    }
+
+    private static int LastEventAtMs(IReadOnlyList<BattleEventDto> events) =>
+        events.Count == 0 ? 0 : events.Max(e => e.AtMs);
+
     private bool ApplyHit(
         IList<BattleEventDto> events,
+        int atMs,
         CombatFighterProfile attacker,
         CombatFighterProfile defender,
         double noise,
+        double armorMidDef,
+        double armorPower,
         string actor,
         string target,
         string? attackerName,
@@ -537,7 +787,7 @@ public sealed class CombatService(
         Func<int, HitResolution, (int hpAfter, int hpMax)> applyDamage,
         out HitResolution hit)
     {
-        hit = CombatHitResolver.Resolve(attacker, defender, noise, _rng);
+        hit = CombatHitResolver.Resolve(attacker, defender, noise, _rng, armorMidDef, armorPower);
         if (hit.Dodged)
         {
             var dodgeMsg = actor == "enemy" && !string.IsNullOrEmpty(attackerName)
@@ -551,12 +801,12 @@ public sealed class CombatService(
                 dodgeMsg,
                 null,
                 null,
-                slot));
+                slot,
+                atMs));
             return true;
         }
 
         var (hpAfter, hpMax) = applyDamage(hit.Amount, hit);
-        // foeName: alvo (player→enemy) ou atacante (enemy→player) — mensagens legadas.
         var label = actor == "player"
             ? hit.Crit
                 ? $"Critical hit on {attackerName} for {hit.Amount}"
@@ -571,7 +821,8 @@ public sealed class CombatService(
             label,
             hpAfter,
             hpMax,
-            slot));
+            slot,
+            atMs));
         return false;
     }
 
@@ -585,7 +836,7 @@ public sealed class CombatService(
         return new CombatFighterProfile
         {
             DmgBase = profile.DmgBase * scale,
-            DefBase = profile.DefBase,
+            DefBase = profile.DefBase * scale,
             AttackSpeed = profile.AttackSpeed,
             CritChance = profile.CritChance,
             CritDamage = profile.CritDamage,
@@ -620,7 +871,8 @@ public sealed class CombatService(
         double current,
         double max,
         string? name = null,
-        int? slot = null) =>
+        int? slot = null,
+        int atMs = 0) =>
         new(
             "vitals",
             actor,
@@ -629,7 +881,8 @@ public sealed class CombatService(
             name is null ? null : $"{name}",
             HpService.RoundHp(current),
             HpService.RoundHp(max),
-            slot);
+            slot,
+            atMs);
 
     /// <summary>Lista de spawn da sala (ver <see cref="RoomEncounterResolver.ResolveMonsterIds"/>).</summary>
     public static IReadOnlyList<string> ResolveMonsterIds(JsonElement floor, int room) =>
@@ -639,16 +892,24 @@ public sealed class CombatService(
     public static IReadOnlyList<string> ResolveMonsterIds(JsonElement floor, int room, int count) =>
         RoomEncounterResolver.ResolveMonsterIds(floor, room);
 
-    private async Task<List<string>> ApplyLootAsync(
+    private sealed record LootApplyResult(
+        IReadOnlyList<string> LogLabels,
+        IReadOnlyList<string> AllLabels,
+        IReadOnlyList<UniqueDropDto> UniqueDrops);
+
+    private async Task<LootApplyResult> ApplyLootAsync(
         Guid userId,
+        JsonObject character,
         JsonElement monster,
         JsonElement floor,
         CancellationToken ct)
     {
-        var gained = new List<string>();
+        var logLabels = new List<string>();
+        var allLabels = new List<string>();
+        var uniques = new List<UniqueDropDto>();
         if (!monster.TryGetProperty("loot", out var loot) || loot.ValueKind != JsonValueKind.Array)
         {
-            return gained;
+            return new LootApplyResult(logLabels, allLabels, uniques);
         }
 
         var itemLevel = 1;
@@ -664,11 +925,18 @@ public sealed class CombatService(
         var bagPath = Path.Combine(secrets.Value.DataPath, "bags", $"{userId}.json");
         if (!File.Exists(bagPath))
         {
-            return gained;
+            return new LootApplyResult(logLabels, allLabels, uniques);
         }
 
         var (_, bag) = await characters.LoadMutableBagAsync(userId, ct);
         var items = bag["items"] as JsonArray ?? new JsonArray();
+
+        string? uniqueSeedId = null;
+        var uniqueConsumed = false;
+        if (uniqueDrops.ShouldAttemptUnique(_rng))
+        {
+            uniqueSeedId = await uniqueDrops.TryPickGearSeedIdAsync(monster, _rng, ct);
+        }
 
         foreach (var entry in loot.EnumerateArray())
         {
@@ -710,23 +978,76 @@ public sealed class CombatService(
                     var material = await itemRoll.CreateMaterialSnapshotAsync(templateId, qty, ct);
                     items.Add(material);
                     var label = material["name"]?.GetValue<string>() ?? templateId;
-                    gained.Add($"{label} x{qty}");
+                    var line = $"{label} x{qty}";
+                    logLabels.Add(line);
+                    allLabels.Add(line);
+                }
+                else if (!uniqueConsumed &&
+                         uniqueSeedId is not null &&
+                         string.Equals(templateId, uniqueSeedId, StringComparison.OrdinalIgnoreCase))
+                {
+                    uniqueConsumed = true;
+                    var unique = await uniqueDrops.TryCreateUniqueAsync(
+                        templateId,
+                        monster,
+                        floor,
+                        character,
+                        _rng,
+                        ct);
+                    if (unique is not null)
+                    {
+                        items.Add(unique.Snapshot);
+                        allLabels.Add(unique.Label);
+                        uniques.Add(ToUniqueDropDto(unique.Snapshot));
+                        // Demais cópias da mesma entrada (qty>1) caem como loot normal
+                        for (var i = 1; i < qty; i++)
+                        {
+                            AddNormalGear(
+                                items,
+                                logLabels,
+                                allLabels,
+                                await itemRoll.CreateFromTemplateAsync(
+                                    templateId,
+                                    _rng,
+                                    ct,
+                                    itemLevel,
+                                    rarityLuck: rarityLuck),
+                                itemLevel);
+                        }
+                    }
+                    else
+                    {
+                        for (var i = 0; i < qty; i++)
+                        {
+                            AddNormalGear(
+                                items,
+                                logLabels,
+                                allLabels,
+                                await itemRoll.CreateFromTemplateAsync(
+                                    templateId,
+                                    _rng,
+                                    ct,
+                                    itemLevel,
+                                    rarityLuck: rarityLuck),
+                                itemLevel);
+                        }
+                    }
                 }
                 else
                 {
                     for (var i = 0; i < qty; i++)
                     {
-                        var snap = await itemRoll.CreateFromTemplateAsync(
-                            templateId,
-                            _rng,
-                            ct,
-                            itemLevel,
-                            rarityLuck: rarityLuck);
-                        items.Add(snap);
-                        var name = snap["name"]?.GetValue<string>() ?? templateId;
-                        var rarity = snap["rarityName"]?.GetValue<string>() ?? "?";
-                        var stars = snap["stars"]?.GetValue<int>() ?? 1;
-                        gained.Add($"{name} Lv{itemLevel} [{rarity} {stars}★]");
+                        AddNormalGear(
+                            items,
+                            logLabels,
+                            allLabels,
+                            await itemRoll.CreateFromTemplateAsync(
+                                templateId,
+                                _rng,
+                                ct,
+                                itemLevel,
+                                rarityLuck: rarityLuck),
+                            itemLevel);
                     }
                 }
             }
@@ -738,7 +1059,57 @@ public sealed class CombatService(
 
         bag["items"] = items;
         await characters.SaveBagNodeAsync(bagPath, bag, ct);
-        return gained;
+        return new LootApplyResult(logLabels, allLabels, uniques);
+    }
+
+    private static void AddNormalGear(
+        JsonArray items,
+        List<string> logLabels,
+        List<string> allLabels,
+        JsonObject snap,
+        int itemLevel)
+    {
+        items.Add(snap);
+        var name = snap["name"]?.GetValue<string>() ?? "item";
+        var rarity = snap["rarityName"]?.GetValue<string>() ?? "?";
+        var stars = snap["stars"]?.GetValue<int>() ?? 1;
+        var line = $"{name} Lv{itemLevel} [{rarity} {stars}★]";
+        logLabels.Add(line);
+        allLabels.Add(line);
+    }
+
+    private static UniqueDropDto ToUniqueDropDto(JsonObject snap)
+    {
+        Dictionary<string, double>? stats = null;
+        if (snap["stats"] is JsonObject statsObj)
+        {
+            stats = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+            foreach (var (k, v) in statsObj)
+            {
+                if (v is JsonValue jv && jv.TryGetValue<double>(out var n))
+                {
+                    stats[k] = n;
+                }
+            }
+        }
+
+        string? icon = null;
+        if (snap["assets"] is JsonObject assets)
+        {
+            icon = assets["icon"]?.GetValue<string>();
+        }
+
+        return new UniqueDropDto(
+            snap["name"]?.GetValue<string>() ?? "Item único",
+            snap["description"]?.GetValue<string>(),
+            snap["lore"]?.GetValue<string>(),
+            icon,
+            snap["type"]?.GetValue<string>(),
+            snap["stars"]?.GetValue<int>(),
+            snap["rarityName"]?.GetValue<string>(),
+            snap["rarityId"]?.GetValue<int>(),
+            snap["itemLevel"]?.GetValue<int>(),
+            stats);
     }
 
     private static double GetStat(IReadOnlyDictionary<string, double> stats, string key, double fallback) =>
@@ -752,7 +1123,8 @@ public sealed class CombatService(
         double maxHp,
         int level,
         JsonElement monster,
-        CombatFighterProfile profile)
+        CombatFighterProfile profile,
+        double hpRegenPerSec = 0)
     {
         public int Slot { get; } = slot;
         public string MonsterId { get; } = monsterId;
@@ -762,6 +1134,8 @@ public sealed class CombatService(
         public int Level { get; } = level;
         public JsonElement Monster { get; } = monster;
         public CombatFighterProfile Profile { get; } = profile;
+        public double HpRegenPerSec { get; } = Math.Max(0, hpRegenPerSec);
         public bool Alive { get; set; } = true;
+        public int NextActAtMs { get; set; }
     }
 }

@@ -30,10 +30,33 @@ e o complemento generativo de monstro.
 | `battleCoinRewardBase` | `BATTLE_COIN_REWARD_BASE` | `2` | **Fallback** de SkyCoin por vitória se nenhum monstro da luta tiver `skyCoinDrop` |
 | `hpRegenGlobalMult` | `HP_REGEN_GLOBAL_MULT` | `1.0` | Escala a regen de HP (raça + classe em `content/`) |
 | `hpDefeatRevivePct` | `HP_DEFEAT_REVIVE_PCT` | `0.5` | Fração do HP máx. ao reviver após morte |
-| `combatTurnSeconds` | `COMBAT_TURN_SECONDS` | `1.0` | Segundos simulados por turno para regen em batalha |
+| `combatBaseActionMs` | `COMBAT_BASE_ACTION_MS` | `1000` | Intervalo base de ação com `attackSpeed = 1.0` |
+| `combatMaxDurationMs` | `COMBAT_MAX_DURATION_MS` | `60000` | Duração máxima da simulação de combate (ms) |
+| `combatRegenTickMs` | `COMBAT_REGEN_TICK_MS` | `1000` | Período dos ticks de regen em combate (ms) |
 | `combatDamageNoise` | `COMBAT_DAMAGE_NOISE` | `0` | Amplitude do ruído RNG no dano (`rng × noise`). Crit/dodge/def/bônus = JSON |
+| `combatArmorMidDef` | `COMBAT_ARMOR_MID_DEF` | `4800` | Defesa que dá ~50% redução física (`def^p/(def^p+mid^p)`) |
+| `combatArmorPower` | `COMBAT_ARMOR_POWER` | `0.31` | Expoente da curva de armadura (~30% @ 300 def com mid=4800) |
+| `uniqueDropChance` | `UNIQUE_DROP_CHANCE` | `0.005` | Chance por monstro morto de tentar item único (0–1) |
+| `uniqueDropEnabled` | `UNIQUE_DROP_ENABLED` | `true` | Liga/desliga drop único |
+| `uniqueRarityChanceMult` | `UNIQUE_RARITY_CHANCE_MULT` | `7` | Multiplica chances de raridade no pick do único (`min(1, chance×mult)`) |
+| `uniqueStars` | `UNIQUE_STARS` | `5` | Estrelas forçadas no item único |
+| `uniqueOpenAiTimeoutMs` | `UNIQUE_OPENAI_TIMEOUT_MS` | `8000` | Timeout flavor OpenAI |
+| `uniquePixelLabTimeoutMs` | `UNIQUE_PIXELLAB_TIMEOUT_MS` | `45000` | Timeout ícone PixelLab |
 
 Obsoleto (crescimento agora é `levelGain` no conteúdo): `LEVEL_ATTR_MULT_AT_1`, `LEVEL_ATTR_FACTOR`, `LEVEL_ATTR_CAP`.
+
+## Drop de item único (todo 33)
+
+Por monstro morto, se `uniqueDropEnabled` e `rng < uniqueDropChance`, o server tenta transformar um gear
+da tabela `loot[]` do mob em snapshot **único** (só bag + PNG em `data/assets/items/unique-*.png`):
+
+1. Semente = template gear do loot (type/baseStats)
+2. OpenAI gera título temático / description / artPrompt (sem raridade/stats finais)
+3. Nome forçado: `{tema} de {nomePersonagem}`
+4. Raridade rolada com chances × `uniqueRarityChanceMult`; qualidade = `uniqueStars`
+5. PixelLab gera ícone (placeholder se falhar)
+
+Ajuste para testes: em `content/config/global.json` suba `uniqueDropChance` (ex. `1.0`) e recreie a API.
 
 ## Generative (`global.json` → `generative`)
 
@@ -45,16 +68,29 @@ Por monstro, opcional: `generativeComplement` em `content/monsters/{id}.json` �
 
 ## Combate data-driven (todo 44)
 
-Golpe = dano base + bônus elementais + ruído. **Sem** crit/dodge/def inventados no C#.
+Golpe = dano base mitigado por armadura % + bônus elementais + ruído. **Sem** crit/dodge inventados no C#.
 
 ```text
-baseDealt = max(0, atk.dmgBase − def.defBase)   # sem defBase → 0
+reduction = def^p / (def^p + mid^p)     # mid = combatArmorMidDef, p = combatArmorPower
+baseDealt = atk.dmgBase × (1 − reduction)   # nunca zera só por def
 se critChance+critDamage no atacante e roll: baseDealt × critDamage   # só o base
 cada bonusDamage[tipo]: max(0, dmg − bonusDefense[counter]) ou integral se sem counter
 total = baseDealt + Σ bônus + (rng × combatDamageNoise)
 ```
 
+| Knob | Default | Papel |
+|------|---------|--------|
+| `combatArmorMidDef` | `4800` | def → **50%** redução física |
+| `combatArmorPower` | `0.31` | curva longa (~30% @ 300 def) |
+
+`attackSpeed` **não** multiplica dano — é cadência no clock (`intervalo = combatBaseActionMs / attackSpeed`).
+
 Dodge só se o **defensor** tiver `dodgeChance` no JSON.
+
+Monstro e personagem usam o mesmo `CombatHitResolver`. No monstro, dmg **e** def escalam com `√floor.difficulty` (e `attrMult` no registro); personagem passa por `StatCalculator` + gear.
+
+`baseStats.hpRegenPerSec` no monstro (opcional) regenera nos mesmos ticks de combate do player
+(evento `regen` com `actor: enemy` + `slot`). Ausente ⇒ 0.
 
 ## Crescimento por nível (`levelGain`)
 
@@ -93,9 +129,11 @@ Base atual:
 
 Ex.: elfo mago inicia em ~1 HP/s (+ força via core).
 
-**Em combate:** ao fim de cada turno o server aplica `hpRegenPerSec × combatTurnSeconds`
-(default `1.0`) e emite evento `regen`. Assim 2 HP/s vs 1 de dano por turno vence lutas longas.
-Fora de combate: regenera pelo tempo real desde `lastHpAt` (front anima fluido).
+**Em combate:** o clock emite `regen` a cada `combatRegenTickMs` com
+`hpRegenPerSec × (tickMs/1000)` e `atMs` autoritativo — **player e monstro** (se o JSON
+do monstro declarar `hpRegenPerSec`). Assim 2 HP/s vs dano baixo vence lutas longas.
+Fora de combate: regenera pelo tempo real desde `lastHpAt`
+(front anima fluido só fora do playback; monstro não regenera fora de combate).
 
 ## SkyCoin de monstro (todos 50–51)
 
@@ -146,8 +184,8 @@ por sala; lista vazia cai no fallback `slime`. O chefe continua 1v1 via `boss.mo
 
 Convenção dos andares 1–10 (não é regra de código): salas 3/6/9 costumam ter 2/3/4 slots.
 
-Cada monstro vivo ataca no próprio turno (eventos `hit` com `slot` 0–3). XP/loot somam por
-monstro derrotado. O front só anima o que o server envia.
+Cada monstro vivo tem o próprio `nextActAtMs` (eventos `hit` com `slot` 0–3 e `atMs`).
+XP/loot somam por monstro derrotado. O front só anima o que o server envia.
 
 ## Regen de HP no personagem
 
@@ -159,12 +197,12 @@ baseStats.hpRegenPerSec   → semente (elf/human 1, ork 2; + class.hpRegenBonus 
 = taxa efetiva (HP/s)
 
 regen no tempo (fora de combate) = taxa × segundos
-regen por turno (em combate)     = taxa × combatTurnSeconds
+regen em combate (por tick)      = taxa × (combatRegenTickMs / 1000)
 ```
 
 Sementes típicas: elfo/humano `1`, ork `2`. Guerreiro `+1`, ranger `+0.5`.
 Alvos novos só no `core` e ausentes em `baseStats` nascem com semente `1`.
-Em batalha o server regenera ao fim de cada turno (evento `regen`) — decisivo em lutas longas.
+Em batalha o server regenera nos ticks do clock (evento `regen` com `atMs`) — decisivo em lutas longas.
 
 ## Amostra XP (defaults)
 

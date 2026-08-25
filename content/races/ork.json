@@ -19,14 +19,14 @@
     "dmgBase": 1
   },
   "equipmentSlots": [
-    { "name": "head", "itemType": ["helmet"], "boxSize": 1 },
-    { "name": "chest", "itemType": ["armor"], "boxSize": 1 },
-    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1 },
-    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1 },
-    { "name": "ring1", "itemType": ["ring"], "boxSize": 4 },
-    { "name": "ring2", "itemType": ["ring"], "boxSize": 4 },
-    { "name": "ring3", "itemType": ["ring"], "boxSize": 4 },
-    { "name": "ring4", "itemType": ["ring"], "boxSize": 4 }
+    { "name": "head", "itemType": ["helmet"], "boxSize": 1, "row": 1, "order": 2 },
+    { "name": "chest", "itemType": ["armor"], "boxSize": 1, "row": 2, "order": 2 },
+    { "name": "mainHand", "itemType": ["weapon"], "boxSize": 1, "row": 2, "order": 3 },
+    { "name": "offHand", "itemType": ["weapon", "shield"], "boxSize": 1, "row": 2, "order": 1 },
+    { "name": "ring1", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 1 },
+    { "name": "ring2", "itemType": ["ring"], "boxSize": 10, "row": 1, "order": 3 },
+    { "name": "ring3", "itemType": ["ring"], "boxSize": 10, "row": 3, "order": 1 },
+    { "name": "ring4", "itemType": ["ring"], "boxSize": 10, "row": 3, "order": 2 }
   ],
   "blessings": ["extraRings", "highHpRegen"],
   "limitations": ["lowMp"],

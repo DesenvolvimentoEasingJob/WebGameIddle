@@ -1,34 +1,17 @@
 import type { BattleEvent } from '../types/api'
 
-/** Timing tunables for combat choreography (ms). */
+/** Timing tunables for combat choreography (ms) around server atMs. */
 export const COMBAT_TIMING = {
   windupMs: 110,
   hitImpactHoldMs: 210,
   critImpactHoldMs: 280,
   deathHoldMs: 260,
   dodgeHoldMs: 180,
-  enemyStaggerMs: 95,
-  /** Start enemy retaliation before player beat fully ends. */
-  retaliationOverlapMs: 90,
-  metaInstantMs: 0,
-  metaShortMs: 55,
-  metaBurstMs: 70,
   floaterClearMs: 500,
   motionClearMs: 320,
+  /** Scale server atMs → wall clock (1 = realtime vs simulated ms). */
+  playbackScale: 1,
 } as const
-
-export type BeatKind = 'meta' | 'round'
-
-export type CombatBeat =
-  | { kind: 'meta'; events: BattleEvent[]; startIndex: number }
-  | {
-      kind: 'round'
-      playerEvents: BattleEvent[]
-      enemyEvents: BattleEvent[]
-      startIndex: number
-      /** Index of the first player combat event in the original timeline. */
-      playerEventIndex: number
-    }
 
 export type MotionKind = 'strike' | 'hurt' | 'die'
 
@@ -60,48 +43,8 @@ export type BeatPlan = {
   actions: TimedAction[]
 }
 
-const META_TYPES = new Set([
-  'start',
-  'vitals',
-  'regen',
-  'victory',
-  'defeat',
-  'xp',
-  'level_up',
-  'xp_penalty',
-  'loot',
-  'coins',
-  'revive',
-])
-
 function isCombatSwing(ev: BattleEvent): boolean {
   return ev.type === 'hit' || ev.type === 'crit' || ev.type === 'dodge'
-}
-
-function isPlayerSwing(ev: BattleEvent): boolean {
-  return isCombatSwing(ev) && ev.actor === 'player'
-}
-
-function isEnemySwing(ev: BattleEvent): boolean {
-  return isCombatSwing(ev) && ev.actor === 'enemy'
-}
-
-function metaDelayMs(ev: BattleEvent): number {
-  if (ev.type === 'start' || ev.type === 'vitals') return COMBAT_TIMING.metaInstantMs
-  if (ev.type === 'regen') return COMBAT_TIMING.metaShortMs
-  if (
-    ev.type === 'loot' ||
-    ev.type === 'xp' ||
-    ev.type === 'coins' ||
-    ev.type === 'level_up' ||
-    ev.type === 'xp_penalty'
-  ) {
-    return COMBAT_TIMING.metaBurstMs
-  }
-  if (ev.type === 'victory' || ev.type === 'defeat' || ev.type === 'revive') {
-    return COMBAT_TIMING.metaShortMs
-  }
-  return COMBAT_TIMING.metaShortMs
 }
 
 function swingHoldMs(ev: BattleEvent): number {
@@ -109,6 +52,10 @@ function swingHoldMs(ev: BattleEvent): number {
   if (ev.type === 'dodge') return COMBAT_TIMING.dodgeHoldMs
   if (ev.type === 'death') return COMBAT_TIMING.deathHoldMs
   return COMBAT_TIMING.hitImpactHoldMs
+}
+
+function eventAtMs(ev: BattleEvent): number {
+  return Math.max(0, ev.atMs ?? 0)
 }
 
 /** Próximo slot inimigo que o player ataca na timeline (após `fromIndex`). */
@@ -124,91 +71,6 @@ export function peekNextEnemyTargetSlot(
     }
   }
   return null
-}
-
-/**
- * Agrupa a timeline turn-based do server em beats de apresentação:
- * meta comprimido + rounds (player → retaliações inimigas).
- */
-export function groupBattleEvents(events: BattleEvent[]): CombatBeat[] {
-  const beats: CombatBeat[] = []
-  let i = 0
-
-  while (i < events.length) {
-    const ev = events[i]!
-
-    if (META_TYPES.has(ev.type)) {
-      const startIndex = i
-      const batch: BattleEvent[] = []
-      while (i < events.length && META_TYPES.has(events[i]!.type)) {
-        // Regen between rounds stays with the preceding round's trailing meta —
-        // but if we are already in a meta batch, keep collecting.
-        batch.push(events[i]!)
-        i++
-        // Split long meta tails: after opening vitals, stop so rounds can start.
-        // Keep consecutive meta together except we never pull combat swings into meta.
-      }
-      beats.push({ kind: 'meta', events: batch, startIndex })
-      continue
-    }
-
-    if (isPlayerSwing(ev)) {
-      const startIndex = i
-      const playerEventIndex = i
-      const playerEvents: BattleEvent[] = [ev]
-      i++
-      // Death of the struck enemy belongs to the player beat.
-      if (i < events.length && events[i]!.type === 'death' && events[i]!.actor === 'enemy') {
-        playerEvents.push(events[i]!)
-        i++
-      }
-
-      const enemyEvents: BattleEvent[] = []
-      while (i < events.length && isEnemySwing(events[i]!)) {
-        enemyEvents.push(events[i]!)
-        i++
-        if (i < events.length && events[i]!.type === 'death' && events[i]!.actor === 'player') {
-          enemyEvents.push(events[i]!)
-          i++
-          break
-        }
-      }
-
-      beats.push({
-        kind: 'round',
-        playerEvents,
-        enemyEvents,
-        startIndex,
-        playerEventIndex,
-      })
-      continue
-    }
-
-    // Orphan enemy swing / death (should be rare) — treat as one-sided round.
-    if (isEnemySwing(ev) || (ev.type === 'death' && ev.actor === 'player')) {
-      const startIndex = i
-      const enemyEvents: BattleEvent[] = []
-      while (i < events.length && (isEnemySwing(events[i]!) || events[i]!.type === 'death')) {
-        enemyEvents.push(events[i]!)
-        i++
-        if (enemyEvents[enemyEvents.length - 1]?.type === 'death') break
-      }
-      beats.push({
-        kind: 'round',
-        playerEvents: [],
-        enemyEvents,
-        startIndex,
-        playerEventIndex: startIndex,
-      })
-      continue
-    }
-
-    // Unknown event: compress as meta of one.
-    beats.push({ kind: 'meta', events: [ev], startIndex: i })
-    i++
-  }
-
-  return beats
 }
 
 function pushApply(
@@ -240,105 +102,89 @@ function floaterFromSwing(ev: BattleEvent): FloaterCue | null {
   return { text, side, slot }
 }
 
-/**
- * Converte um beat em ações temporizadas (offsets relativos ao início do beat).
- */
-export function planBeat(beat: CombatBeat): BeatPlan {
-  if (beat.kind === 'meta') {
-    const actions: TimedAction[] = []
-    let t = 0
-    for (let j = 0; j < beat.events.length; j++) {
-      const event = beat.events[j]!
-      const eventIndex = beat.startIndex + j
-      pushApply(actions, t, event, eventIndex)
-      t += metaDelayMs(event)
-    }
-    return { durationMs: t, actions }
-  }
-
-  const actions: TimedAction[] = []
-  const windup = COMBAT_TIMING.windupMs
-  let cursor = 0
-
-  // Player swing(s): usually one hit/crit/dodge + optional death.
-  if (beat.playerEvents.length > 0) {
-    const swing = beat.playerEvents[0]!
-    const targetSlot = swing.slot ?? 0
-    pushMotion(actions, 0, { kind: 'strike', side: 'player', slot: null })
-    cursor = windup
-
-    let eventIndex = beat.playerEventIndex
-    for (const event of beat.playerEvents) {
-      pushApply(actions, cursor, event, eventIndex)
-      if (event.type === 'hit' || event.type === 'crit' || event.type === 'dodge') {
-        const floater = floaterFromSwing(event)
-        if (floater) pushFloater(actions, cursor, floater)
-        if (event.type !== 'dodge') {
-          pushMotion(actions, cursor, {
-            kind: 'hurt',
-            side: 'enemy',
-            slot: event.slot ?? targetSlot,
-          })
-        }
-      }
-      if (event.type === 'death' && event.actor === 'enemy') {
-        pushMotion(actions, cursor, {
-          kind: 'die',
-          side: 'enemy',
-          slot: event.slot ?? targetSlot,
-        })
-      }
-      eventIndex++
-    }
-
-    const lastPlayer = beat.playerEvents[beat.playerEvents.length - 1]!
-    cursor += swingHoldMs(lastPlayer)
-  }
-
-  // Enemy retaliations: staggered, overlapping the tail of the player beat.
-  if (beat.enemyEvents.length > 0) {
-    const retaliationStart = beat.playerEvents.length > 0
-      ? Math.max(0, cursor - COMBAT_TIMING.retaliationOverlapMs)
-      : 0
-    let swingOrdinal = 0
-    let eventIndex = beat.playerEventIndex + beat.playerEvents.length
-    let lastImpactEnd = retaliationStart
-
-    for (const event of beat.enemyEvents) {
-      if (isEnemySwing(event)) {
-        const strikeAt = retaliationStart + swingOrdinal * COMBAT_TIMING.enemyStaggerMs
-        const impactAt = strikeAt + windup
-        const slot = event.slot ?? 0
-        pushMotion(actions, strikeAt, { kind: 'strike', side: 'enemy', slot })
-        pushApply(actions, impactAt, event, eventIndex)
-        const floater = floaterFromSwing(event)
-        if (floater) pushFloater(actions, impactAt, floater)
-        if (event.type !== 'dodge') {
-          pushMotion(actions, impactAt, { kind: 'hurt', side: 'player', slot: null })
-        }
-        lastImpactEnd = Math.max(lastImpactEnd, impactAt + swingHoldMs(event))
-        swingOrdinal++
-      } else if (event.type === 'death' && event.actor === 'player') {
-        const dieAt = lastImpactEnd
-        pushApply(actions, dieAt, event, eventIndex)
-        pushMotion(actions, dieAt, { kind: 'die', side: 'player', slot: null })
-        lastImpactEnd = dieAt + COMBAT_TIMING.deathHoldMs
-      } else {
-        pushApply(actions, lastImpactEnd, event, eventIndex)
-      }
-      eventIndex++
-    }
-
-    cursor = Math.max(cursor, lastImpactEnd)
-  }
-
-  return { durationMs: cursor, actions }
+function wallMs(simMs: number): number {
+  return Math.round(simMs * COMBAT_TIMING.playbackScale)
 }
 
-export function planPlayback(events: BattleEvent[]): { beats: CombatBeat[]; plans: BeatPlan[] } {
-  const beats = groupBattleEvents(events)
-  const plans = beats.map((b) => planBeat(b))
-  return { beats, plans }
+/**
+ * Um núcleo: agenda apply + FX a partir do `atMs` autoritativo do server.
+ * Windup cosmético pode começar antes do impacto, sem reordenar hits.
+ */
+export function planPlayback(events: BattleEvent[]): { plans: BeatPlan[] } {
+  const actions: TimedAction[] = []
+  const windup = COMBAT_TIMING.windupMs
+  let lastImpactEnd = 0
+
+  for (let i = 0; i < events.length; i++) {
+    const ev = events[i]!
+    const impactAt = wallMs(eventAtMs(ev))
+
+    if (isCombatSwing(ev)) {
+      const strikeAt = Math.max(0, impactAt - windup)
+      const striker =
+        ev.type === 'dodge'
+          ? ev.target === 'player'
+            ? 'player'
+            : ev.target === 'enemy'
+              ? 'enemy'
+              : null
+          : ev.actor === 'player' || ev.actor === 'enemy'
+            ? ev.actor
+            : null
+
+      if (striker === 'player') {
+        pushMotion(actions, strikeAt, { kind: 'strike', side: 'player', slot: null })
+      } else if (striker === 'enemy') {
+        pushMotion(actions, strikeAt, {
+          kind: 'strike',
+          side: 'enemy',
+          slot: ev.slot ?? 0,
+        })
+      }
+
+      pushApply(actions, impactAt, ev, i)
+      const floater = floaterFromSwing(ev)
+      if (floater) pushFloater(actions, impactAt, floater)
+
+      if (ev.type !== 'dodge') {
+        if (ev.target === 'enemy') {
+          pushMotion(actions, impactAt, {
+            kind: 'hurt',
+            side: 'enemy',
+            slot: ev.slot ?? 0,
+          })
+        } else if (ev.target === 'player') {
+          pushMotion(actions, impactAt, { kind: 'hurt', side: 'player', slot: null })
+        }
+      }
+
+      lastImpactEnd = Math.max(lastImpactEnd, impactAt + swingHoldMs(ev))
+      continue
+    }
+
+    if (ev.type === 'death') {
+      pushApply(actions, impactAt, ev, i)
+      if (ev.actor === 'enemy') {
+        pushMotion(actions, impactAt, {
+          kind: 'die',
+          side: 'enemy',
+          slot: ev.slot ?? 0,
+        })
+      } else if (ev.actor === 'player') {
+        pushMotion(actions, impactAt, { kind: 'die', side: 'player', slot: null })
+      }
+      lastImpactEnd = Math.max(lastImpactEnd, impactAt + COMBAT_TIMING.deathHoldMs)
+      continue
+    }
+
+    pushApply(actions, impactAt, ev, i)
+    lastImpactEnd = Math.max(lastImpactEnd, impactAt)
+  }
+
+  const maxAction = actions.reduce((m, a) => Math.max(m, a.atMs), 0)
+  const durationMs = Math.max(lastImpactEnd, maxAction)
+
+  return { plans: [{ durationMs, actions }] }
 }
 
 export type PlaybackClock = {

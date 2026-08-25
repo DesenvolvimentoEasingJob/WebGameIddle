@@ -2,12 +2,17 @@
   "id": "ruin-broker",
   "name": "Ruin Broker",
   "description": "Mercador das ruÃ­nas em trapos elegantes, mÃ¡scara e bolsa de moedas, ar dÃºbio de boss.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 12,
-  "hp": 200,
+  "hp": 650,
   "baseStats": {
     "dmgBase": 27,
-    "defBase": 13
+    "defBase": 190,
+    "attackSpeed": 1,
+    "critChance": 0.1,
+    "critDamage": 1.6
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +58,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

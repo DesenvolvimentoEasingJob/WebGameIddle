@@ -4,11 +4,14 @@
   "description": "CÃ£o de guerra metÃ¡lico, focinho de aÃ§o e corpo articulado, postura de caÃ§a.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 170,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 60,
+    "attackSpeed": 1.05,
+    "hpRegenPerSec": 0.8
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",

@@ -17,6 +17,7 @@ export interface Monster {
   level: number
   hp: number
   baseStats?: Record<string, number>
+  bonusDamage?: Record<string, { dmgBase: number; counter: string }>
   bonusDefense?: Record<string, number>
   /** @deprecated legado — preferir baseStats.dmgBase */
   attack?: number

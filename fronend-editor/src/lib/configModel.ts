@@ -14,8 +14,18 @@ export interface GlobalBalanceForm {
   battleCoinRewardBase: number
   hpRegenGlobalMult: number
   hpDefeatRevivePct: number
-  combatTurnSeconds: number
+  combatBaseActionMs: number
+  combatMaxDurationMs: number
+  combatRegenTickMs: number
   combatDamageNoise: number
+  combatArmorMidDef: number
+  combatArmorPower: number
+  uniqueDropChance: number
+  uniqueDropEnabled: number
+  uniqueRarityChanceMult: number
+  uniqueStars: number
+  uniqueOpenAiTimeoutMs: number
+  uniquePixelLabTimeoutMs: number
 }
 
 export interface GlobalConfigForm {
@@ -48,8 +58,18 @@ export function emptyGlobalConfig(): GlobalConfigForm {
       battleCoinRewardBase: 2,
       hpRegenGlobalMult: 1.0,
       hpDefeatRevivePct: 0.5,
-      combatTurnSeconds: 1.0,
+      combatBaseActionMs: 1000,
+      combatMaxDurationMs: 60000,
+      combatRegenTickMs: 1000,
       combatDamageNoise: 0,
+      combatArmorMidDef: 4800,
+      combatArmorPower: 0.31,
+      uniqueDropChance: 0.005,
+      uniqueDropEnabled: 1,
+      uniqueRarityChanceMult: 7,
+      uniqueStars: 5,
+      uniqueOpenAiTimeoutMs: 8000,
+      uniquePixelLabTimeoutMs: 45000,
     },
   }
 }
@@ -93,8 +113,22 @@ export function parseGlobalConfig(raw: unknown): GlobalConfigForm {
     bal.battleCoinRewardBase = num(b.battleCoinRewardBase, bal.battleCoinRewardBase)
     bal.hpRegenGlobalMult = num(b.hpRegenGlobalMult, bal.hpRegenGlobalMult)
     bal.hpDefeatRevivePct = num(b.hpDefeatRevivePct, bal.hpDefeatRevivePct)
-    bal.combatTurnSeconds = num(b.combatTurnSeconds, bal.combatTurnSeconds)
+    bal.combatBaseActionMs = num(b.combatBaseActionMs, bal.combatBaseActionMs)
+    bal.combatMaxDurationMs = num(b.combatMaxDurationMs, bal.combatMaxDurationMs)
+    bal.combatRegenTickMs = num(b.combatRegenTickMs, bal.combatRegenTickMs)
     bal.combatDamageNoise = num(b.combatDamageNoise, bal.combatDamageNoise)
+    bal.combatArmorMidDef = num(b.combatArmorMidDef, bal.combatArmorMidDef)
+    bal.combatArmorPower = num(b.combatArmorPower, bal.combatArmorPower)
+    bal.uniqueDropChance = num(b.uniqueDropChance, bal.uniqueDropChance)
+    if (typeof b.uniqueDropEnabled === 'boolean') {
+      bal.uniqueDropEnabled = b.uniqueDropEnabled ? 1 : 0
+    } else {
+      bal.uniqueDropEnabled = num(b.uniqueDropEnabled, bal.uniqueDropEnabled)
+    }
+    bal.uniqueRarityChanceMult = num(b.uniqueRarityChanceMult, bal.uniqueRarityChanceMult)
+    bal.uniqueStars = num(b.uniqueStars, bal.uniqueStars)
+    bal.uniqueOpenAiTimeoutMs = num(b.uniqueOpenAiTimeoutMs, bal.uniqueOpenAiTimeoutMs)
+    bal.uniquePixelLabTimeoutMs = num(b.uniquePixelLabTimeoutMs, bal.uniquePixelLabTimeoutMs)
   }
 
   return {
@@ -106,13 +140,17 @@ export function parseGlobalConfig(raw: unknown): GlobalConfigForm {
 }
 
 export function globalConfigToJson(form: GlobalConfigForm): Record<string, unknown> {
+  const b = form.balance
   return {
     id: 'global',
     generative: {
       monsterImageComplement: form.monsterImageComplement.trim(),
       floorImageComplement: form.floorImageComplement.trim(),
     },
-    balance: { ...form.balance },
+    balance: {
+      ...b,
+      uniqueDropEnabled: b.uniqueDropEnabled !== 0,
+    },
   }
 }
 
@@ -161,6 +199,16 @@ export const BALANCE_FIELDS: Array<{
   { key: 'battleCoinRewardBase', label: 'Battle coin reward base' },
   { key: 'hpRegenGlobalMult', label: 'HP regen global mult', step: '0.01' },
   { key: 'hpDefeatRevivePct', label: 'HP defeat revive %', step: '0.01' },
-  { key: 'combatTurnSeconds', label: 'Combat turn seconds', step: '0.1' },
+  { key: 'combatBaseActionMs', label: 'Combat base action ms' },
+  { key: 'combatMaxDurationMs', label: 'Combat max duration ms' },
+  { key: 'combatRegenTickMs', label: 'Combat regen tick ms' },
   { key: 'combatDamageNoise', label: 'Combat damage noise', step: '0.01' },
+  { key: 'combatArmorMidDef', label: 'Armor mid def (50% reduction)', step: '1' },
+  { key: 'combatArmorPower', label: 'Armor curve power', step: '0.01' },
+  { key: 'uniqueDropChance', label: 'Unique drop chance (0–1)', step: '0.001' },
+  { key: 'uniqueDropEnabled', label: 'Unique drop enabled (0/1)' },
+  { key: 'uniqueRarityChanceMult', label: 'Unique rarity chance mult', step: '0.1' },
+  { key: 'uniqueStars', label: 'Unique item stars (1–5)' },
+  { key: 'uniqueOpenAiTimeoutMs', label: 'Unique OpenAI timeout ms' },
+  { key: 'uniquePixelLabTimeoutMs', label: 'Unique PixelLab timeout ms' },
 ]

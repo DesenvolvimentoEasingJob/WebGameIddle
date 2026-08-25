@@ -2,12 +2,16 @@
   "id": "golem-scrap",
   "name": "golem scrap",
   "description": "Golem tosco feito de sucata e ferro enferrujado, corpo angular com placas soltas.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 200,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 80,
+    "attackSpeed": 0.75,
+    "hpRegenPerSec": 2
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +57,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

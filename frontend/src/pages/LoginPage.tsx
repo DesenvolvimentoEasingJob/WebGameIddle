@@ -2,12 +2,29 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { ApiError } from '../api/client'
+import {
+  clearRememberedLogin,
+  loadRememberedLogin,
+  saveRememberedLogin,
+} from '../auth/rememberedLogin'
+
+function readInitialForm() {
+  const remembered = loadRememberedLogin()
+  return {
+    usernameOrEmail: remembered?.usernameOrEmail ?? '',
+    password: remembered?.password ?? '',
+    remember: Boolean(remembered),
+  }
+}
 
 export function LoginPage() {
   const { user, loading, login } = useAuth()
   const navigate = useNavigate()
-  const [usernameOrEmail, setUsernameOrEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [initial] = useState(readInitialForm)
+  const [usernameOrEmail, setUsernameOrEmail] = useState(initial.usernameOrEmail)
+  const [password, setPassword] = useState(initial.password)
+  const [remember, setRemember] = useState(initial.remember)
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -21,6 +38,11 @@ export function LoginPage() {
     setSubmitting(true)
     try {
       const me = await login(usernameOrEmail, password)
+      if (remember) {
+        saveRememberedLogin({ usernameOrEmail, password })
+      } else {
+        clearRememberedLogin()
+      }
       navigate(me.hasCharacter ? '/hub' : '/create/race', { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Falha no login')
@@ -49,15 +71,34 @@ export function LoginPage() {
           </div>
           <div className="field">
             <label htmlFor="login-pass">Senha</label>
-            <input
-              id="login-pass"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              required
-            />
+            <div className="field-password">
+              <input
+                id="login-pass"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="field-password__toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Ocultar' : 'Mostrar'}
+              </button>
+            </div>
           </div>
+          <label className="field-check">
+            <input
+              type="checkbox"
+              checked={remember}
+              onChange={(e) => setRemember(e.target.checked)}
+            />
+            <span>Lembrar dados neste dispositivo</span>
+          </label>
           {error ? <p className="form-error">{error}</p> : null}
           <button className="btn btn--primary btn--block" type="submit" disabled={submitting}>
             {submitting ? 'Entrando…' : 'Entrar'}

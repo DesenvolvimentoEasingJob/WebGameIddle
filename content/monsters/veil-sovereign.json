@@ -2,12 +2,18 @@
   "id": "veil-sovereign",
   "name": "Veil Sovereign",
   "description": "Soberano velado em vÃ©us negros e prata, rosto oculto e aura sombria de fim de torre.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 18,
-  "hp": 290,
+  "hp": 1000,
   "baseStats": {
     "dmgBase": 39,
-    "defBase": 19
+    "defBase": 300,
+    "attackSpeed": 0.9,
+    "critChance": 0.12,
+    "critDamage": 1.7,
+    "dodgeChance": 0.12
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -61,6 +67,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

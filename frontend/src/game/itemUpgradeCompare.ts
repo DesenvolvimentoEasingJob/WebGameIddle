@@ -3,6 +3,9 @@ import type { BagItem } from '../types/item'
 export type EquipSlotDef = {
   name: string
   itemType: string[]
+  boxSize?: number
+  row?: number
+  order?: number
 }
 
 function slotAcceptsType(slot: EquipSlotDef, type: string): boolean {

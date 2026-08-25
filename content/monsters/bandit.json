@@ -2,12 +2,17 @@
   "id": "bandit",
   "name": "bandit",
   "description": "Bandido humano de capa surrada e capuz, adaga enferrujada e olhar ameaÃ§ador.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 155,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 55,
+    "attackSpeed": 1.15,
+    "critChance": 0.18,
+    "critDamage": 1.75
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +58,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

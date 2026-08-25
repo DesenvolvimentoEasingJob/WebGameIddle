@@ -31,23 +31,33 @@ public sealed class RarityService(ContentService content)
     }
 
     public Task<RarityDefinition> PickAsync(Random rng, CancellationToken ct) =>
-        PickAsync(rng, ct, rarityLuck: 0);
+        PickAsync(rng, ct, rarityLuck: 0, chanceMult: 1);
 
-    public async Task<RarityDefinition> PickAsync(Random rng, CancellationToken ct, double rarityLuck)
+    public Task<RarityDefinition> PickAsync(Random rng, CancellationToken ct, double rarityLuck) =>
+        PickAsync(rng, ct, rarityLuck, chanceMult: 1);
+
+    public async Task<RarityDefinition> PickAsync(
+        Random rng,
+        CancellationToken ct,
+        double rarityLuck,
+        double chanceMult)
     {
         await EnsureLoadedAsync(ct);
-        return PickFrom(_pickOrder!, _cache!, rng, rarityLuck);
+        return PickFrom(_pickOrder!, _cache!, rng, rarityLuck, chanceMult);
     }
 
     /// <summary>
     /// Top-down: do maior id ao menor com chance &gt; 0; primeiro sucesso vence; senão Comum.
+    /// <paramref name="chanceMult"/> escala a chance efetiva (<c>min(1, chance × mult)</c>) — usado em drops únicos.
     /// </summary>
     public static RarityDefinition PickFrom(
         IReadOnlyList<RarityDefinition> pickOrderHighestFirst,
         IReadOnlyList<RarityDefinition> allSortedById,
         Random rng,
-        double rarityLuck = 0)
+        double rarityLuck = 0,
+        double chanceMult = 1)
     {
+        var mult = Math.Max(0, chanceMult);
         foreach (var rarity in pickOrderHighestFirst)
         {
             if (rarity.Chance <= 0)
@@ -56,6 +66,7 @@ public sealed class RarityService(ContentService content)
             }
 
             var chance = MonsterDropHelper.EffectiveChance(rarity.Chance, rarityLuck);
+            chance = Math.Clamp(chance * mult, 0, 1);
             if (rng.NextDouble() < chance)
             {
                 return rarity;

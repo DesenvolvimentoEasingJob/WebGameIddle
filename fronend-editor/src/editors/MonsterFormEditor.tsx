@@ -36,6 +36,9 @@ export function MonsterFormEditor({
   const [statValue, setStatValue] = useState('0')
   const [defKey, setDefKey] = useState('')
   const [defValue, setDefValue] = useState('0')
+  const [dmgKey, setDmgKey] = useState('')
+  const [dmgBase, setDmgBase] = useState('5')
+  const [dmgCounter, setDmgCounter] = useState('fireResistance')
   const [skillDraft, setSkillDraft] = useState('')
 
   const previewSrc = useMemo(
@@ -107,6 +110,29 @@ export function MonsterFormEditor({
     const next = { ...value.bonusDefense }
     delete next[key]
     patch({ bonusDefense: next })
+  }
+
+  function addBonusDamage() {
+    const key = dmgKey.trim()
+    const counter = dmgCounter.trim()
+    if (!key || !counter) return
+    const num = Number(dmgBase)
+    if (!Number.isFinite(num) || num <= 0) return
+    patch({
+      bonusDamage: {
+        ...value.bonusDamage,
+        [key]: { dmgBase: num, counter },
+      },
+    })
+    setDmgKey('')
+    setDmgBase('5')
+    setDmgCounter('fireResistance')
+  }
+
+  function removeBonusDamage(key: string) {
+    const next = { ...value.bonusDamage }
+    delete next[key]
+    patch({ bonusDamage: next })
   }
 
   function addSkill() {
@@ -223,6 +249,9 @@ export function MonsterFormEditor({
             value={value.rarityLuck}
             onChange={(e) => patch({ rarityLuck: Number(e.target.value) })}
           />
+          <span className="muted small">
+            Enviesa raridade do gear no drop (todo 50). 0 = pesos normais.
+          </span>
         </label>
 
         <label className="field">
@@ -233,6 +262,7 @@ export function MonsterFormEditor({
             value={value.skyCoinDropMin}
             onChange={(e) => patch({ skyCoinDropMin: Number(e.target.value) })}
           />
+          <span className="muted small">Range inclusivo de SkyCoin ao matar (todo 50).</span>
         </label>
 
         <label className="field">
@@ -249,7 +279,10 @@ export function MonsterFormEditor({
       <section className="item-form__section">
         <header className="item-form__section-head">
           <h3>baseStats</h3>
-          <p className="muted small">Combate: dmgBase / defBase (e opcionais).</p>
+          <p className="muted small">
+            dmgBase / defBase; attackSpeed = cadência (não multiplica dano); critChance +
+            critDamage juntos; dodgeChance; hpRegenPerSec opcional.
+          </p>
         </header>
         <ul className="item-stats">
           {Object.entries(value.baseStats).map(([key, num]) => (
@@ -291,8 +324,83 @@ export function MonsterFormEditor({
 
       <section className="item-form__section">
         <header className="item-form__section-head">
+          <h3>bonusDamage</h3>
+          <p className="muted small">
+            Dano elemental: counter deve bater com uma chave em bonusDefense do alvo (ex.:
+            fireResistance).
+          </p>
+        </header>
+        <ul className="item-stats">
+          {Object.entries(value.bonusDamage).map(([key, entry]) => (
+            <li key={key} className="item-stats__row item-stats__row--wide">
+              <code>{key}</code>
+              <input
+                type="number"
+                title="dmgBase"
+                value={entry.dmgBase}
+                onChange={(e) =>
+                  patch({
+                    bonusDamage: {
+                      ...value.bonusDamage,
+                      [key]: { ...entry, dmgBase: Number(e.target.value) },
+                    },
+                  })
+                }
+              />
+              <input
+                type="text"
+                title="counter"
+                placeholder="counter"
+                value={entry.counter}
+                onChange={(e) =>
+                  patch({
+                    bonusDamage: {
+                      ...value.bonusDamage,
+                      [key]: { ...entry, counter: e.target.value },
+                    },
+                  })
+                }
+              />
+              <button type="button" className="jse-remove" onClick={() => removeBonusDamage(key)}>
+                ×
+              </button>
+            </li>
+          ))}
+          {Object.keys(value.bonusDamage).length === 0 && (
+            <li className="muted small">Nenhum bônus elemental.</li>
+          )}
+        </ul>
+        <div className="item-stats__add">
+          <input
+            type="text"
+            placeholder="ex.: fireDamage"
+            value={dmgKey}
+            onChange={(e) => setDmgKey(e.target.value)}
+          />
+          <input
+            type="number"
+            title="dmgBase"
+            value={dmgBase}
+            onChange={(e) => setDmgBase(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="counter (fireResistance)"
+            value={dmgCounter}
+            onChange={(e) => setDmgCounter(e.target.value)}
+          />
+          <button type="button" className="btn" onClick={addBonusDamage}>
+            + Bônus
+          </button>
+        </div>
+      </section>
+
+      <section className="item-form__section">
+        <header className="item-form__section-head">
           <h3>bonusDefense</h3>
-          <p className="muted small">Resistências nomeadas (ex.: fireResistance).</p>
+          <p className="muted small">
+            Resistências nomeadas (counter do bonusDamage do atacante, ex.: fireResistance).
+          </p>
         </header>
         <ul className="item-stats">
           {Object.entries(value.bonusDefense).map(([key, num]) => (

@@ -1,6 +1,7 @@
 # 52 — UI + editor: gold e rarityLuck do monstro
 
-STATUS: pendente
+STATUS: concluido
+CONCLUIDO_EM: 2026-08-11
 
 ## Objetivo
 
@@ -32,9 +33,9 @@ Tipagem: estender `EncounterMonster` em `frontend/src/types/api.ts`.
 
 ## Critérios de aceite
 
-- [ ] Painel do alvo mostra gold range + luck quando vierem no encounter
-- [ ] Editor grava/lê os campos no JSON
-- [ ] Ausência de campos não quebra a UI
+- [x] Painel do alvo mostra gold range + luck quando vierem no encounter
+- [x] Editor grava/lê os campos no JSON
+- [x] Ausência de campos não quebra a UI
 
 ## Notas
 

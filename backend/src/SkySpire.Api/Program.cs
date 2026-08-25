@@ -62,6 +62,7 @@ builder.Services.AddScoped<HpService>();
 builder.Services.AddScoped<RarityService>();
 builder.Services.AddScoped<QualityService>();
 builder.Services.AddScoped<ItemRollService>();
+builder.Services.AddScoped<UniqueItemDropService>();
 builder.Services.AddScoped<CombatService>();
 builder.Services.AddScoped<OwnershipService>();
 builder.Services.AddScoped<StatsService>();
@@ -210,8 +211,12 @@ if (app.Environment.IsDevelopment())
                 b.BattleCoinRewardBase,
                 b.HpRegenGlobalMult,
                 b.HpDefeatRevivePct,
-                b.CombatTurnSeconds,
+                b.CombatBaseActionMs,
+                b.CombatMaxDurationMs,
+                b.CombatRegenTickMs,
                 b.CombatDamageNoise,
+                b.CombatArmorMidDef,
+                b.CombatArmorPower,
                 note = "Edit balance/generative in content/config/global.json via the content editor."
             }
         });

@@ -12,6 +12,7 @@ import { useGameSession } from '../../game/GameSessionContext'
 import { ItemInfoModal } from '../../components/game/ItemInfoModal'
 import { ItemTileVisual } from '../../components/game/ItemTileVisual'
 import { itemQualityStyle } from '../../game/itemQuality'
+import { clampEquipBoxSize, equipSlotSizeRem } from '../../game/equipLayout'
 import { bagItemShowsUpgradeArrow } from '../../game/itemUpgradeCompare'
 import { bagItemLabel, bagItemTemplateId, type BagItem } from '../../types/item'
 
@@ -19,7 +20,13 @@ type InventoryResponse = {
   slotCount: number
   items: BagItem[]
   equipment: Record<string, BagItem | null>
-  equipmentSlots: { name: string; itemType: string[]; boxSize: number }[]
+  equipmentSlots: {
+    name: string
+    itemType: string[]
+    boxSize: number
+    row?: number
+    order?: number
+  }[]
 }
 
 type DragPayload =
@@ -45,21 +52,14 @@ const SLOT_LABELS: Record<string, string> = {
   hands: 'Mãos',
 }
 
-/** Tamanho visual base do slot (boxSize 1). boxSize N → base / N (máx. 4). */
+/** Tamanho visual base do slot (boxSize 1). Escala 1…10 até ~1/4 do base (legado 4). */
 const EQUIP_SLOT_BASE_REM = 6.5
-const EQUIP_SLOT_MAX_BOX_SIZE = 4
 
 const DRAG_MIME = 'application/x-skyspire-item'
 
-function clampBoxSize(boxSize: number | undefined): number {
-  const raw = Number.isFinite(boxSize) ? Math.round(boxSize as number) : 1
-  return Math.min(EQUIP_SLOT_MAX_BOX_SIZE, Math.max(1, raw || 1))
-}
-
 function equipSlotStyle(boxSize: number | undefined): CSSProperties {
-  const size = clampBoxSize(boxSize)
   return {
-    ['--equip-slot-size' as string]: `${EQUIP_SLOT_BASE_REM / size}rem`,
+    ['--equip-slot-size' as string]: `${equipSlotSizeRem(boxSize, EQUIP_SLOT_BASE_REM)}rem`,
   }
 }
 
@@ -89,6 +89,7 @@ function starsLabel(stars?: number): string {
 
 function itemMetaLine(item: BagItem, includeQty: boolean): string {
   const parts: string[] = []
+  if (item.unique) parts.push('Único')
   if (item.itemLevel) parts.push(`Lv${item.itemLevel}`)
   parts.push(item.rarityName ?? itemTypeOf(item))
   if (item.stars) parts.push(starsLabel(item.stars))
@@ -128,7 +129,7 @@ function sortBagForView(items: BagItem[], mode: BagSortMode): BagViewEntry[] {
 }
 
 export function InventoryPanel() {
-  const { refreshCharacter } = useGameSession()
+  const { refreshCharacter, inventoryRevision } = useGameSession()
   const [data, setData] = useState<InventoryResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedItems, setSelectedItems] = useState<number[]>([])
@@ -149,7 +150,7 @@ export function InventoryPanel() {
 
   useEffect(() => {
     void load()
-  }, [])
+  }, [inventoryRevision])
 
   function slotAccepts(slotName: string, type: string) {
     const slot = data?.equipmentSlots.find((s) => s.name === slotName)
@@ -334,7 +335,7 @@ export function InventoryPanel() {
                   isGhost && equipped
                     ? resolveGhostInfoItem(data.equipment, equipped)
                     : equipped
-                const boxSize = clampBoxSize(slot.boxSize)
+                const boxSize = clampEquipBoxSize(slot.boxSize)
                 const canDrop =
                   dragging?.source === 'bag' && slotAccepts(slot.name, dragging.type)
                 const isTarget = dropTarget === slot.name && canDrop

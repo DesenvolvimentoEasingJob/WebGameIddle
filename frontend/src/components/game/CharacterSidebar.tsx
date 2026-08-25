@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import type { CharacterStats } from '../../types/api'
 import { useAuth } from '../../auth/AuthContext'
 import { useGameSession } from '../../game/GameSessionContext'
+import { formatArmorPercent } from '../../game/stats'
 
 function pickStat(stats: CharacterStats | null, keys: string[]) {
   if (!stats) return null
@@ -96,7 +97,10 @@ export function CharacterSidebar() {
           Ataque <strong>{formatNum(atk)}</strong>
         </div>
         <div>
-          Defesa <strong>{formatNum(def)}</strong>
+          Defesa{' '}
+          <strong title={def != null ? `${formatNum(def)} pts` : undefined}>
+            {def == null ? '—' : formatArmorPercent(def)}
+          </strong>
         </div>
         <div>
           SkyCoin <strong>{formatNum(coins)}</strong>

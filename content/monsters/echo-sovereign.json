@@ -2,11 +2,20 @@
   "id": "echo-sovereign",
   "name": "Echo Sovereign",
   "description": "Soberano espectral feito de ecos e nÃ©voa azul-prateada, coroa fantasmagÃ³rica e aura ressonante.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 10,
-  "hp": 170,
+  "hp": 550,
   "baseStats": {
     "dmgBase": 23,
-    "defBase": 11
+    "defBase": 160,
+    "attackSpeed": 1.05,
+    "dodgeChance": 0.15
+  },
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 6,
+      "counter": "fireResistance"
+    }
   },
   "bonusDefense": {},
   "skills": [],
@@ -61,6 +70,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

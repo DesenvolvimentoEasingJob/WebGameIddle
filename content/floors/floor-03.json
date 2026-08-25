@@ -86,6 +86,6 @@
   "ownerPlayerId": null,
   "ownerSnapshotPath": null,
   "assets": {
-    "background": "/assets/floors/03.png"
+    "background": "/api/assets/floors/floor-03.png"
   }
 }

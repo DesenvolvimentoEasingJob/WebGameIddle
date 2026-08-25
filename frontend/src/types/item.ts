@@ -28,6 +28,10 @@ export type BagItem = {
   qualityName?: string
   colorStart?: RgbColor
   colorEnd?: RgbColor
+  /** Drop único gerado in-game (todo 33). */
+  unique?: boolean
+  lore?: string
+  seedItemId?: string
   stats?: Record<string, number>
   baseStats?: Record<string, number>
   assets?: { icon?: string }
@@ -44,5 +48,6 @@ export function bagItemLabel(item: BagItem): string {
   if (item.rarityName && item.stars) {
     parts.push(`[${item.rarityName} ${item.stars}★]`)
   }
+  if (item.unique) parts.push('(Único)')
   return parts.join(' ')
 }

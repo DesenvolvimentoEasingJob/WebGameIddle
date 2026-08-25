@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mcp-context-finder": {
+      "url": "http://127.0.0.1:3847/sse"
+    }
+  },
+  "_mcp-context-finder": {
+    "updatedAt": "2026-08-21T12:51:14.187Z",
+    "mode": "http",
+    "port": 3847
+  }
+}

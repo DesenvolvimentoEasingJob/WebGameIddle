@@ -76,6 +76,7 @@ export function ItemInfoModal({ item, onClose }: Props) {
             <h2 className="modal__title modal__title--item">{title}</h2>
             <p className="modal__subtitle">
               {[
+                item.unique ? 'Único' : null,
                 typeLabel,
                 item.grip ? GRIP_LABELS[item.grip] ?? item.grip : null,
                 item.rarityName ?? null,
@@ -93,6 +94,9 @@ export function ItemInfoModal({ item, onClose }: Props) {
                 Sem descrição.
               </p>
             )}
+            {item.lore ? (
+              <p className="modal__text item-modal__description item-modal__lore">{item.lore}</p>
+            ) : null}
           </div>
 
           {showIcon && iconUrl ? (

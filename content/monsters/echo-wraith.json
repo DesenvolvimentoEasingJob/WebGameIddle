@@ -2,12 +2,16 @@
   "id": "echo-wraith",
   "name": "echo wraith",
   "description": "Fantasma translucido azulado que vibra como um eco, contornos fluidos e olhar vazio.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 150,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 50,
+    "attackSpeed": 1.15,
+    "dodgeChance": 0.2
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -69,6 +73,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

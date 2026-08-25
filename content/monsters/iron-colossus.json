@@ -4,11 +4,14 @@
   "description": "Colosso de ferro maciÃ§o, silhueta imponente de boss blindado com punhos pesados.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 16,
-  "hp": 260,
+  "hp": 880,
   "baseStats": {
     "dmgBase": 35,
-    "defBase": 17
+    "defBase": 260,
+    "attackSpeed": 0.7,
+    "hpRegenPerSec": 2.5
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",

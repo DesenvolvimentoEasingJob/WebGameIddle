@@ -249,6 +249,9 @@ public sealed class GeminiImageService(
     public string? GetFloorBackgroundFilePath(string fileName) =>
         ResolveAssetFilePath("floors", fileName);
 
+    public string? GetRacePortraitFilePath(string fileName) =>
+        ResolveAssetFilePath("races", fileName);
+
     private string? ResolveAssetFilePath(string folder, string fileName)
     {
         var safe = Path.GetFileName(fileName);

@@ -96,4 +96,15 @@ public class RarityServiceTests
         Assert.Equal(1, without.Id);
         Assert.Equal(4, withLuck.Id);
     }
+
+    [Fact]
+    public void PickFrom_ChanceMult_BoostsRareWithoutFixingId()
+    {
+        var all = Sample((1, "Comum", 0), (4, "Raro", 0.1));
+        // roll 0.5 fails base 0.1; with mult 7 → chance 0.7 → succeeds
+        var basePick = RarityService.PickFrom(HighestFirst(all), all, new ScriptedRandom(0.5), chanceMult: 1);
+        var boosted = RarityService.PickFrom(HighestFirst(all), all, new ScriptedRandom(0.5), chanceMult: 7);
+        Assert.Equal(1, basePick.Id);
+        Assert.Equal(4, boosted.Id);
+    }
 }

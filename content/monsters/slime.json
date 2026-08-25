@@ -2,12 +2,16 @@
   "id": "slime",
   "name": "slime",
   "description": "Gosma verde translÃºcida de caverna, olhos negros simples e corpo gelatinoso que balanÃ§a.",
+  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 150,
   "baseStats": {
     "dmgBase": 5,
-    "defBase": 2
+    "defBase": 50,
+    "attackSpeed": 0.9,
+    "hpRegenPerSec": 1.5
   },
+  "bonusDamage": {},
   "bonusDefense": {},
   "skills": [],
   "behavior": "aggressive",
@@ -53,6 +57,5 @@
         "direction": "east"
       }
     }
-  },
-  "generativeComplement": "imagem em pixel, sempre olhando para a esquerda"
+  }
 }

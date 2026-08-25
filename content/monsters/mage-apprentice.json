@@ -4,10 +4,17 @@
   "description": "Aprendiz de mago de robes simples, cajado curto e aura mÃ¡gica fraca ao redor das mÃ£os.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 1,
-  "hp": 35,
+  "hp": 130,
   "baseStats": {
-    "dmgBase": 5,
-    "defBase": 2
+    "dmgBase": 4,
+    "defBase": 45,
+    "attackSpeed": 0.9
+  },
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 6,
+      "counter": "fireResistance"
+    }
   },
   "bonusDefense": {},
   "skills": [],

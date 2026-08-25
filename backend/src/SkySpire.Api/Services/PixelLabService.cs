@@ -194,6 +194,57 @@ public sealed class PixelLabService(
             meta.Model);
     }
 
+    /// <summary>
+    /// Gera ícone e grava direto em <c>data/assets/items/{fileName}</c> (drop único in-game).
+    /// Retorna path de conteúdo <c>/assets/items/...</c> ou null se falhou sem placeholder escrito.
+    /// </summary>
+    public async Task<string?> GenerateAndCommitUniqueItemIconAsync(
+        string fileName,
+        string itemName,
+        string artPrompt,
+        string? type,
+        CancellationToken ct)
+    {
+        var safe = Path.GetFileName(fileName);
+        if (string.IsNullOrWhiteSpace(safe) ||
+            !safe.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+            safe.Contains("..", StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var id = Path.GetFileNameWithoutExtension(safe);
+        var dir = Path.Combine(secrets.Value.DataPath, "assets", "items");
+        Directory.CreateDirectory(dir);
+        var dest = Path.Combine(dir, safe);
+
+        byte[] png = PlaceholderPng;
+        if (!string.IsNullOrWhiteSpace(secrets.Value.PixellabApiKey))
+        {
+            var kind = string.IsNullOrWhiteSpace(type) ? "item" : type.Trim().ToLowerInvariant();
+            var kindHint = TypePromptHint(kind);
+            var prompt =
+                "SkySpire fantasy RPG pixel art inventory icon, centered single object, " +
+                "clean silhouette, transparent background, game item, no text, no UI chrome. " +
+                $"Slot type: {kind}. {kindHint} Unique item: {itemName}. {artPrompt}";
+            try
+            {
+                var (pngs, _, _) = await GenerateStaticPngsAsync(prompt, 128, 128, "standard", ct);
+                if (pngs.Count > 0)
+                {
+                    png = pngs[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                log.LogWarning(ex, "Unique item icon generation failed for {File}", safe);
+            }
+        }
+
+        await File.WriteAllBytesAsync(dest, png, ct);
+        return $"/assets/items/{safe}";
+    }
+
     public string? GetItemIconFilePath(string fileName)
     {
         var safe = Path.GetFileName(fileName);

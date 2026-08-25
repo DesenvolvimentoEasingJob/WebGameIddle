@@ -91,8 +91,23 @@ public sealed class GameConfigService(
             ReadInt(bal, "battleCoinRewardBase", v => opts.BattleCoinRewardBase = v);
             ReadDouble(bal, "hpRegenGlobalMult", v => opts.HpRegenGlobalMult = v);
             ReadDouble(bal, "hpDefeatRevivePct", v => opts.HpDefeatRevivePct = v);
-            ReadDouble(bal, "combatTurnSeconds", v => opts.CombatTurnSeconds = v);
+            ReadInt(bal, "combatBaseActionMs", v => opts.CombatBaseActionMs = v);
+            ReadInt(bal, "combatMaxDurationMs", v => opts.CombatMaxDurationMs = v);
+            ReadInt(bal, "combatRegenTickMs", v => opts.CombatRegenTickMs = v);
             ReadDouble(bal, "combatDamageNoise", v => opts.CombatDamageNoise = v);
+            ReadDouble(bal, "combatArmorMidDef", v => opts.CombatArmorMidDef = Math.Max(1e-6, v));
+            ReadDouble(bal, "combatArmorPower", v => opts.CombatArmorPower = Math.Max(1e-6, v));
+            ReadDouble(bal, "uniqueDropChance", v => opts.UniqueDropChance = Math.Clamp(v, 0, 1));
+            if (bal.TryGetProperty("uniqueDropEnabled", out var ude) &&
+                (ude.ValueKind == JsonValueKind.True || ude.ValueKind == JsonValueKind.False))
+            {
+                opts.UniqueDropEnabled = ude.GetBoolean();
+            }
+
+            ReadDouble(bal, "uniqueRarityChanceMult", v => opts.UniqueRarityChanceMult = Math.Max(0, v));
+            ReadInt(bal, "uniqueStars", v => opts.UniqueStars = Math.Clamp(v, 1, 5));
+            ReadInt(bal, "uniqueOpenAiTimeoutMs", v => opts.UniqueOpenAiTimeoutMs = Math.Max(500, v));
+            ReadInt(bal, "uniquePixelLabTimeoutMs", v => opts.UniquePixelLabTimeoutMs = Math.Max(1000, v));
         }
         catch (Exception ex)
         {
@@ -119,8 +134,42 @@ public sealed class GameConfigService(
         if (TryInt(c, "BATTLE_COIN_REWARD_BASE", out var bcrb)) opts.BattleCoinRewardBase = bcrb;
         if (TryDouble(c, "HP_REGEN_GLOBAL_MULT", out var hrgm)) opts.HpRegenGlobalMult = hrgm;
         if (TryDouble(c, "HP_DEFEAT_REVIVE_PCT", out var hdrp)) opts.HpDefeatRevivePct = hdrp;
-        if (TryDouble(c, "COMBAT_TURN_SECONDS", out var cts)) opts.CombatTurnSeconds = cts;
+        if (TryInt(c, "COMBAT_BASE_ACTION_MS", out var cbam)) opts.CombatBaseActionMs = cbam;
+        if (TryInt(c, "COMBAT_MAX_DURATION_MS", out var cmdm)) opts.CombatMaxDurationMs = cmdm;
+        if (TryInt(c, "COMBAT_REGEN_TICK_MS", out var crtm)) opts.CombatRegenTickMs = crtm;
         if (TryDouble(c, "COMBAT_DAMAGE_NOISE", out var cdn)) opts.CombatDamageNoise = cdn;
+        if (TryDouble(c, "COMBAT_ARMOR_MID_DEF", out var camd))
+        {
+            opts.CombatArmorMidDef = Math.Max(1e-6, camd);
+        }
+
+        if (TryDouble(c, "COMBAT_ARMOR_POWER", out var cap))
+        {
+            opts.CombatArmorPower = Math.Max(1e-6, cap);
+        }
+
+        if (TryDouble(c, "UNIQUE_DROP_CHANCE", out var udc)) opts.UniqueDropChance = Math.Clamp(udc, 0, 1);
+        var udeRaw = c["UNIQUE_DROP_ENABLED"];
+        if (!string.IsNullOrWhiteSpace(udeRaw) && bool.TryParse(udeRaw, out var ude))
+        {
+            opts.UniqueDropEnabled = ude;
+        }
+
+        if (TryDouble(c, "UNIQUE_RARITY_CHANCE_MULT", out var urcm))
+        {
+            opts.UniqueRarityChanceMult = Math.Max(0, urcm);
+        }
+
+        if (TryInt(c, "UNIQUE_STARS", out var us)) opts.UniqueStars = Math.Clamp(us, 1, 5);
+        if (TryInt(c, "UNIQUE_OPENAI_TIMEOUT_MS", out var uot))
+        {
+            opts.UniqueOpenAiTimeoutMs = Math.Max(500, uot);
+        }
+
+        if (TryInt(c, "UNIQUE_PIXELLAB_TIMEOUT_MS", out var upt))
+        {
+            opts.UniquePixelLabTimeoutMs = Math.Max(1000, upt);
+        }
     }
 
     private static void ReadInt(JsonElement obj, string name, Action<int> set)

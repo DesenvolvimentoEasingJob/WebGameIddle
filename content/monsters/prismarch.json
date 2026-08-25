@@ -4,12 +4,21 @@
   "description": "Entidade cristalina prismÃ¡tica, corpo facetado que refrata luz colorida, porte majestoso.",
   "generativeComplement": "imagem em pixel, sempre olhando para a esquerda",
   "level": 14,
-  "hp": 230,
+  "hp": 760,
   "baseStats": {
     "dmgBase": 31,
-    "defBase": 15
+    "defBase": 220,
+    "attackSpeed": 0.95
   },
-  "bonusDefense": {},
+  "bonusDamage": {
+    "fireDamage": {
+      "dmgBase": 10,
+      "counter": "fireResistance"
+    }
+  },
+  "bonusDefense": {
+    "fireResistance": 8
+  },
   "skills": [],
   "behavior": "aggressive",
   "skyCoinDrop": [
